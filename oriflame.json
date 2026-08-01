@@ -1,0 +1,2149 @@
+{
+  "title": "Products",
+  "message": "Successfully got list",
+  "data": {
+    "pagination": {
+      "total": 96,
+      "page": 1,
+      "limit": 200000,
+      "perviousPage": false,
+      "nextPage": false
+    },
+    "docs": [
+      {
+        "_id": "69cf9eed56d47a4754c8a5fe",
+        "slug": "bright-intense-serum-sachet-392",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Bright Intense Serum Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1775213807458.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "69cf9be156d47a4754c8a529",
+        "slug": "wrinkle-smooth-serum-sachet-391",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Wrinkle Smooth Serum Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1775213532903.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "699a9e5756d47a4754bc7f2b",
+        "slug": "opt-optimals-even-out-rich-cream-389",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Even Out Rich Cream",
+        "price": 2190,
+        "strikePrice": 2190,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771740744420.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771740746762.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771740749239.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996cb8e56d47a4754bbb7e0",
+        "slug": "opt-optimals-hydra-radiance-rich-cream-388",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Hydra Radiance Rich Cream",
+        "price": 1490,
+        "strikePrice": 1490,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771490183487.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771490187447.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996c9a356d47a4754bbb647",
+        "slug": "opt-optimals-hydra-radiance-light-cream-387",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Hydra Radiance Light Cream",
+        "price": 1490,
+        "strikePrice": 1490,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771489675500.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771489684292.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771489688165.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996be2156d47a4754bbb160",
+        "slug": "sos-blemish-gel-386",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "SOS Blemish Gel",
+        "price": 890,
+        "strikePrice": 890,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771486742677.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771486747575.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771486750964.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996bcee56d47a4754bbafd5",
+        "slug": "clarifying-toning-solution-385",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "Clarifying Toning Solution",
+        "price": 1090,
+        "strikePrice": 1090,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771486433591.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771486440502.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771486443463.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996bb2a56d47a4754bbada9",
+        "slug": "firming-night-cream-384",
+        "brand": {
+          "_id": "669cac559efc4d23d5ef6d5d",
+          "slug": "royal-velvet-29",
+          "name": "ROYAL VELVET"
+        },
+        "title": "Firming Night Cream",
+        "price": 2690,
+        "strikePrice": 2690,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485986244.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485989031.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485992176.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996b9d456d47a4754bbabd9",
+        "slug": "firming-day-cream-spf-20-383",
+        "brand": {
+          "_id": "669cac559efc4d23d5ef6d5d",
+          "slug": "royal-velvet-29",
+          "name": "ROYAL VELVET"
+        },
+        "title": "Firming Day Cream SPF 20",
+        "price": 2690,
+        "strikePrice": 2690,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485632248.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485635118.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485637973.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485644763.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6996b87b56d47a4754bbaa96",
+        "slug": "opt-optimals-even-out-light-cream-382",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "OPT Optimals Even Out Light Cream",
+        "price": 2190,
+        "strikePrice": 2190,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485274250.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485279149.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485283893.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485291391.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1771485297647.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6975a0f856d47a4754b22a41",
+        "slug": "opt-optimals-foaming-gel-cleanser-381",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Foaming Gel Cleanser",
+        "price": 1190,
+        "strikePrice": 1190,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1769316594266.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1769316597807.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "695355f456d47a4754a7d9b1",
+        "slug": "smoothing-face-scrub-380",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "Smoothing Face Scrub",
+        "price": 890,
+        "strikePrice": 890,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767069158878.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767069161335.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767069163650.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767069166341.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "69047a4156d47a47549c9cf8",
+        "slug": "purifying-clay-face-mask-367",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Purifying Clay Face Mask",
+        "price": 1170,
+        "strikePrice": 1300,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766916389507.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993951460.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993956861.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "6903220756d47a47549c6385",
+        "slug": "opt-optimals-even-out-serum-359",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Even Out Serum",
+        "price": 1980,
+        "strikePrice": 2200,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1761812884567.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1762159967721.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1762159969834.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766917815291.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766917815239.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "69031f5856d47a47549c615e",
+        "slug": "opt-optimals-eye-lip-contour-cream-358",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Eye & Lip Contour Cream",
+        "price": 1400,
+        "strikePrice": 1400,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1761812306875.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1762419534245.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766917894781.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766917894750.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "68ae85f6b7d806fe3eb7b2a1",
+        "slug": "radiance-facial-kit-with-organic-milk-honey-and-turmeric-345",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Radiance Facial Kit with Organic Milk, Honey and Turmeric",
+        "price": 2990,
+        "strikePrice": 2990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760847353456.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760847355830.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "684815d11c5b5b6c89380840",
+        "slug": "opt-optimals-soft-creamy-cleanser-316",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Soft Creamy Cleanser",
+        "price": 1190,
+        "strikePrice": 1190,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749554457975.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749554521226.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 15,
+        "ratedBy": 3
+      },
+      {
+        "_id": "684813ee1c5b5b6c89380776",
+        "slug": "firming-eye-contour-cream-315",
+        "brand": {
+          "_id": "669cac559efc4d23d5ef6d5d",
+          "slug": "royal-velvet-29",
+          "name": "ROYAL VELVET"
+        },
+        "title": "ROYAL VELVET Firming Eye Contour Cream",
+        "price": 1990,
+        "strikePrice": 1990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749554035920.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749554036065.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749554095031.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749554094712.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "6848125e1c5b5b6c893806b3",
+        "slug": "up-loved-purifying-face-scrub-with-upcycled-apple-organic-kale-314",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Up-Loved Purifying Face Scrub with upcycled apple & organic kale",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749553683036.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749553690230.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749553694246.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749553697235.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "68480bc41c5b5b6c8938042a",
+        "slug": "nourishing-body-face-hair-oil-with-organic-avocado-oil-313",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Nourishing Body, Face & Hair Oil with organic Avocado oil",
+        "price": 990,
+        "strikePrice": 990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749551771107.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749551774733.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749551881613.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749551884140.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 10,
+        "ratedBy": 2
+      },
+      {
+        "_id": "68467dc51c5b5b6c89379ba9",
+        "slug": "multi-purpose-cream-with-vitamin-e-canola-oil-295",
+        "brand": {
+          "_id": "63e2399243774e3b00530635",
+          "slug": "essential-13",
+          "name": "essentials"
+        },
+        "title": "Multi-Purpose Cream with Vitamin E & Canola Oil",
+        "price": 890,
+        "strikePrice": 890,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749470313964.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749470314194.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 4.5,
+        "totalRatings": 4.5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "684666361c5b5b6c89378c7c",
+        "slug": "opt-optimals-the-beyond-moisturiser-spf25-292",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals The Beyond Moisturiser SPF25",
+        "price": 2490,
+        "strikePrice": 2490,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443781195.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443785962.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443788678.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443791356.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443794580.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 4.8,
+        "totalRatings": 14.5,
+        "ratedBy": 3
+      },
+      {
+        "_id": "6846644a1c5b5b6c89378a23",
+        "slug": "opt-optimals-daily-glow-multi-protector-spf50-291",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Opt Optimals Daily Glow Multi-Protector SPF50",
+        "price": 1390,
+        "strikePrice": 1390,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443298841.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443302266.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443308482.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1749443311075.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "67a9dea2b3d7ead9a16c5916",
+        "slug": "bright-intense-eye-cream-289",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Bright Intense Eye Cream",
+        "price": 1445,
+        "strikePrice": 2890,
+        "offPercent": 50,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1770889773585.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "67a5d18e3363de357ef91304",
+        "slug": "pure-skin-pore-clearing-peel-off-mask-288",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "Pure Skin Pore Clearing Peel-off Mask",
+        "price": 801,
+        "strikePrice": 890,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766994010046.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766994018206.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766994043436.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66ed1ef16c00fd9729f65c3a",
+        "slug": "multi-active-anti-ageing-day-cream-rich-275",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Multi-Active Anti-Ageing Day Cream Rich",
+        "price": 2754,
+        "strikePrice": 4590,
+        "offPercent": 40,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739171308794.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739171309282.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66ed0b9b6c00fd9729f655a0",
+        "slug": "hydra-radiance-day-cream-light-264",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Hydra Radiance Day Cream Light",
+        "price": 1521,
+        "strikePrice": 1690,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1726810644762.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1726810913912.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1726810916299.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1726811010358.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66d58b736c00fd9729f42e0c",
+        "slug": "urban-guard-3d-mist-262",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Urban Guard 3D Mist",
+        "price": 1341,
+        "strikePrice": 1490,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1744713881617.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66d586da6c00fd9729f42c6c",
+        "slug": "hydra-radiance-eye-cream-260",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Hydra Radiance Eye Cream",
+        "price": 1341,
+        "strikePrice": 1490,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269704189.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269710358.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269710674.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269717375.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "66d5541e6c00fd9729f42190",
+        "slug": "hydra-radiance-night-cream-light-256",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Hydra Radiance Night Cream Light",
+        "price": 1701,
+        "strikePrice": 1890,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725256626402.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725256683535.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725256713757.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725256721217.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725256725943.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66d464076c00fd9729f410f6",
+        "slug": "3-in-1-clear-out-clay-bar-cleanser-254",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "3-in-1 Clear-Out Clay Bar Cleanser",
+        "price": 531,
+        "strikePrice": 590,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725195100960.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725195108424.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725195257016.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725195258933.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "66d460be6c00fd9729f41088",
+        "slug": "double-sided-blackhead-remover-253",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "Double-Ended Blackhead Remover",
+        "price": 135,
+        "strikePrice": 149,
+        "offPercent": 9,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725194393709.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725194420849.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725194421862.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725194419362.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a7c62c6c00fd9729efbc3d",
+        "slug": "purifying-face-oil-with-organic-tea-tree-lime-228",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Purifying Face Oil with Organic Tea Tree & Lime",
+        "price": 1490,
+        "strikePrice": 1490,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760850100679.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760850103719.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760850106090.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 40,
+        "ratedBy": 8
+      },
+      {
+        "_id": "66a795e46c00fd9729efb718",
+        "slug": "purifying-toner-with-organic-tea-tree-lime-227",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Purifying Toner with Organic Tea Tree & Lime",
+        "price": 990,
+        "strikePrice": 990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258852901.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258857911.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "66a793626c00fd9729efb5fb",
+        "slug": "exfoliating-face-scrub-226",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Exfoliating Face Scrub",
+        "price": 1071,
+        "strikePrice": 1190,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766121960140.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766121965298.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993765756.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a78e2f6c00fd9729efb4ff",
+        "slug": "even-out-serum-225",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Even Out Serum",
+        "price": 2691,
+        "strikePrice": 2990,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256804749.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256822863.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256823919.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256825198.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256823378.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 15,
+        "ratedBy": 3
+      },
+      {
+        "_id": "66a78ce06c00fd9729efb4c3",
+        "slug": "age-revive-serum-224",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Age Revive Serum",
+        "price": 2511,
+        "strikePrice": 2790,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256518758.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256535524.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256533311.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256532740.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256534416.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 15,
+        "ratedBy": 3
+      },
+      {
+        "_id": "66a78a236c00fd9729efb36e",
+        "slug": "targeted-24-hour-blemish-correction-223",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Targeted 24-hour Blemish Correction",
+        "price": 1790,
+        "strikePrice": 1790,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255805098.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255812115.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255812665.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a788c06c00fd9729efb2cd",
+        "slug": "multi-active-anti-ageing-night-cream-rich-sachet-222",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Multi-Active Anti-Ageing Night Cream Rich Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255543059.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a788166c00fd9729efb29a",
+        "slug": "ecollagen-wrinkle-power-day-cream-spf-35-221",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Ecollagen Wrinkle Power Day Cream SPF 35",
+        "price": 4190,
+        "strikePrice": 4190,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255342075.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255348758.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255349287.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255361655.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a787296c00fd9729efb255",
+        "slug": "lift-firm-eye-cream-220",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Lift + Firm Eye Cream",
+        "price": 2312,
+        "strikePrice": 2890,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254991182.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255005727.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255007534.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255007606.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255102155.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255110148.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255117331.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255121004.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255129326.jpeg"
+        ],
+        "variantType": "None",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a784e76c00fd9729efb139",
+        "slug": "proceuticals-ultra-light-uv-age-day-shield-spf-50-219",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Proceuticals Ultra Light UV-Age Day Shield + SPF 50",
+        "price": 3490,
+        "strikePrice": 3490,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254467094.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254504272.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254504315.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254501812.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254499968.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254503625.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254549017.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254554854.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254559073.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 15,
+        "ratedBy": 3
+      },
+      {
+        "_id": "66a779ec9efc4d23d5f06ba8",
+        "slug": "bright-intense-serum-218",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Bright Intense Serum",
+        "price": 3912,
+        "strikePrice": 4890,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766897802126.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766897814401.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766897820997.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a76f599efc4d23d5f0683f",
+        "slug": "skinrelief-pro-resilient-day-cream-spf-30-216",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Skinrelief Pro Resilient Day Cream SPF 30",
+        "price": 4720,
+        "strikePrice": 5900,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249005474.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249006867.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249007369.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249005652.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 25,
+        "ratedBy": 5
+      },
+      {
+        "_id": "66a76eb79efc4d23d5f0680c",
+        "slug": "skinrelief-pro-resilient-night-cream-215",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Skinrelief Pro Resilient Night Cream",
+        "price": 4690,
+        "strikePrice": 4690,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722248444217.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722248446096.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722248446494.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722248444659.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 10,
+        "ratedBy": 2
+      },
+      {
+        "_id": "66a2441a9efc4d23d5f00d16",
+        "slug": "skinrelief-pro-resilient-eye-cream-214",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Skinrelief Pro Resilient Eye Cream",
+        "price": 3490,
+        "strikePrice": 3490,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1768385498858.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1768385501373.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 45,
+        "ratedBy": 9
+      },
+      {
+        "_id": "66a230729efc4d23d5f00973",
+        "slug": "supreme-cleansing-gel-sachet-213",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Supreme Cleansing Gel Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721905167569.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66a0ee7f9efc4d23d5eff2c6",
+        "slug": "asd-212",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Supreme Cleansing Gel",
+        "price": 1245,
+        "strikePrice": 2490,
+        "offPercent": 50,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721902965250.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721902973977.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721902975333.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "669ce86c9efc4d23d5ef77de",
+        "slug": "urban-guard-3d-night-cream-209",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Urban Guard 3D Night Cream",
+        "price": 2190,
+        "strikePrice": 2190,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721559136842.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258752511.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258752532.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258753811.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669ce6629efc4d23d5ef7758",
+        "slug": "refresh-gel-cleanser-sachet-207",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Refresh Gel Cleanser Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722255658080.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669ce5759efc4d23d5ef7726",
+        "slug": "skinrelief-pro-resilient-night-cream-sachet-206",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Skinrelief Pro Resilient Night Cream Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254765796.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 10,
+        "ratedBy": 2
+      },
+      {
+        "_id": "669ce4b39efc4d23d5ef76fd",
+        "slug": "skinrelief-pro-resilient-day-cream-spf-30-sachet-205",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Skinrelief Pro Resilient Day Cream SPF 30 Sachet",
+        "price": 200,
+        "strikePrice": 200,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254642323.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 25,
+        "ratedBy": 5
+      },
+      {
+        "_id": "669ce3489efc4d23d5ef7661",
+        "slug": "multi-active-anti-ageing-night-cream-rich-204",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Multi-Active Anti-Ageing Night Cream Rich",
+        "price": 4690,
+        "strikePrice": 4690,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253988191.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254004823.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254003445.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254001619.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254004601.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254146045.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254152631.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254160275.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669ce2539efc4d23d5ef762f",
+        "slug": "multi-active-anti-ageing-night-cream-light-203",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Multi-Active Anti-Ageing Night Cream Light",
+        "price": 4690,
+        "strikePrice": 4690,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254213612.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254235926.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254236392.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254235040.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254236084.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254237172.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254236009.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254263532.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722254272131.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669ccce29efc4d23d5ef73a6",
+        "slug": "multi-active-anti-ageing-day-cream-rich-spf-30-202",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Multi-Active Anti-Ageing Day Cream Rich SPF 30",
+        "price": 4590,
+        "strikePrice": 4590,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253632417.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253650686.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253648739.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253650988.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253650807.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253648183.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253755421.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722253773475.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669ccc239efc4d23d5ef7332",
+        "slug": "multi-active-anti-ageing-day-cream-light-spf-30-201",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Multi-Active Anti-Ageing Day Cream Light SPF 30",
+        "price": 4590,
+        "strikePrice": 4590,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252539886.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252755412.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252755584.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252753276.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252753861.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252852865.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252852169.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722252873264.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669cc89a9efc4d23d5ef7260",
+        "slug": "blemish-age-defy-serum-200",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Blemish + Age Defy Serum",
+        "price": 3912,
+        "strikePrice": 4890,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767172048955.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767172104503.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669cc7ce9efc4d23d5ef721e",
+        "slug": "serum-lift-firm-novage-199",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Lift + Firm Serum",
+        "price": 4890,
+        "strikePrice": 4890,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251019393.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251033848.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251034966.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251035123.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251035158.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251034620.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251036059.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722251126770.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669cc6979efc4d23d5ef71f5",
+        "slug": "wrinkle-smooth-serum-198",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Wrinkle Smooth Serum",
+        "price": 3912,
+        "strikePrice": 4890,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760854674028.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760854677298.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760854679920.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760854682763.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760854685767.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669cc5fa9efc4d23d5ef71bd",
+        "slug": "wrinkle-smooth-eye-cream-197",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Wrinkle Smooth Eye Cream",
+        "price": 2312,
+        "strikePrice": 2890,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766897934984.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766897947470.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669cc5779efc4d23d5ef7197",
+        "slug": "refresh-gel-cleanser-196",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Refresh Gel Cleanser",
+        "price": 2990,
+        "strikePrice": 2990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249254301.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249310786.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249312608.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249312073.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249311496.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722249313011.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 30,
+        "ratedBy": 6
+      },
+      {
+        "_id": "669cb0ed9efc4d23d5ef6f03",
+        "slug": "skinrelief-pro-resilient-foam-cleanser-194",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Skinrelief Pro Resilient Foam Cleanser",
+        "price": 3990,
+        "strikePrice": 3990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721544928597.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721905513973.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721905512917.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 30,
+        "ratedBy": 6
+      },
+      {
+        "_id": "669cafd99efc4d23d5ef6ed2",
+        "slug": "neck-decollete-advanced-sculpting-serum-193",
+        "brand": {
+          "_id": "669cac6f9efc4d23d5ef6d79",
+          "slug": "novage-30",
+          "name": "Novage +"
+        },
+        "title": "Neck & Decollete Advanced Sculpting Serum",
+        "price": 4990,
+        "strikePrice": 4990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721544582682.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721822905913.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721822906967.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721823028911.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "669cacff9efc4d23d5ef6da0",
+        "slug": "royal-velvet-ultra-firming-capsules-191",
+        "brand": {
+          "_id": "669cac559efc4d23d5ef6d5d",
+          "slug": "royal-velvet-29",
+          "name": "ROYAL VELVET"
+        },
+        "title": "Royal Velvet Ultra Firming Capsules",
+        "price": 3272,
+        "strikePrice": 4090,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1768388931972.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1768388931858.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1768388931770.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1768388932165.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6699264d9efc4d23d5ef1dc4",
+        "slug": "zcvzc-190",
+        "brand": {
+          "_id": "63e2278e43774e3b00530428",
+          "slug": "diamondcellular-3",
+          "name": "DIAMONDCELLULAR"
+        },
+        "title": "Diamond Cellular Anti-Ageing Cream",
+        "price": 3990,
+        "strikePrice": 3990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721312731104.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721820374192.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721820375111.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721820373562.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1721820569491.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "664315579efc4d23d5e4e1b9",
+        "slug": "raspberry-multi-purpose-balm-189",
+        "brand": {
+          "_id": "63e23a6743774e3b00530671",
+          "slug": "tender-care-19",
+          "name": "TENDER CARE"
+        },
+        "title": "Raspberry Multi-purpose Balm",
+        "price": 511,
+        "strikePrice": 639,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767094151806.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767094155157.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767094158391.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "66430f749efc4d23d5e4dfaa",
+        "slug": "age-revive-day-cream-spf-15-187",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Age Revive Day Cream SPF 15",
+        "price": 2241,
+        "strikePrice": 2490,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1715668101134.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 25,
+        "ratedBy": 5
+      },
+      {
+        "_id": "6642ebc59efc4d23d5e4d695",
+        "slug": "glow-rise-185",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Glow Rise",
+        "price": 1584,
+        "strikePrice": 1760,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739176547231.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993695930.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993720261.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "6642e92c9efc4d23d5e4d557",
+        "slug": "glow-essentials-face-cream-with-vitamins-e-b3-184",
+        "brand": {
+          "_id": "63e225f243774e3b00530374",
+          "slug": "feel-good-1",
+          "name": "essentials"
+        },
+        "title": "Glow Essentials Face Cream with Vitamins E & B3",
+        "price": 990,
+        "strikePrice": 990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722271835993.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722271850432.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722271850982.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6627a48d9efc4d23d5e0a892",
+        "slug": "tender-care-natural-multipurpose-balm-182",
+        "brand": {
+          "_id": "63e23a6743774e3b00530671",
+          "slug": "tender-care-19",
+          "name": "TENDER CARE"
+        },
+        "title": "Tender Care Natural Multipurpose Balm",
+        "price": 511,
+        "strikePrice": 639,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918825608.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918830732.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918840710.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "65605f7b9efc4d23d5cc6763",
+        "slug": "glow-essentials-face-wash-with-vitamins-e-b3-177",
+        "brand": {
+          "_id": "63e225f243774e3b00530374",
+          "slug": "feel-good-1",
+          "name": "essentials"
+        },
+        "title": "Glow Essentials Face Wash with Vitamins E & B3",
+        "price": 590,
+        "strikePrice": 590,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1741948497737.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "651567559efc4d23d5c691e1",
+        "slug": "brilliance-infinite-luminosity-day-cream-spf30-171",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "Brilliance Infinite Luminosity Day Cream SPF30",
+        "price": 3990,
+        "strikePrice": 3990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1756701735894.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "651558a09efc4d23d5c68cab",
+        "slug": "hydra-radiance-serum-163",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Hydra Radiance Serum",
+        "price": 1971,
+        "strikePrice": 2190,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269163170.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269169267.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269176201.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269184751.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1725269190610.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6515570b9efc4d23d5c68c77",
+        "slug": "age-revive-eye-cream-162",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Age Revive Eye Cream",
+        "price": 1296,
+        "strikePrice": 1440,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256385170.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256392916.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256399493.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256400831.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722256400659.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "6515544c9efc4d23d5c68b4d",
+        "slug": "comforting-facial-toner-161",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Comforting Facial Toner",
+        "price": 1007,
+        "strikePrice": 1119,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993820860.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993859576.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766993866908.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 20,
+        "ratedBy": 4
+      },
+      {
+        "_id": "651550089efc4d23d5c68a43",
+        "slug": "mattifying-cooling-face-lotion-160",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "Mattifying & Cooling Face Lotion",
+        "price": 950,
+        "strikePrice": 1055,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739176722234.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918196552.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918218046.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 10,
+        "ratedBy": 2
+      },
+      {
+        "_id": "64f5997b7be21bca2a3fe2eb",
+        "slug": "urban-guard-3d-day-cream-spf-25-159",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Urban Guard 3D Day Cream SPF 25",
+        "price": 1791,
+        "strikePrice": 1990,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258544759.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258554049.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258553085.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258554275.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "64eed86c7be21bca2a3ed447",
+        "slug": "optimals-clarifying-creamy-cleanser-157",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Optimals Clarifying Creamy Cleanser",
+        "price": 1290,
+        "strikePrice": 1290,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1756791794545.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1756791799415.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 25,
+        "ratedBy": 5
+      },
+      {
+        "_id": "64eed1e97be21bca2a3ecf04",
+        "slug": "pure-skin-deep-cleanse-face-wash-156",
+        "brand": {
+          "_id": "63e23a2b43774e3b00530662",
+          "slug": "pure-skin-18",
+          "name": "Pure Skin"
+        },
+        "title": "Pure Skin Deep Cleanse Face Wash",
+        "price": 981,
+        "strikePrice": 1090,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739529893896.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767094256146.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1767094258464.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 10,
+        "ratedBy": 2
+      },
+      {
+        "_id": "64cc7ff8f9bffa200e7e5a93",
+        "slug": "radiance-face-gel-with-organic-apricot-orange-154",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Radiance Face Gel with Organic Apricot & Orange",
+        "price": 699,
+        "strikePrice": 699,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739176622848.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "64c8e9bcf9bffa200e7d1754",
+        "slug": "love-nature-mattifying-face-lotion-with-organic-tea-tree-lime-152",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "LOVE NATURE Mattifying Face Lotion with Organic Tea Tree & Lime",
+        "price": 890,
+        "strikePrice": 890,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722270096632.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722270111342.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722270112422.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 10,
+        "ratedBy": 2
+      },
+      {
+        "_id": "64c8a1baf9bffa200e7ce5b2",
+        "slug": "novage-brilliance-infinite-luminosity-serum-145",
+        "brand": {
+          "_id": "63e22ab243774e3b005304f0",
+          "slug": "novage-10",
+          "name": "NovAGE"
+        },
+        "title": "NOVAGE Brilliance Infinite Luminosity Serum",
+        "price": 4290,
+        "strikePrice": 4290,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1756808590748.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "643f9f2ca5ea5e75519f41d8",
+        "slug": "purifying-gel-wash-with-organic-tea-tree-lime-114",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Purifying Gel Wash with Organic Tea Tree & Lime",
+        "price": 790,
+        "strikePrice": 790,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1760846182659.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918141360.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 65,
+        "ratedBy": 13
+      },
+      {
+        "_id": "643f90d2a5ea5e75519f31e4",
+        "slug": "even-out-eye-cream-112",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Even Out Eye Cream",
+        "price": 1431,
+        "strikePrice": 1590,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1744782394981.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "643f8e31a5ea5e75519f2fca",
+        "slug": "blackcurrant-multi-purpose-balm-110",
+        "brand": {
+          "_id": "63e23a6743774e3b00530671",
+          "slug": "tender-care-19",
+          "name": "TENDER CARE"
+        },
+        "title": "Blackcurrant Multi-purpose Balm",
+        "price": 511,
+        "strikePrice": 639,
+        "offPercent": 20,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918906026.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918912188.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "640d6f4535cf77dd6ad44a27",
+        "slug": "even-out-night-cream-91",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Even Out Night Cream",
+        "price": 2151,
+        "strikePrice": 2390,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918411252.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918426179.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918514071.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 4.9,
+        "totalRatings": 64,
+        "ratedBy": 13
+      },
+      {
+        "_id": "640d6ccb35cf77dd6ad44a04",
+        "slug": "multi-protection-uv-day-shield-spf-50-90",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Multi-Protection UV Day Shield SPF 50",
+        "price": 1790,
+        "strikePrice": 1790,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258381907.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258394474.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258394670.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258393926.webp",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1722258428047.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "640d6afb35cf77dd6ad449e1",
+        "slug": "even-out-day-cream-spf-20-89",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Optimals Even Out Day Cream SPF 20",
+        "price": 1971,
+        "strikePrice": 2190,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918491617.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918496909.jpeg",
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1766918501909.webp"
+        ],
+        "variantType": "Size",
+        "ratings": 4.9,
+        "totalRatings": 44,
+        "ratedBy": 9
+      },
+      {
+        "_id": "63faeeec9a04a232b29e3bd6",
+        "slug": "glow-essentials-face-cream-with-vitamins-e-b3-spf-10-88",
+        "brand": {
+          "_id": "63e225f243774e3b00530374",
+          "slug": "feel-good-1",
+          "name": "essentials"
+        },
+        "title": "Glow Essentials Face Cream with Vitamins E & B3 SPF 10",
+        "price": 449,
+        "strikePrice": 449,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739165984272.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "63faed9e9a04a232b29e3b8f",
+        "slug": "deep-cleansing-gel-87",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Deep Cleansing Gel",
+        "price": 1290,
+        "strikePrice": 1290,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739171191017.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "63f8add89a04a232b29e3098",
+        "slug": "hydra-radiance-day-cream-rich-86",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Hydra Radiance Day Cream Rich",
+        "price": 1690,
+        "strikePrice": 1690,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739171155598.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "63f8a78c9a04a232b29e3046",
+        "slug": "age-revive-night-cream-85",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Age Revive Night Cream",
+        "price": 2231,
+        "strikePrice": 2479,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739165318634.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 25,
+        "ratedBy": 5
+      },
+      {
+        "_id": "63f8990a9a04a232b29e2efd",
+        "slug": "purifying-2-in-1-mask-scrub-with-organic-tea-tree-lime-80",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Purifying 2-in-1 Mask & Scrub with Organic Tea Tree & Lime",
+        "price": 990,
+        "strikePrice": 990,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739181206807.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "63f854139a04a232b29e2643",
+        "slug": "night-restorative-treatment-64",
+        "brand": {
+          "_id": "63e2278e43774e3b00530428",
+          "slug": "diamondcellular-3",
+          "name": "DIAMONDCELLULAR"
+        },
+        "title": "Night Restorative Treatment",
+        "price": 3999,
+        "strikePrice": 3999,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1691473770599.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      },
+      {
+        "_id": "63f8527b9a04a232b29e2613",
+        "slug": "urban-guard-3d-multifunctional-cleanser-63",
+        "brand": {
+          "_id": "63e22ad043774e3b005304f9",
+          "slug": "optimals-11",
+          "name": "OPTIMALS"
+        },
+        "title": "Urban Guard 3D Multifunctional Cleanser",
+        "price": 1521,
+        "strikePrice": 1690,
+        "offPercent": 10,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739181124887.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 0,
+        "totalRatings": 0,
+        "ratedBy": 0
+      },
+      {
+        "_id": "63f607e10bfe806b68d24273",
+        "slug": "refreshing-face-wash-with-organic-green-tea-53",
+        "brand": {
+          "_id": "63e22a4643774e3b005304de",
+          "slug": "love-nature-8",
+          "name": "Love Nature"
+        },
+        "title": "Refreshing Face Wash with Organic Green Tea",
+        "price": 499,
+        "strikePrice": 499,
+        "offPercent": 0,
+        "images": [
+          "https://oriflamenepal.s3.ap-south-1.amazonaws.com/product_images/product_images-1739176858193.jpeg"
+        ],
+        "variantType": "Size",
+        "ratings": 5,
+        "totalRatings": 5,
+        "ratedBy": 1
+      }
+    ]
+  }
+}

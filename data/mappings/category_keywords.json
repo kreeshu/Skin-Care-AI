@@ -1,0 +1,75 @@
+{
+  "cleanser": [
+    "face wash", "cleanser", "cleansing", "cleansing gel", "cleansing foam",
+    "face cleanser", "face wash gel", "face cleanser gel", "makeup remover",
+    "micellar water", "face foam", "skin cleanser", "daily cleanser",
+    "gel cleanser", "foam cleanser", "cream cleanser", "oil cleanser",
+    "cleansing balm", "cleansing oil", "cleansing milk", "face soap",
+    "exfoliating cleanser", "acne cleanser", "salicylic cleanser"
+  ],
+  "moisturizer": [
+    "moisturizer", "moisturiser", "moisturizing", "moisturising",
+    "face cream", "face moisturizer", "face moisturiser", "day cream",
+    "night cream", "hydrating cream", "hydrating moisturizer",
+    "gel cream", "skin cream", "nourishing cream", "nourishing moisturizer",
+    "body lotion", "face lotion", "emulsion", "skin hydrator",
+    "barrier cream", "repair cream", "soothing cream", "calming cream",
+    "oil-free moisturizer", "lightweight moisturizer"
+  ],
+  "serum": [
+    "serum", "face serum", "skin serum", "concentrate", "ampoule",
+    "booster", "essence", "skin essence", "face essence",
+    "brightening serum", "anti-aging serum", "hydrating serum",
+    "vitamin c serum", "niacinamide serum", "retinol serum",
+    "hyaluronic acid serum", "serum concentrate"
+  ],
+  "sunscreen": [
+    "sunscreen", "sun screen", "spf", "sunblock", "sun block",
+    "uv protection", "uv filter", "sun protection", "uv defense",
+    "sun lotion", "sun cream", "uv cream", "broad spectrum",
+    "pa++++", "pa+++", "uv shield", "sun shield", "uv shield",
+    "tinted sunscreen", "mineral sunscreen", "chemical sunscreen"
+  ],
+  "toner": [
+    "toner", "face toner", "skin toner", "toning", "tonique",
+    "astringent", "facial toner", "hydrating toner", "exfoliating toner",
+    "clarifying toner", "balancing toner", "pore toner", "mist",
+    "face mist", "skin mist", "setting spray", "refreshing mist"
+  ],
+  "exfoliant": [
+    "exfoliant", "exfoliator", "exfoliating", "scrub", "face scrub",
+    "peel", "face peel", "chemical peel", "aha", "bha",
+    "glycolic", "lactic acid", "salicylic acid exfoliant",
+    "micro exfoliant", "gentle scrub", "skin polish",
+    "exfoliating gel", "exfoliating cream"
+  ],
+  "mask": [
+    "mask", "face mask", "sheet mask", "clay mask", "mud mask",
+    "sleeping mask", "overnight mask", "peel off mask", "wash off mask",
+    "hydrogel mask", "bubble mask", "charcoal mask", "cream mask",
+    "gel mask", "eye mask", "lip mask", "nose strip", "pore strip"
+  ],
+  "eye_cream": [
+    "eye cream", "eye gel", "eye serum", "eye treatment",
+    "eye contour", "eye area", "dark circle", "eye patch",
+    "under eye", "eye care", "eye repair", "anti-wrinkle eye",
+    "firming eye", "brightening eye", "depuffing eye"
+  ],
+  "lip_care": [
+    "lip balm", "lip care", "lip cream", "lip treatment",
+    "lip moisturizer", "lip gloss", "lipstick", "lip tint",
+    "lip oil", "lip scrub", "lip protector", "lip repair"
+  ],
+  "spot_treatment": [
+    "spot treatment", "spot corrector", "pimple cream", "pimple gel",
+    "acne spot", "acne treatment", "blemish", "dark spot corrector",
+    "pigmentation corrector", "age spot", "sun spot", "mark corrector",
+    "scar treatment", "acne patch", "pimple patch", "zit cream",
+    "blemish cream", "corrector"
+  ],
+  "face_oil": [
+    "face oil", "facial oil", "skin oil", "nourishing oil",
+    "argan oil", "rosehip oil", "jojoba oil", "marula oil",
+    "squalane oil", "face serum oil", "dry oil"
+  ]
+}

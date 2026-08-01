@@ -1,0 +1,63 @@
+{
+  "acne": {
+    "ingredients": [
+      "salicylic_acid", "tea_tree", "benzoyl_peroxide", "niacinamide",
+      "zinc", "glycolic_acid", "azelaic_acid", "retinol"
+    ],
+    "description": "Ingredients that fight acne by unclogging pores, reducing bacteria, and controlling oil"
+  },
+  "pigmentation": {
+    "ingredients": [
+      "vitamin_c", "niacinamide", "kojic_acid", "arbutin",
+      "glycolic_acid", "retinol", "azelaic_acid"
+    ],
+    "description": "Ingredients that brighten skin tone and reduce dark spots"
+  },
+  "aging": {
+    "ingredients": [
+      "retinol", "peptides", "hyaluronic_acid", "vitamin_c",
+      "vitamin_e", "niacinamide", "squalane"
+    ],
+    "description": "Ingredients that reduce fine lines and improve skin elasticity"
+  },
+  "dryness": {
+    "ingredients": [
+      "hyaluronic_acid", "ceramides", "squalane", "aloe_vera",
+      "panthenol", "colloidal_oatmeal", "allantoin", "vitamin_e"
+    ],
+    "description": "Ingredients that hydrate and repair the skin barrier"
+  },
+  "sensitivity": {
+    "ingredients": [
+      "centella_asiatica", "aloe_vera", "ceramides", "colloidal_oatmeal",
+      "panthenol", "allantoin", "azelaic_acid"
+    ],
+    "description": "Ingredients that soothe and calm irritated skin"
+  },
+  "oiliness": {
+    "ingredients": [
+      "niacinamide", "salicylic_acid", "zinc", "witch_hazel",
+      "tea_tree", "glycolic_acid"
+    ],
+    "description": "Ingredients that control excess oil and minimize pores"
+  },
+  "dullness": {
+    "ingredients": [
+      "vitamin_c", "glycolic_acid", "lactic_acid", "niacinamide",
+      "arbutin", "kojic_acid"
+    ],
+    "description": "Ingredients that brighten and even out skin tone"
+  },
+  "dark_circles": {
+    "ingredients": [
+      "vitamin_c", "retinol", "peptides", "vitamin_e", "caffeine"
+    ],
+    "description": "Ingredients that brighten under-eye area and reduce dark circles"
+  },
+  "sun_protection": {
+    "ingredients": [
+      "zinc"
+    ],
+    "description": "Ingredients that protect from UV damage"
+  }
+}

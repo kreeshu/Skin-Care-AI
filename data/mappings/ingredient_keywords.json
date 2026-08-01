@@ -1,0 +1,86 @@
+{
+  "salicylic_acid": [
+    "salicylic acid", "salicylic", "bha", "beta hydroxy",
+    "beta-hydroxy", "willow bark"
+  ],
+  "niacinamide": [
+    "niacinamide", "niacin", "vitamin b3", "vitamin-b3"
+  ],
+  "vitamin_c": [
+    "vitamin c", "vitamin-c", "ascorbic acid", "l-ascorbic",
+    "ethyl ascorbic", "sodium ascorbyl", "magnesium ascorbyl",
+    "3-o-ethyl ascorbic", "vitamin c derivative"
+  ],
+  "retinol": [
+    "retinol", "retinoid", "vitamin a", "retinal", "retinaldehyde",
+    "adapalene", "tretinoin", "bakuchiol"
+  ],
+  "hyaluronic_acid": [
+    "hyaluronic acid", "hyaluronan", "sodium hyaluronate",
+    "hyaluronic", "ha serum", "multi-molecular hyaluronic"
+  ],
+  "glycolic_acid": [
+    "glycolic acid", "glycolic", "aha", "alpha hydroxy",
+    "alpha-hydroxy", "glycol"
+  ],
+  "lactic_acid": [
+    "lactic acid", "lactic", "aha"
+  ],
+  "azelaic_acid": [
+    "azelaic acid", "azelaic"
+  ],
+  "centella_asiatica": [
+    "centella asiatica", "centella", "cica", "madecassoside",
+    "asiaticoside", "gotu kola"
+  ],
+  "tea_tree": [
+    "tea tree", "tea-tree", "melaleuca", "tea tree oil"
+  ],
+  "ceramides": [
+    "ceramide", "ceramides", "ceramide np", "ceramide ap",
+    "ceramide eop", "phytosphingosine"
+  ],
+  "aloe_vera": [
+    "aloe vera", "aloe", "aloe barbadensis"
+  ],
+  "vitamin_e": [
+    "vitamin e", "vitamin-e", "tocopherol", "tocopheryl"
+  ],
+  "zinc": [
+    "zinc", "zinc oxide", "zinc pca"
+  ],
+  "benzoyl_peroxide": [
+    "benzoyl peroxide", "bp", "benzoyl"
+  ],
+  "kojic_acid": [
+    "kojic acid", "kojic"
+  ],
+  "arbutin": [
+    "arbutin", "alpha arbutin", "beta arbutin"
+  ],
+  "witch_hazel": [
+    "witch hazel", "hamamelis"
+  ],
+  "colloidal_oatmeal": [
+    "colloidal oatmeal", "oat extract", "avena sativa", "oat kernel"
+  ],
+  "peptides": [
+    "peptide", "peptides", "palmitoyl", "copper peptide",
+    "matrixyl", "argireline"
+  ],
+  "salicylate": [
+    "salicylate", "betaine salicylate"
+  ],
+  "panthenol": [
+    "panthenol", "provitamin b5", "dexpanthenol"
+  ],
+  "allantoin": [
+    "allantoin"
+  ],
+  "squalane": [
+    "squalane", "squalene"
+  ],
+  "urea": [
+    "urea"
+  ]
+}

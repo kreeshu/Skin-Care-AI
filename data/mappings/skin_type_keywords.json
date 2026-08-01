@@ -1,0 +1,26 @@
+{
+  "oily": [
+    "oily", "oil control", "oil-free", "oil free", "non-comedogenic",
+    "mattifying", "matte", "sebum", "pore minimizing", "pore minimizer",
+    "gel", "water-based", "lightweight", "non-greasy", "shine control",
+    "shine free", "acne prone", "blemish", "purifying"
+  ],
+  "dry": [
+    "dry", "nourishing", "hydrating", "rich", "cream", "deep moisture",
+    "intense hydration", "dry skin", "barrier repair", "repair",
+    "supple", "nourish", "moisture lock", "moisture barrier"
+  ],
+  "sensitive": [
+    "sensitive", "gentle", "calming", "soothing", "hypoallergenic",
+    "fragrance-free", "fragrance free", "dermatologist tested",
+    "for sensitive skin", "hypo allergenic", "redness", "irritation",
+    "anti-redness", "skin barrier", "barrier support"
+  ],
+  "combination": [
+    "combination", "all skin types", "normal to combination",
+    "balanced", "universal", "every skin type", "everyone"
+  ],
+  "normal": [
+    "normal", "daily use", "every day", "everyday"
+  ]
+}
