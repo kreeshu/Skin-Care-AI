@@ -10,26 +10,35 @@ from src.inference.predict import SkinAnalyzer
 from src.recommendation.condition_rules import ConditionRules
 
 BASE_DIR = os.path.join(os.path.dirname(__file__), "..")
-MODEL_PATH = os.path.join(BASE_DIR, "models", "skin_classifier.keras")
+MODEL_PATH = os.path.join(BASE_DIR, "models", "skin_classifier_multitask.weights.h5")
 PRODUCTS_PATH = os.path.join(BASE_DIR, "data", "enriched", "unified_products.csv")
 MAPPINGS_DIR = os.path.join(BASE_DIR, "data", "mappings")
-SKIN_DIR = os.path.join(BASE_DIR, "Skin_Conditions")
+SKIN_DIR = os.path.join(BASE_DIR, "..", "dataset", "Conditions")
 
 CONDITION_COLORS = {
     "Acne": "#FF6B6B",
     "Carcinoma": "#D32F2F",
+    "Dark Spot": "#795548",
     "Eczema": "#FF9800",
     "Keratosis": "#9C27B0",
     "Milia": "#2196F3",
     "Rosacea": "#E91E63",
 }
 
+SKIN_TYPE_NAMES = ["dry", "normal", "oily"]
+
 
 @st.cache_resource
-def load_analyzer():
+def load_analyzer(use_slm: bool = False):
     products_df = pd.read_csv(PRODUCTS_PATH)
-    analyzer = SkinAnalyzer(MODEL_PATH, products_df, MAPPINGS_DIR)
-    analyzer.set_class_names(ConditionRules.all_conditions())
+    analyzer = SkinAnalyzer(
+        MODEL_PATH,
+        products_df,
+        MAPPINGS_DIR,
+        condition_names=ConditionRules.all_conditions(),
+        skin_type_names=ConditionRules.all_skin_types(),
+        use_slm=use_slm,
+    )
     return analyzer
 
 
@@ -58,23 +67,34 @@ def main():
     )
 
     st.title(" SkinCare AI")
-    st.caption("AI-powered skin condition detection and product recommendations for Nepal")
+    st.caption("AI-powered skin condition + skin type detection with product recommendations for Nepal")
 
-    analyzer = load_analyzer()
+    use_slm = st.sidebar.checkbox(
+        "AI explanations (local SLM)",
+        value=False,
+        help="Enable the on-device small language model to explain recommendations and build a routine.",
+    )
+
+    analyzer = load_analyzer(use_slm)
     sample_images = get_sample_images()
 
     with st.sidebar:
         st.header("About")
         st.markdown("""
-        **Model:** EfficientNetB0 (88.6% accuracy)
+        **Model:** EfficientNetB0 multi-task
+        - Condition head (7 classes)
+        - Skin type head (3 classes)
 
-        **Detects 6 conditions:**
+        **Detects 7 conditions:**
         - Acne
         - Carcinoma
+        - Dark Spot
         - Eczema
         - Keratosis
         - Milia
         - Rosacea
+
+        **Skin types:** dry / normal / oily
 
         **Product Sources:**
         - ForEveryNG
@@ -154,7 +174,7 @@ def main():
 
         result = st.session_state["result"]
         condition = result["detected_condition"]
-        confidence = result["model_confidence"]
+        confidence = result.get("condition_confidence", 0.0)
         color = CONDITION_COLORS.get(condition, "#666666")
 
         st.markdown(
@@ -168,6 +188,12 @@ def main():
         )
 
         st.markdown(f"**{result['description']}**")
+
+        if result.get("skin_type"):
+            st.info(
+                f"🧖 Skin type: **{result['skin_type']}** "
+                f"(confidence {result.get('skin_type_confidence', 0):.1%})"
+            )
 
         if result["is_medical"] and condition == "Carcinoma":
             st.error(
@@ -197,6 +223,27 @@ def main():
                         )
         else:
             st.warning("No product recommendations available for this condition.")
+
+        slm = result.get("slm")
+        if slm:
+            st.divider()
+            st.subheader("🤖 AI Explanations")
+            for item in slm.get("chosen", []):
+                st.markdown(
+                    f"- **{item['name']}** ({item['category']}): {item['reason']}"
+                )
+            routine = slm.get("routine", {})
+            if routine.get("am") or routine.get("pm"):
+                st.markdown("**Your routine:**")
+                col_am, col_pm = st.columns(2)
+                with col_am:
+                    st.markdown("**AM**")
+                    for step in routine["am"]:
+                        st.markdown(f"- {step}")
+                with col_pm:
+                    st.markdown("**PM**")
+                    for step in routine["pm"]:
+                        st.markdown(f"- {step}")
 
         st.divider()
         st.subheader("📋 Suggested Routine")

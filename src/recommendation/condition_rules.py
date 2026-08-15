@@ -4,7 +4,11 @@ from typing import Dict, List, Set
 
 
 class ConditionRules:
-    """Maps detected skin conditions to recommended ingredients and product categories."""
+    """Maps detected skin conditions to recommended ingredients and product categories.
+
+    Note: CONDITION_MAP is kept in alphabetical order to stay aligned with the
+    class-name order produced by the dataset loader (sorted folder names).
+    """
 
     CONDITION_MAP = {
         "Acne": {
@@ -24,21 +28,36 @@ class ConditionRules:
                 "sunscreen (non-comedogenic)"
             ],
         },
-        "Rosacea": {
+        "Carcinoma": {
+            "is_medical": True,
+            "title": "Possible Skin Cancer",
+            "description": (
+                "This may indicate a serious skin condition. "
+                "Please consult a dermatologist immediately."
+            ),
+            "recommended_ingredients": [],
+            "recommended_categories": [],
+            "avoid_ingredients": [],
+            "routine_steps": [
+                "Consult a dermatologist immediately"
+            ],
+        },
+        "Dark Spot": {
             "is_medical": False,
-            "title": "Rosacea-Prone Skin",
-            "description": "Your skin is prone to redness and flushing.",
+            "title": "Hyperpigmentation / Dark Spots",
+            "description": "Your skin shows signs of hyperpigmentation and dark spots.",
             "recommended_ingredients": [
-                "centella_asiatica", "ceramides", "azelaic_acid", "aloe_vera",
-                "niacinamide", "panthenol"
+                "vitamin_c", "niacinamide", "kojic_acid", "arbutin",
+                "glycolic_acid", "retinol", "azelaic_acid"
             ],
             "recommended_categories": [
-                "cleanser", "moisturizer", "sunscreen", "serum"
+                "cleanser", "serum", "moisturizer", "spot_treatment", "sunscreen"
             ],
-            "avoid_ingredients": ["alcohol", "fragrance", "essential oils", "witch hazel"],
+            "avoid_ingredients": [],
             "routine_steps": [
-                "gentle cream cleanser", "soothing serum", "barrier repair moisturizer",
-                "mineral sunscreen"
+                "vitamin C serum (AM)", "niacinamide serum",
+                "broad-spectrum sunscreen (essential, daily)",
+                "gentle chemical exfoliant (1-2x/week)"
             ],
         },
         "Eczema": {
@@ -91,18 +110,65 @@ class ConditionRules:
                 "chemical exfoliant (1-2x/week)", "lightweight moisturizer"
             ],
         },
-        "Carcinoma": {
-            "is_medical": True,
-            "title": "Possible Skin Cancer",
-            "description": (
-                "This may indicate a serious skin condition. "
-                "Please consult a dermatologist immediately."
-            ),
-            "recommended_ingredients": [],
-            "recommended_categories": [],
+        "Rosacea": {
+            "is_medical": False,
+            "title": "Rosacea-Prone Skin",
+            "description": "Your skin is prone to redness and flushing.",
+            "recommended_ingredients": [
+                "centella_asiatica", "ceramides", "azelaic_acid", "aloe_vera",
+                "niacinamide", "panthenol"
+            ],
+            "recommended_categories": [
+                "cleanser", "moisturizer", "sunscreen", "serum"
+            ],
+            "avoid_ingredients": ["alcohol", "fragrance", "essential oils", "witch hazel"],
+            "routine_steps": [
+                "gentle cream cleanser", "soothing serum", "barrier repair moisturizer",
+                "mineral sunscreen"
+            ],
+        },
+    }
+
+    SKIN_TYPE_MAP = {
+        "dry": {
+            "title": "Dry Skin",
+            "description": "Your skin lacks moisture and may feel tight, rough or flaky.",
+            "recommended_ingredients": [
+                "hyaluronic_acid", "ceramides", "squalane", "aloe_vera",
+                "panthenol", "allantoin", "vitamin_e"
+            ],
+            "texture_preferences": ["cream", "rich", "nourishing", "hydrating", "deep moisture"],
+            "avoid_ingredients": ["alcohol", "sulfates", "fragrance"],
+            "routine_steps": [
+                "gentle cream cleanser", "hyaluronic acid serum",
+                "rich ceramide moisturizer", "night oil or occlusive"
+            ],
+        },
+        "normal": {
+            "title": "Normal Skin",
+            "description": "Your skin is balanced with few imperfections.",
+            "recommended_ingredients": [
+                "niacinamide", "hyaluronic_acid", "vitamin_c", "squalane"
+            ],
+            "texture_preferences": ["balanced", "all skin types", "lightweight", "daily"],
             "avoid_ingredients": [],
             "routine_steps": [
-                "Consult a dermatologist immediately"
+                "gentle cleanser", "vitamin C serum (AM)",
+                "lightweight moisturizer", "sunscreen"
+            ],
+        },
+        "oily": {
+            "title": "Oily Skin",
+            "description": "Your skin produces excess sebum and may look shiny.",
+            "recommended_ingredients": [
+                "niacinamide", "salicylic_acid", "zinc", "tea_tree",
+                "glycolic_acid", "witch_hazel"
+            ],
+            "texture_preferences": ["gel", "oil-free", "non-comedogenic", "matte", "lightweight", "water-based"],
+            "avoid_ingredients": ["coconut oil", "mineral oil", "heavy creams"],
+            "routine_steps": [
+                "foaming or gel cleanser", "niacinamide serum",
+                "oil-free gel moisturizer", "sunscreen (non-comedogenic)"
             ],
         },
     }
@@ -110,6 +176,10 @@ class ConditionRules:
     @classmethod
     def get_rule(cls, condition: str) -> Dict:
         return cls.CONDITION_MAP.get(condition, cls.CONDITION_MAP["Carcinoma"])
+
+    @classmethod
+    def get_skin_type_rule(cls, skin_type: str) -> Dict:
+        return cls.SKIN_TYPE_MAP.get(skin_type, {})
 
     @classmethod
     def get_recommended_ingredients(cls, condition: str) -> List[str]:
@@ -126,6 +196,10 @@ class ConditionRules:
     @classmethod
     def all_conditions(cls) -> List[str]:
         return list(cls.CONDITION_MAP.keys())
+
+    @classmethod
+    def all_skin_types(cls) -> List[str]:
+        return list(cls.SKIN_TYPE_MAP.keys())
 
     @classmethod
     def load_ingredient_concern_map(cls, mappings_dir: str) -> Dict:

@@ -11,6 +11,11 @@ venv/
 .vscode/
 
 # Large / regenerable artifacts
-models/*.keras
+models/**/*.keras
+models/**/*.weights.h5
 Skin_Conditions/
 outputs/
+
+# HuggingFace SLM caches
+.cache/huggingface/
+~/.cache/huggingface/

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from typing import List
+from typing import List, Optional
 
 
 def score_product(
@@ -11,8 +11,12 @@ def score_product(
     ingredient_weight: float = 0.40,
     availability_weight: float = 0.10,
     discount_weight: float = 0.05,
+    skin_type: Optional[str] = None,
+    skin_type_weight: float = 0.0,
+    texture_preferences: Optional[List[str]] = None,
 ) -> float:
-    """Score a product based on ingredient match, rating, reviews, availability, discount."""
+    """Score a product based on ingredient match, rating, reviews, availability,
+    discount and (optionally) skin-type match. Weights should sum to 1."""
     ingredient_score = _ingredient_match_score(product["ingredients"], relevant_ingredients)
     rating_score = _normalize_rating(product["rating"])
     review_score = _normalize_review_count(product["review_count"])
@@ -26,6 +30,9 @@ def score_product(
         + availability_weight * availability_score
         + discount_weight * discount_score
     )
+    if skin_type_weight > 0:
+        skin_type_score = _skin_type_match_score(product, skin_type, texture_preferences)
+        score += skin_type_weight * skin_type_score
     return round(score, 4)
 
 
@@ -33,14 +40,46 @@ def rank_products(
     products: pd.DataFrame,
     relevant_ingredients: List[str],
     top_n: int = 10,
+    skin_type: Optional[str] = None,
+    texture_preferences: Optional[List[str]] = None,
 ) -> pd.DataFrame:
-    """Rank products by composite score and return top N."""
+    """Rank products by composite score and return top N.
+
+    When skin_type is provided, the composite score also rewards products
+    matched to that skin type (ingredient weight reduced accordingly)."""
     if products.empty:
         return products
 
+    use_skin_type = bool(skin_type)
+    if use_skin_type:
+        weights = dict(
+            ingredient_weight=0.35,
+            rating_weight=0.20,
+            review_weight=0.12,
+            availability_weight=0.06,
+            discount_weight=0.02,
+            skin_type_weight=0.25,
+        )
+    else:
+        weights = dict(
+            ingredient_weight=0.40,
+            rating_weight=0.25,
+            review_weight=0.20,
+            availability_weight=0.10,
+            discount_weight=0.05,
+            skin_type_weight=0.0,
+        )
+
     scored = products.copy()
     scored["score"] = scored.apply(
-        lambda row: score_product(row, relevant_ingredients), axis=1
+        lambda row: score_product(
+            row,
+            relevant_ingredients,
+            skin_type=skin_type,
+            texture_preferences=texture_preferences,
+            **weights,
+        ),
+        axis=1,
     )
     scored = scored.sort_values("score", ascending=False)
     return scored.head(top_n).reset_index(drop=True)
@@ -109,3 +148,30 @@ def _parse_list_field(val) -> list:
             return []
         return [item.strip().strip("'\"") for item in val.split(",")]
     return []
+
+
+def _skin_type_match_score(product, skin_type: Optional[str], texture_preferences: Optional[List[str]]) -> float:
+    if not skin_type:
+        return 0.0
+
+    product_skin_types = product.get("skin_types")
+    if isinstance(product_skin_types, str):
+        product_skin_types = _parse_list_field(product_skin_types)
+    if isinstance(product_skin_types, list) and product_skin_types:
+        sts = {str(s).strip().lower() for s in product_skin_types}
+        if skin_type.lower() in sts:
+            return 1.0
+        if "all" in sts:
+            return 0.7
+        if "combination" in sts or "normal" in sts:
+            return 0.6
+
+    if texture_preferences:
+        name = str(product.get("name", "")).lower()
+        description = product.get("description")
+        desc = str(description).lower() if description is not None else ""
+        text = f"{name} {desc}"
+        for pref in texture_preferences:
+            if pref.lower() in text:
+                return 0.8
+    return 0.0

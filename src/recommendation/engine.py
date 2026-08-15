@@ -23,20 +23,31 @@ class RecommendationEngine:
                 lambda x: _parse_list_field(x) if pd.notna(x) and str(x) != "None" else []
             )
 
-    def recommend(self, condition: str, top_n: int = 5) -> Dict:
+    def recommend(self, condition: str, skin_type: str = None, top_n: int = 5) -> Dict:
         rule = ConditionRules.get_rule(condition)
         relevant_ingredients = rule["recommended_ingredients"]
         recommended_categories = rule["recommended_categories"]
+        texture_preferences = None
+        skin_type_rule = None
+        if skin_type:
+            skin_type_rule = ConditionRules.get_skin_type_rule(skin_type)
+            texture_preferences = skin_type_rule.get("texture_preferences")
 
         if rule["is_medical"] and condition == "Carcinoma":
-            return self._build_medical_response(condition, rule)
+            return self._build_medical_response(condition, rule, skin_type, skin_type_rule)
 
         results = {}
         for category in recommended_categories:
             category_products = self.products[
                 self.products["category"].apply(lambda x: category in x if isinstance(x, list) else False)
             ]
-            ranked = rank_products(category_products, relevant_ingredients, top_n=top_n)
+            ranked = rank_products(
+                category_products,
+                relevant_ingredients,
+                top_n=top_n,
+                skin_type=skin_type,
+                texture_preferences=texture_preferences,
+            )
             if not ranked.empty:
                 results[category] = self._format_recommendations(ranked, relevant_ingredients)
 
@@ -45,6 +56,8 @@ class RecommendationEngine:
             "is_medical": rule["is_medical"],
             "title": rule["title"],
             "description": rule["description"],
+            "skin_type": skin_type,
+            "skin_type_title": skin_type_rule.get("title") if skin_type_rule else None,
             "recommendations": results,
             "routine_suggestion": rule["routine_steps"],
             "total_products_found": sum(len(v) for v in results.values()),
@@ -55,12 +68,14 @@ class RecommendationEngine:
         }
         return response
 
-    def _build_medical_response(self, condition: str, rule: Dict) -> Dict:
+    def _build_medical_response(self, condition: str, rule: Dict, skin_type: str = None, skin_type_rule: Dict = None) -> Dict:
         return {
             "detected_condition": condition,
             "is_medical": True,
             "title": rule["title"],
             "description": rule["description"],
+            "skin_type": skin_type,
+            "skin_type_title": skin_type_rule.get("title") if skin_type_rule else None,
             "recommendations": {},
             "routine_suggestion": rule["routine_steps"],
             "total_products_found": 0,
