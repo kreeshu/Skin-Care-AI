@@ -1,25 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../constants/colors";
 import { theme } from "../constants/theme";
 
 interface RoutineStepProps {
   step: number;
   title: string;
-  icon?: keyof typeof Ionicons.glyphMap;
 }
 
-export function RoutineStep({ step, title, icon = "checkmark-circle-outline" }: RoutineStepProps) {
+/** Dose line: mono index + body text on a ruled line. */
+export function RoutineStep({ step, title }: RoutineStepProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.numberContainer}>
-        <Text style={styles.number}>{step}</Text>
-      </View>
-      <View style={styles.content}>
-        <Ionicons name={icon} size={18} color={colors.primary} />
-        <Text style={styles.text}>{title}</Text>
-      </View>
+      <Text style={styles.index}>{String(step).padStart(2, "0")}</Text>
+      <Text style={styles.text}>{title}</Text>
     </View>
   );
 }
@@ -27,31 +21,21 @@ export function RoutineStep({ step, title, icon = "checkmark-circle-outline" }: 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: theme.spacing.sm,
+    gap: 12,
+    alignItems: "flex-start",
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.line,
   },
-  numberContainer: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: theme.spacing.sm,
-  },
-  number: {
-    color: colors.white,
-    fontSize: theme.fontSize.xs,
-    fontWeight: theme.fontWeight.bold,
-  },
-  content: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+  index: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    color: colors.textTertiary,
+    marginTop: 3,
   },
   text: {
     flex: 1,
+    fontFamily: theme.fontFamily.body,
     fontSize: theme.fontSize.sm,
     color: colors.textPrimary,
     lineHeight: 20,

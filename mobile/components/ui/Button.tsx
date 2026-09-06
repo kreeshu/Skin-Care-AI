@@ -52,11 +52,11 @@ export function Button({
       style={buttonStyles}
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.7}
+      activeOpacity={0.85}
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "primary" ? colors.white : colors.primary}
+          color={variant === "primary" ? colors.white : colors.dispensary}
           size="small"
         />
       ) : (
@@ -74,15 +74,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   primary: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.dispensary,
   },
   secondary: {
-    backgroundColor: colors.primaryLight,
+    backgroundColor: colors.sage,
   },
   outline: {
     backgroundColor: "transparent",
-    borderWidth: 1.5,
-    borderColor: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.dispensary,
   },
   ghost: {
     backgroundColor: "transparent",
@@ -96,26 +96,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   size_lg: {
-    paddingVertical: 16,
+    paddingVertical: 15,
     paddingHorizontal: 32,
   },
   disabled: {
     opacity: 0.5,
   },
   text: {
+    fontFamily: theme.fontFamily.bodySemi,
     fontWeight: theme.fontWeight.semibold,
+    letterSpacing: 0.2,
   },
   text_primary: {
     color: colors.white,
   },
   text_secondary: {
-    color: colors.primaryDark,
+    color: colors.pine,
   },
   text_outline: {
-    color: colors.primary,
+    color: colors.dispensary,
   },
   text_ghost: {
-    color: colors.primary,
+    color: colors.dispensary,
   },
   textSize_sm: {
     fontSize: theme.fontSize.sm,
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.md,
   },
   textSize_lg: {
-    fontSize: theme.fontSize.lg,
+    fontSize: theme.fontSize.md,
   },
   textDisabled: {
     opacity: 0.7,

@@ -14,166 +14,125 @@ interface ProductCardProps {
   isFavorite?: boolean;
 }
 
-export function ProductCard({
-  product,
-  onPress,
-  onFavorite,
-  isFavorite = false,
-}: ProductCardProps) {
+/** Ledger row: thumb + ruled facts, not a pastel pill card. */
+export function ProductCard({ product, onPress, onFavorite, isFavorite = false }: ProductCardProps) {
   const priceInfo = formatDiscount(product.price, product.discounted_price);
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.75}>
       {product.image_url ? (
-        <Image
-          source={{ uri: product.image_url }}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Image source={{ uri: product.image_url }} style={styles.thumb} resizeMode="cover" />
       ) : (
-        <View style={styles.imagePlaceholder}>
-          <Ionicons name="image-outline" size={32} color={colors.textTertiary} />
+        <View style={styles.thumbPlaceholder}>
+          <Ionicons name="leaf-outline" size={24} color={colors.textTertiary} />
         </View>
       )}
 
       <View style={styles.content}>
-        <Text style={styles.brand} numberOfLines={1}>
-          {product.brand}
+        <Text style={styles.index} numberOfLines={1}>
+          {(product.brand || "Unknown").toUpperCase()} · {(product.source || "").toUpperCase()}
         </Text>
         <Text style={styles.name} numberOfLines={2}>
           {product.name}
         </Text>
 
-        <View style={styles.priceRow}>
-          <Text style={styles.price}>{priceInfo.discounted || priceInfo.original}</Text>
-          {priceInfo.discounted && (
-            <Text style={styles.originalPrice}>{priceInfo.original}</Text>
-          )}
-          {priceInfo.percentage && (
-            <Badge
-              label={priceInfo.percentage}
-              color={colors.white}
-              backgroundColor={colors.success}
-              size="sm"
-            />
-          )}
-        </View>
-
-        <View style={styles.metaRow}>
-          <View style={styles.rating}>
-            <Ionicons name="star" size={14} color="#FFC107" />
-            <Text style={styles.ratingText}>{formatRating(product.rating)}</Text>
-            <Text style={styles.reviewCount}>({product.review_count})</Text>
-          </View>
-
-          {onFavorite && (
-            <TouchableOpacity onPress={onFavorite} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Ionicons
-                name={isFavorite ? "heart" : "heart-outline"}
-                size={20}
-                color={isFavorite ? colors.error : colors.textTertiary}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
+        <Text style={styles.facts} numberOfLines={1}>
+          {priceInfo.discounted || priceInfo.original} · ★ {formatRating(product.rating)} (
+          {product.review_count}){product.skin_types?.[0] ? ` · ${product.skin_types[0]}` : ""}
+        </Text>
 
         {product.category.length > 0 && (
-          <View style={styles.categoryRow}>
-            {product.category.slice(0, 3).map((cat) => (
-              <Badge
-                key={cat}
-                label={cat}
-                color={colors.primaryDark}
-                backgroundColor={colors.primaryLight}
-                size="sm"
-              />
+          <View style={styles.tagRow}>
+            {product.category.slice(0, 2).map((cat) => (
+              <Badge key={cat} label={cat} size="sm" />
             ))}
+            {priceInfo.percentage && (
+              <Text style={styles.off}>{priceInfo.percentage}</Text>
+            )}
           </View>
         )}
       </View>
+
+      {onFavorite && (
+        <TouchableOpacity
+          onPress={onFavorite}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          style={styles.fav}
+        >
+          <Ionicons
+            name={isFavorite ? "bookmark" : "bookmark-outline"}
+            size={20}
+            color={isFavorite ? colors.dispensary : colors.textTertiary}
+          />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
+  row: {
     flexDirection: "row",
     backgroundColor: colors.surface,
     borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.line,
     overflow: "hidden",
     marginBottom: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
+    minHeight: 104,
   },
-  image: {
-    width: 100,
-    height: 120,
-    backgroundColor: colors.surfaceVariant,
+  thumb: {
+    width: 92,
+    height: "100%",
+    minHeight: 104,
+    backgroundColor: colors.sage,
   },
-  imagePlaceholder: {
-    width: 100,
-    height: 120,
-    backgroundColor: colors.surfaceVariant,
+  thumbPlaceholder: {
+    width: 92,
+    minHeight: 104,
+    backgroundColor: colors.sage,
     justifyContent: "center",
     alignItems: "center",
   },
   content: {
     flex: 1,
     padding: theme.spacing.sm,
-    justifyContent: "space-between",
+    gap: 3,
   },
-  brand: {
-    fontSize: theme.fontSize.xs,
+  index: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 10,
+    letterSpacing: 0.8,
     color: colors.textTertiary,
-    fontWeight: theme.fontWeight.medium,
-    textTransform: "uppercase",
   },
   name: {
+    fontFamily: theme.fontFamily.bodySemi,
     fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.semibold,
     color: colors.textPrimary,
-    marginTop: 2,
+    lineHeight: 19,
   },
-  priceRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 4,
+  facts: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    color: colors.textSecondary,
   },
-  price: {
-    fontSize: theme.fontSize.md,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.primaryDark,
-  },
-  originalPrice: {
-    fontSize: theme.fontSize.xs,
-    color: colors.textTertiary,
-    textDecorationLine: "line-through",
-  },
-  metaRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 4,
-  },
-  rating: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-  },
-  ratingText: {
-    fontSize: theme.fontSize.xs,
-    fontWeight: theme.fontWeight.semibold,
-    color: colors.textPrimary,
-  },
-  reviewCount: {
-    fontSize: theme.fontSize.xs,
-    color: colors.textTertiary,
-  },
-  categoryRow: {
+  tagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 4,
-    marginTop: 6,
+    gap: 6,
+    marginTop: 4,
+    alignItems: "center",
+  },
+  off: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 10,
+    color: colors.dispensary,
+    letterSpacing: 0.4,
+  },
+  fav: {
+    padding: theme.spacing.sm,
+    alignSelf: "flex-start",
   },
 });
+
+export { formatPrice };

@@ -6,45 +6,74 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Linking,
-  ActivityIndicator,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Card } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
+import { Eyebrow } from "../../components/ui/Card";
 import { LoadingSpinner } from "../../components/ui/LoadingSpinner";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { Product } from "../../types";
 import { api } from "../../services/api";
+import { isApiError, toUserMessage } from "../../services/apiError";
 import { useFavorites } from "../../hooks/useFavorites";
-import { formatPrice, formatDiscount, formatRating } from "../../utils/format";
+import { formatDiscount, formatRating } from "../../utils/format";
 
 export default function ProductDetailScreen() {
   const params = useLocalSearchParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+  const [retryKey, setRetryKey] = useState(0);
   const { favorites, toggle } = useFavorites();
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
+      setLoading(true);
+      setError(null);
       try {
         const data = (await api.getProduct(Number(params.id))) as Product;
-        setProduct(data);
-      } catch (error) {
-        console.error("Failed to load product:", error);
+        if (!cancelled) setProduct(data);
+      } catch (err) {
+        console.error("Failed to load product:", err);
+        if (!cancelled) setError(err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
-  }, [params.id]);
+    return () => {
+      cancelled = true;
+    };
+  }, [params.id, retryKey]);
 
   if (loading) return <LoadingSpinner />;
+  if (error) {
+    if (isApiError(error) && error.kind === "http" && error.status === 404) {
+      return (
+        <View style={styles.empty}>
+          <Eyebrow>Label missing</Eyebrow>
+          <Text style={styles.emptyTitle}>This item is not on file.</Text>
+        </View>
+      );
+    }
+    const { title, message } = toUserMessage(error);
+    return (
+      <ErrorState
+        title={title}
+        message={message}
+        baseUrl={api.getBaseUrl()}
+        onRetry={() => setRetryKey((k) => k + 1)}
+      />
+    );
+  }
   if (!product) {
     return (
       <View style={styles.empty}>
-        <Text style={styles.emptyText}>Product not found</Text>
+        <Eyebrow>Label missing</Eyebrow>
+        <Text style={styles.emptyTitle}>This item is not on file.</Text>
       </View>
     );
   }
@@ -59,113 +88,65 @@ export default function ProductDetailScreen() {
       showsVerticalScrollIndicator={false}
     >
       {product.image_url ? (
-        <Image
-          source={{ uri: product.image_url }}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Image source={{ uri: product.image_url }} style={styles.image} resizeMode="cover" />
       ) : (
         <View style={styles.imagePlaceholder}>
-          <Ionicons name="image-outline" size={64} color={colors.textTertiary} />
+          <Ionicons name="leaf-outline" size={40} color={colors.textTertiary} />
         </View>
       )}
 
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={styles.brand}>{product.brand}</Text>
-          <Text style={styles.name}>{product.name}</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.favoriteButton}
-          onPress={() => toggle(product.product_id)}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <Ionicons
-            name={isFav ? "heart" : "heart-outline"}
-            size={24}
-            color={isFav ? colors.error : colors.textTertiary}
-          />
-        </TouchableOpacity>
-      </View>
+      <Eyebrow>
+        Label · {(product.brand || "Unknown").toUpperCase()} · {(product.source || "").toUpperCase()}
+      </Eyebrow>
+      <Text style={styles.name}>{product.name}</Text>
 
-      <View style={styles.priceSection}>
-        <Text style={styles.price}>{priceInfo.discounted || priceInfo.original}</Text>
-        {priceInfo.discounted && (
-          <>
-            <Text style={styles.originalPrice}>{priceInfo.original}</Text>
-            <Badge
-              label={priceInfo.percentage!}
-              color={colors.white}
-              backgroundColor={colors.success}
-              size="sm"
-            />
-          </>
-        )}
-      </View>
-
-      <View style={styles.metaRow}>
-        <View style={styles.rating}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Ionicons
-              key={star}
-              name={
-                product.rating && star <= Math.round(product.rating)
-                  ? "star"
-                  : "star-outline"
-              }
-              size={16}
-              color="#FFC107"
-            />
-          ))}
-          <Text style={styles.ratingText}>{formatRating(product.rating)}</Text>
-          <Text style={styles.reviewCount}>({product.review_count} reviews)</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoRow}>
-        <View style={styles.infoItem}>
-          <Ionicons name="pricetag-outline" size={16} color={colors.primary} />
-          <Text style={styles.infoText}>{product.source}</Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Ionicons
-            name={product.availability === "in_stock" ? "checkmark-circle-outline" : "close-circle-outline"}
-            size={16}
-            color={product.availability === "in_stock" ? colors.success : colors.error}
-          />
-          <Text style={styles.infoText}>
-            {product.availability === "in_stock" ? "In Stock" : "Out of Stock"}
+      <View style={styles.factTable}>
+        <View style={styles.factRow}>
+          <Text style={styles.factKey}>Price</Text>
+          <Text style={styles.factValue}>
+            {priceInfo.discounted || priceInfo.original}
+            {priceInfo.discounted ? `  (was ${priceInfo.original})` : ""}
           </Text>
         </View>
+        <View style={styles.factRow}>
+          <Text style={styles.factKey}>Rating</Text>
+          <Text style={styles.factValue}>
+            ★ {formatRating(product.rating)} · {product.review_count} reviews
+          </Text>
+        </View>
+        <View style={styles.factRow}>
+          <Text style={styles.factKey}>Stock</Text>
+          <Text style={[styles.factValue, product.availability !== "in_stock" && styles.oos]}>
+            {product.availability === "in_stock" ? "In stock" : "Out of stock"}
+          </Text>
+        </View>
+        <View style={[styles.factRow, styles.factLast]}>
+          <Text style={styles.factKey}>Filed under</Text>
+          <Text style={styles.factValue}>{product.category.slice(0, 3).join(" · ") || "—"}</Text>
+        </View>
       </View>
 
-      {product.category.length > 0 && (
-        <View style={styles.tagSection}>
-          <Text style={styles.tagLabel}>Categories</Text>
-          <View style={styles.tagRow}>
-            {product.category.map((cat) => (
-              <Badge
-                key={cat}
-                label={cat}
-                color={colors.primaryDark}
-                backgroundColor={colors.primaryLight}
-              />
-            ))}
-          </View>
-        </View>
-      )}
+      <TouchableOpacity
+        style={[styles.fileButton, isFav && styles.fileButtonActive]}
+        onPress={() => toggle(product.product_id)}
+        activeOpacity={0.8}
+      >
+        <Ionicons
+          name={isFav ? "bookmark" : "bookmark-outline"}
+          size={18}
+          color={isFav ? colors.white : colors.dispensary}
+        />
+        <Text style={[styles.fileText, isFav && styles.fileTextActive]}>
+          {isFav ? "Filed in your shelf" : "File on your shelf"}
+        </Text>
+      </TouchableOpacity>
 
       {product.skin_types.length > 0 && (
         <View style={styles.tagSection}>
-          <Text style={styles.tagLabel}>Skin Types</Text>
+          <Eyebrow>Suits</Eyebrow>
           <View style={styles.tagRow}>
             {product.skin_types.map((type) => (
-              <Badge
-                key={type}
-                label={type}
-                color={colors.info}
-                backgroundColor={`${colors.info}15`}
-              />
+              <Badge key={type} label={type} size="sm" />
             ))}
           </View>
         </View>
@@ -173,15 +154,10 @@ export default function ProductDetailScreen() {
 
       {product.skin_concerns.length > 0 && (
         <View style={styles.tagSection}>
-          <Text style={styles.tagLabel}>Skin Concerns</Text>
+          <Eyebrow>Helps with</Eyebrow>
           <View style={styles.tagRow}>
             {product.skin_concerns.map((concern) => (
-              <Badge
-                key={concern}
-                label={concern}
-                color={colors.warning}
-                backgroundColor={`${colors.warning}15`}
-              />
+              <Badge key={concern} label={concern} size="sm" />
             ))}
           </View>
         </View>
@@ -189,18 +165,8 @@ export default function ProductDetailScreen() {
 
       {product.ingredients.length > 0 && (
         <View style={styles.tagSection}>
-          <Text style={styles.tagLabel}>Ingredients</Text>
-          <View style={styles.tagRow}>
-            {product.ingredients.map((ing) => (
-              <Badge
-                key={ing}
-                label={ing}
-                color={colors.textSecondary}
-                backgroundColor={colors.surfaceVariant}
-                size="sm"
-              />
-            ))}
-          </View>
+          <Eyebrow>Inside · {product.ingredients.length}</Eyebrow>
+          <Text style={styles.ingredients}>{product.ingredients.join(", ")}</Text>
         </View>
       )}
     </ScrollView>
@@ -213,118 +179,119 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
+    padding: theme.spacing.md,
     paddingBottom: theme.spacing.xxl,
+    gap: 10,
   },
   image: {
     width: "100%",
-    height: 300,
-    backgroundColor: colors.surfaceVariant,
+    height: 280,
+    backgroundColor: colors.sage,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   imagePlaceholder: {
     width: "100%",
-    height: 200,
-    backgroundColor: colors.surfaceVariant,
+    height: 180,
+    backgroundColor: colors.sage,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.line,
     justifyContent: "center",
     alignItems: "center",
   },
-  header: {
+  name: {
+    fontFamily: theme.fontFamily.display,
+    fontSize: 26,
+    letterSpacing: -0.4,
+    color: colors.textPrimary,
+    lineHeight: 30,
+  },
+  factTable: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.spacing.md,
+    marginTop: 6,
+  },
+  factRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    padding: theme.spacing.md,
+    gap: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.line,
   },
-  headerLeft: {
-    flex: 1,
-    marginRight: theme.spacing.sm,
+  factLast: {
+    borderBottomWidth: 0,
   },
-  brand: {
-    fontSize: theme.fontSize.xs,
-    fontWeight: theme.fontWeight.medium,
-    color: colors.textTertiary,
+  factKey: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
+    color: colors.textTertiary,
   },
-  name: {
-    fontSize: theme.fontSize.xl,
-    fontWeight: theme.fontWeight.bold,
+  factValue: {
+    flex: 1,
+    textAlign: "right",
+    fontFamily: theme.fontFamily.bodyMedium,
+    fontSize: theme.fontSize.sm,
     color: colors.textPrimary,
-    marginTop: 4,
   },
-  favoriteButton: {
-    padding: 8,
+  oos: {
+    color: colors.oxblood,
   },
-  priceSection: {
+  fileButton: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 8,
-    paddingHorizontal: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.dispensary,
+    borderRadius: theme.borderRadius.md,
+    paddingVertical: 13,
   },
-  price: {
-    fontSize: theme.fontSize.xl,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.primaryDark,
+  fileButtonActive: {
+    backgroundColor: colors.pine,
+    borderColor: colors.pine,
   },
-  originalPrice: {
+  fileText: {
+    fontFamily: theme.fontFamily.bodySemi,
     fontSize: theme.fontSize.md,
-    color: colors.textTertiary,
-    textDecorationLine: "line-through",
+    color: colors.dispensary,
   },
-  metaRow: {
-    paddingHorizontal: theme.spacing.md,
-    marginBottom: theme.spacing.md,
-  },
-  rating: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  ratingText: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.semibold,
-    color: colors.textPrimary,
-    marginLeft: 4,
-  },
-  reviewCount: {
-    fontSize: theme.fontSize.sm,
-    color: colors.textTertiary,
-  },
-  infoRow: {
-    flexDirection: "row",
-    gap: theme.spacing.md,
-    paddingHorizontal: theme.spacing.md,
-    marginBottom: theme.spacing.md,
-  },
-  infoItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  infoText: {
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
+  fileTextActive: {
+    color: colors.white,
   },
   tagSection: {
-    paddingHorizontal: theme.spacing.md,
-    marginBottom: theme.spacing.md,
-  },
-  tagLabel: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.semibold,
-    color: colors.textPrimary,
-    marginBottom: 8,
+    gap: 8,
+    marginTop: 6,
   },
   tagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 6,
+  },
+  ingredients: {
+    fontFamily: theme.fontFamily.body,
+    fontSize: theme.fontSize.sm,
+    color: colors.textSecondary,
+    lineHeight: 22,
   },
   empty: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+    padding: theme.spacing.lg,
+    gap: 8,
   },
-  emptyText: {
-    fontSize: theme.fontSize.md,
-    color: colors.textTertiary,
+  emptyTitle: {
+    fontFamily: theme.fontFamily.display,
+    fontSize: theme.fontSize.lg,
+    color: colors.textPrimary,
   },
 });

@@ -1,4 +1,7 @@
 import { API_BASE_URL } from "../constants/config";
+import { ApiError } from "./apiError";
+
+const REQUEST_TIMEOUT_MS = 15000;
 
 class ApiClient {
   private baseUrl: string;
@@ -7,19 +10,71 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
+  private toUrl(path: string): string {
+    return `${this.baseUrl}${path}`;
+  }
+
+  private async parseErrorBody(response: Response, fallback: string): Promise<string> {
+    const data = await response.json().catch(() => null);
+    if (data && typeof (data as any).detail === "string" && (data as any).detail) {
+      return (data as any).detail;
+    }
+    return fallback;
+  }
+
   private async request<T>(path: string, options?: RequestInit): Promise<T> {
-    const url = `${this.baseUrl}${path}`;
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
-      ...options,
-    });
+    const url = this.toUrl(path);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    // Allow caller-provided signal to still work by forwarding abort.
+    if (options?.signal) {
+      if (options.signal.aborted) controller.abort();
+      else options.signal.addEventListener("abort", () => controller.abort(), { once: true });
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...options?.headers,
+        },
+        ...options,
+        signal: controller.signal,
+      });
+    } catch (error: any) {
+      if (error?.name === "AbortError") {
+        throw new ApiError({
+          kind: "timeout",
+          url,
+          baseUrl: this.baseUrl,
+          message: `Request timed out: ${url}`,
+        });
+      }
+      throw new ApiError({
+        kind: "network",
+        url,
+        baseUrl: this.baseUrl,
+        message: `Failed to fetch: ${url}. Is the backend running at ${this.baseUrl}?`,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: "Request failed" }));
-      throw new Error(error.detail || `HTTP ${response.status}`);
+      const detail = await this.parseErrorBody(response, "Request failed");
+      throw new ApiError({
+        kind: "http",
+        url,
+        baseUrl: this.baseUrl,
+        status: response.status,
+        message: detail || `HTTP ${response.status}`,
+      });
     }
 
     return response.json();
@@ -38,18 +93,47 @@ class ApiClient {
     } as any);
     formData.append("use_slm", String(useSlm));
 
-    const url = `${this.baseUrl}/api/analyze`;
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const url = this.toUrl("/api/analyze");
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    let response: Response;
+    try {
+      // NOTE: do not set Content-Type manually for FormData — fetch sets the
+      // multipart boundary automatically. Setting it breaks uploads.
+      response = await fetch(url, {
+        method: "POST",
+        body: formData,
+        signal: controller.signal,
+      });
+    } catch (error: any) {
+      if (error?.name === "AbortError") {
+        throw new ApiError({
+          kind: "timeout",
+          url,
+          baseUrl: this.baseUrl,
+          message: `Analysis timed out: ${url}`,
+        });
+      }
+      throw new ApiError({
+        kind: "network",
+        url,
+        baseUrl: this.baseUrl,
+        message: `Failed to fetch: ${url}. Is the backend running at ${this.baseUrl}?`,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: "Analysis failed" }));
-      throw new Error(error.detail || `HTTP ${response.status}`);
+      const detail = await this.parseErrorBody(response, "Analysis failed");
+      throw new ApiError({
+        kind: "http",
+        url,
+        baseUrl: this.baseUrl,
+        status: response.status,
+        message: detail || `HTTP ${response.status}`,
+      });
     }
 
     return response.json();

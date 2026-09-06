@@ -19,14 +19,12 @@ export function ImagePickerComponent({ imageUri, onImageSelected }: ImagePickerP
     const { status } = await permissionMethod();
     if (status !== "granted") return;
 
-    const launcher = useCamera
-      ? ImagePicker.launchCameraAsync
-      : ImagePicker.launchImageLibraryAsync;
+    const launcher = useCamera ? ImagePicker.launchCameraAsync : ImagePicker.launchImageLibraryAsync;
 
     const result = await launcher({
       mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [4, 3],
       quality: 0.8,
     });
 
@@ -35,42 +33,33 @@ export function ImagePickerComponent({ imageUri, onImageSelected }: ImagePickerP
     }
   };
 
+  if (imageUri) {
+    return (
+      <View style={styles.filed}>
+        <Ionicons name="checkmark-circle" size={20} color={colors.dispensary} />
+        <Text style={styles.filedText}>Photo filed · ready to analyze</Text>
+        <TouchableOpacity onPress={() => onImageSelected("")} hitSlop={8}>
+          <Text style={styles.replace}>Replace</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {imageUri ? (
-        <View style={styles.previewContainer}>
-          <View style={styles.preview}>
-            <Ionicons name="image" size={48} color={colors.primary} />
-            <Text style={styles.previewText}>Image selected</Text>
-          </View>
-        </View>
-      ) : (
-        <View style={styles.options}>
-          <TouchableOpacity
-            style={styles.option}
-            onPress={() => pickImage(true)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.iconContainer}>
-              <Ionicons name="camera" size={32} color={colors.primary} />
-            </View>
-            <Text style={styles.optionTitle}>Take Photo</Text>
-            <Text style={styles.optionSubtitle}>Use your camera</Text>
-          </TouchableOpacity>
+      <View style={styles.options}>
+        <TouchableOpacity style={styles.option} onPress={() => pickImage(true)} activeOpacity={0.8}>
+          <Ionicons name="camera-outline" size={26} color={colors.pine} />
+          <Text style={styles.optionTitle}>Take photo</Text>
+          <Text style={styles.optionSub}>Daylight, no filter</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.option}
-            onPress={() => pickImage(false)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.iconContainer}>
-              <Ionicons name="images" size={32} color={colors.primary} />
-            </View>
-            <Text style={styles.optionTitle}>Choose Photo</Text>
-            <Text style={styles.optionSubtitle}>From your gallery</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+        <TouchableOpacity style={styles.option} onPress={() => pickImage(false)} activeOpacity={0.8}>
+          <Ionicons name="folder-open-outline" size={26} color={colors.pine} />
+          <Text style={styles.optionTitle}>Upload</Text>
+          <Text style={styles.optionSub}>From your gallery</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -81,55 +70,53 @@ const styles = StyleSheet.create({
   },
   options: {
     flexDirection: "row",
-    gap: theme.spacing.md,
+    gap: theme.spacing.sm,
   },
   option: {
     flex: 1,
-    backgroundColor: colors.surfaceVariant,
-    borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.lg,
-    alignItems: "center",
-    borderWidth: 2,
-    borderStyle: "dashed",
-    borderColor: colors.border,
-  },
-  iconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.primaryLight,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: theme.spacing.sm,
+    backgroundColor: colors.sage,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
+    alignItems: "flex-start",
+    gap: 4,
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   optionTitle: {
+    fontFamily: theme.fontFamily.bodySemi,
     fontSize: theme.fontSize.md,
-    fontWeight: theme.fontWeight.semibold,
     color: colors.textPrimary,
+    marginTop: 8,
   },
-  optionSubtitle: {
-    fontSize: theme.fontSize.xs,
-    color: colors.textTertiary,
-    marginTop: 2,
+  optionSub: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 10,
+    letterSpacing: 0.6,
+    textTransform: "uppercase" as const,
+    color: colors.textSecondary,
   },
-  previewContainer: {
+  filed: {
+    flexDirection: "row",
     alignItems: "center",
+    gap: 8,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.dispensary,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
   },
-  preview: {
-    width: "100%",
-    height: 200,
-    backgroundColor: colors.surfaceVariant,
-    borderRadius: theme.borderRadius.lg,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderStyle: "solid",
+  filedText: {
+    flex: 1,
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    letterSpacing: 0.4,
+    color: colors.textPrimary,
+    textTransform: "uppercase" as const,
   },
-  previewText: {
-    marginTop: theme.spacing.sm,
+  replace: {
+    fontFamily: theme.fontFamily.bodySemi,
     fontSize: theme.fontSize.sm,
-    color: colors.primary,
-    fontWeight: theme.fontWeight.medium,
+    color: colors.dispensary,
   },
 });

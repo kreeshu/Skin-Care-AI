@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as SplashScreen from "expo-splash-screen";
 import { colors } from "../constants/colors";
+import { loadAppFonts } from "../constants/fonts";
+
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await loadAppFonts();
+      } catch (e) {
+        console.warn("Font load failed, falling back to system:", e);
+      } finally {
+        setReady(true);
+        SplashScreen.hideAsync().catch(() => {});
+      }
+    })();
+  }, []);
+
+  if (!ready) return null;
+
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
@@ -19,8 +40,8 @@ export default function RootLayout() {
           name="analysis/[id]"
           options={{
             headerShown: true,
-            headerTitle: "Analysis Results",
-            headerTintColor: colors.primaryDark,
+            headerTitle: "Prescription",
+            headerTintColor: colors.textPrimary,
             headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
             presentation: "card",
@@ -30,8 +51,8 @@ export default function RootLayout() {
           name="product/[id]"
           options={{
             headerShown: true,
-            headerTitle: "Product Details",
-            headerTintColor: colors.primaryDark,
+            headerTitle: "Label",
+            headerTintColor: colors.textPrimary,
             headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
             presentation: "card",
@@ -41,8 +62,8 @@ export default function RootLayout() {
           name="condition/[name]"
           options={{
             headerShown: true,
-            headerTitle: "Condition Info",
-            headerTintColor: colors.primaryDark,
+            headerTitle: "Monograph",
+            headerTintColor: colors.textPrimary,
             headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
             presentation: "card",

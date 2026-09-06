@@ -1,39 +1,38 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Button } from "../../components/ui/Button";
-import { Card } from "../../components/ui/Card";
+import { Ticket, Well, Perforation, Eyebrow } from "../../components/ui/Card";
+import { ErrorState } from "../../components/ui/ErrorState";
+import { RoutineStrip } from "../../components/RoutineStrip";
 import { ImagePickerComponent } from "../../components/ImagePicker";
 import { api } from "../../services/api";
+import { toUserMessage } from "../../services/apiError";
 import { useSettings } from "../../hooks/useSettings";
-import { useFavorites } from "../../hooks/useFavorites";
 import { AnalysisResult } from "../../types";
 
 export default function ScanScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeError, setAnalyzeError] = useState<unknown>(null);
   const router = useRouter();
   const { settings } = useSettings();
-  const { favorites, toggle } = useFavorites();
 
   const handleAnalyze = async () => {
     if (!imageUri) return;
 
     setAnalyzing(true);
+    setAnalyzeError(null);
     try {
       const result = (await api.analyzeImage(imageUri, settings.useSlm)) as AnalysisResult;
       router.push({ pathname: `/analysis/${result.id}`, params: { result: JSON.stringify(result) } });
     } catch (error: any) {
-      Alert.alert("Analysis Failed", error.message || "Could not analyze the image. Please try again.");
+      console.error("Analysis failed:", error);
+      setAnalyzeError(error);
     } finally {
       setAnalyzing(false);
     }
@@ -47,62 +46,79 @@ export default function ScanScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>SkinCare AI</Text>
+          <Eyebrow>Scan · Skincare dispensary</Eyebrow>
+          <Text style={styles.title}>Check your skin,{"\n"}get tomorrow's routine.</Text>
           <Text style={styles.subtitle}>
-            AI-powered skin condition detection{"\n"}with product recommendations
+            One clear photo in daylight. We file the reading and write the routine.
           </Text>
         </View>
 
-        <Card variant="elevated" style={styles.inputCard}>
-          <Text style={styles.sectionTitle}>Input Image</Text>
-          <ImagePickerComponent imageUri={imageUri} onImageSelected={setImageUri} />
+        <Ticket style={styles.ticket}>
+          <Eyebrow>Your photo</Eyebrow>
+          <View style={styles.wellGap}>
+            <Well style={styles.photoWell}>
+              <ImagePickerComponent
+                imageUri={imageUri}
+                onImageSelected={(uri) => setImageUri(uri || null)}
+              />
+              <View style={styles.wellHint}>
+                <Ionicons name="sunny-outline" size={14} color={colors.textSecondary} />
+                <Text style={styles.wellHintText}>Daylight · no filter · face fills the frame</Text>
+              </View>
+            </Well>
+          </View>
 
           <Button
-            title={analyzing ? "Analyzing..." : "Analyze Skin"}
+            title={analyzing ? "Reading…" : "Analyze skin"}
             onPress={handleAnalyze}
             loading={analyzing}
             disabled={!imageUri || analyzing}
             size="lg"
             style={styles.analyzeButton}
           />
-        </Card>
+          {analyzeError ? (
+            <ErrorState
+              compact
+              title={toUserMessage(analyzeError).title}
+              message={toUserMessage(analyzeError).message}
+              baseUrl={api.getBaseUrl()}
+              onRetry={handleAnalyze}
+              retryLabel="Try again"
+            />
+          ) : null}
 
-        <Card variant="outlined" style={styles.infoCard}>
-          <Text style={styles.infoTitle}>How it works</Text>
-          <View style={styles.steps}>
-            <View style={styles.step}>
-              <View style={styles.stepNumber}>
-                <Text style={styles.stepNumberText}>1</Text>
-              </View>
-              <Text style={styles.stepText}>Upload a skin image or take a photo</Text>
-            </View>
-            <View style={styles.step}>
-              <View style={styles.stepNumber}>
-                <Text style={styles.stepNumberText}>2</Text>
-              </View>
-              <Text style={styles.stepText}>AI detects condition and skin type</Text>
-            </View>
-            <View style={styles.step}>
-              <View style={styles.stepNumber}>
-                <Text style={styles.stepNumberText}>3</Text>
-              </View>
-              <Text style={styles.stepText}>Get personalized product recommendations</Text>
-            </View>
-          </View>
-        </Card>
+          <Perforation />
 
-        <Card variant="outlined" style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Detects 7 conditions</Text>
-          <View style={styles.conditionList}>
-            {["Acne", "Carcinoma", "Dark Spot", "Eczema", "Keratosis", "Milia", "Rosacea"].map(
-              (condition) => (
-                <Text key={condition} style={styles.conditionItem}>
-                  {condition}
-                </Text>
-              )
-            )}
+          <Eyebrow>Tomorrow's shape</Eyebrow>
+          <View style={styles.stripGap}>
+            <RoutineStrip
+              am={["Gel cleanser", "Niacinamide", "SPF 30"]}
+              pm={["Gentle cleanse", "Moisturizer"]}
+            />
           </View>
-        </Card>
+        </Ticket>
+
+        <View style={styles.ledger}>
+          <Eyebrow>How the reading works</Eyebrow>
+          {[
+            ["File", "Take or upload one photo"],
+            ["Read", "We check condition and skin type"],
+            ["Write", "You get an AM/PM routine that fits"],
+          ].map(([k, v]) => (
+            <View key={k} style={styles.ledgerRow}>
+              <Text style={styles.ledgerKey}>{k}</Text>
+              <Text style={styles.ledgerValue}>{v}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.ledger}>
+          <Eyebrow>Checks 7 common conditions</Eyebrow>
+          <Text style={styles.conditionLine}>
+            Acne · Dark spot · Eczema · Keratosis · Milia · Rosacea · Carcinoma flagged for a
+            dermatologist
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -119,81 +135,88 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: theme.spacing.md,
     paddingBottom: theme.spacing.xxl,
+    gap: theme.spacing.md,
   },
   header: {
-    marginBottom: theme.spacing.lg,
     paddingTop: theme.spacing.sm,
+    gap: 8,
   },
   title: {
-    fontSize: theme.fontSize.xxl,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.primaryDark,
+    fontFamily: theme.fontFamily.display,
+    fontSize: 30,
+    lineHeight: 34,
+    letterSpacing: theme.letterSpacing.tightDisplay,
+    color: colors.textPrimary,
   },
   subtitle: {
-    fontSize: theme.fontSize.md,
+    fontFamily: theme.fontFamily.body,
+    fontSize: theme.fontSize.sm,
     color: colors.textSecondary,
-    marginTop: 4,
-    lineHeight: 22,
+    lineHeight: 20,
   },
-  inputCard: {
-    marginBottom: theme.spacing.md,
+  ticket: {
+    padding: theme.spacing.md,
   },
-  sectionTitle: {
-    fontSize: theme.fontSize.lg,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: theme.spacing.md,
+  wellGap: {
+    marginTop: theme.spacing.sm,
+  },
+  photoWell: {
+    padding: theme.spacing.sm,
+  },
+  wellHint: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: theme.spacing.sm,
+  },
+  wellHintText: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 10,
+    letterSpacing: 0.6,
+    textTransform: "uppercase",
+    color: colors.textSecondary,
   },
   analyzeButton: {
     marginTop: theme.spacing.md,
   },
-  infoCard: {
-    marginBottom: theme.spacing.md,
+  stripGap: {
+    marginTop: theme.spacing.sm,
   },
-  infoTitle: {
-    fontSize: theme.fontSize.md,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: theme.spacing.md,
+  ledger: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
+    gap: 10,
   },
-  steps: {
-    gap: theme.spacing.sm,
-  },
-  step: {
+  ledgerRow: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.sm,
+    gap: 12,
+    alignItems: "baseline",
+    borderTopWidth: 1,
+    borderTopColor: colors.line,
+    paddingTop: 10,
   },
-  stepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primaryLight,
-    justifyContent: "center",
-    alignItems: "center",
+  ledgerKey: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    letterSpacing: 0.8,
+    color: colors.dispensary,
+    width: 52,
+    textTransform: "uppercase",
   },
-  stepNumberText: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.primaryDark,
-  },
-  stepText: {
+  ledgerValue: {
     flex: 1,
+    fontFamily: theme.fontFamily.body,
+    fontSize: theme.fontSize.sm,
+    color: colors.textPrimary,
+    lineHeight: 20,
+  },
+  conditionLine: {
+    fontFamily: theme.fontFamily.body,
     fontSize: theme.fontSize.sm,
     color: colors.textSecondary,
-  },
-  conditionList: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  conditionItem: {
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
-    backgroundColor: colors.surfaceVariant,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 100,
-    overflow: "hidden",
+    lineHeight: 22,
   },
 });

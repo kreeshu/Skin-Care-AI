@@ -10,42 +10,18 @@ interface ConditionBadgeProps {
   size?: "sm" | "md" | "lg";
 }
 
-export function ConditionBadge({
-  condition,
-  confidence,
-  size = "md",
-}: ConditionBadgeProps) {
-  const color = conditionColors[condition] || colors.textTertiary;
+export function ConditionBadge({ condition, confidence, size = "md" }: ConditionBadgeProps) {
+  const color = conditionColors[condition] || colors.textSecondary;
 
   return (
-    <View
-      style={[
-        styles.badge,
-        { backgroundColor: `${color}15`, borderColor: `${color}40` },
-        size === "sm" && styles.sm,
-        size === "lg" && styles.lg,
-      ]}
-    >
-      <View style={[styles.dot, { backgroundColor: color }]} />
-      <Text
-        style={[
-          styles.text,
-          { color },
-          size === "sm" && styles.textSm,
-          size === "lg" && styles.textLg,
-        ]}
-      >
-        {condition}
+    <View style={[styles.badge, size === "sm" && styles.sm, size === "lg" && styles.lg]}>
+      <View style={[styles.tick, { backgroundColor: color }]} />
+      <Text style={[styles.text, size === "sm" && styles.textSm, size === "lg" && styles.textLg]}>
+        {condition.toUpperCase()}
       </Text>
       {confidence !== undefined && (
-        <Text
-          style={[
-            styles.confidence,
-            { color },
-            size === "sm" && styles.textSm,
-          ]}
-        >
-          {" "}
+        <Text style={[styles.confidence, size === "sm" && styles.textSm]}>
+          {"  "}
           {Math.round(confidence * 100)}%
         </Text>
       )}
@@ -57,10 +33,12 @@ const styles = StyleSheet.create({
   badge: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 100,
+    borderRadius: 6,
     borderWidth: 1,
+    borderColor: colors.line,
+    backgroundColor: colors.surface,
     alignSelf: "flex-start",
   },
   sm: {
@@ -68,27 +46,30 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   lg: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
+  tick: {
+    width: 3,
+    height: 14,
+    borderRadius: 2,
+    marginRight: 8,
   },
   text: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.semibold,
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 12,
+    letterSpacing: 0.8,
+    color: colors.textPrimary,
   },
   textSm: {
-    fontSize: theme.fontSize.xs,
+    fontSize: 11,
   },
   textLg: {
-    fontSize: theme.fontSize.md,
+    fontSize: 13,
   },
   confidence: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.bold,
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 12,
+    color: colors.textSecondary,
   },
 });

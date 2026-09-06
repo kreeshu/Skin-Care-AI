@@ -9,10 +9,11 @@ interface ConfidenceBarProps {
   color?: string;
 }
 
+/** Lab readout: mono label + hairline meter, no gradient. */
 export function ConfidenceBar({
   label,
   confidence,
-  color = colors.primary,
+  color = colors.dispensary,
 }: ConfidenceBarProps) {
   const percentage = Math.round(confidence * 100);
 
@@ -23,12 +24,7 @@ export function ConfidenceBar({
         <Text style={[styles.percentage, { color }]}>{percentage}%</Text>
       </View>
       <View style={styles.track}>
-        <View
-          style={[
-            styles.fill,
-            { width: `${percentage}%`, backgroundColor: color },
-          ]}
-        />
+        <View style={[styles.fill, { width: `${percentage}%`, backgroundColor: color }]} />
       </View>
     </View>
   );
@@ -42,25 +38,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   label: {
-    fontSize: theme.fontSize.sm,
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    letterSpacing: 0.8,
+    textTransform: "uppercase" as const,
     color: colors.textSecondary,
-    fontWeight: theme.fontWeight.medium,
   },
   percentage: {
-    fontSize: theme.fontSize.sm,
-    fontWeight: theme.fontWeight.bold,
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 12,
+    fontWeight: theme.fontWeight.semibold,
   },
   track: {
-    height: 6,
-    backgroundColor: colors.primaryLight,
-    borderRadius: 3,
+    height: 4,
+    backgroundColor: colors.sage,
+    borderRadius: 2,
     overflow: "hidden",
   },
   fill: {
     height: "100%",
-    borderRadius: 3,
+    borderRadius: 2,
   },
 });

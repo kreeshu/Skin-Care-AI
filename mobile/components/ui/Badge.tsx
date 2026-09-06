@@ -10,43 +10,41 @@ interface BadgeProps {
   size?: "sm" | "md";
 }
 
+/** Dose tag: mono uppercase ticket label, not a pastel pill. */
 export function Badge({
   label,
-  color = colors.white,
-  backgroundColor = colors.primary,
+  color = colors.pine,
+  backgroundColor = colors.sage,
   size = "md",
 }: BadgeProps) {
   return (
-    <View
-      style={[
-        styles.badge,
-        { backgroundColor },
-        size === "sm" && styles.sm,
-      ]}
-    >
-      <Text style={[styles.text, { color }, size === "sm" && styles.textSm]}>
-        {label}
-      </Text>
+    <View style={[styles.badge, { backgroundColor }, size === "sm" && styles.sm]}>
+      <Text style={[styles.text, { color }, size === "sm" && styles.textSm]}>{label}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   badge: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 100,
+    borderRadius: 6,
     alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: colors.line,
   },
   sm: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
   },
   text: {
-    fontSize: theme.fontSize.xs,
-    fontWeight: theme.fontWeight.semibold,
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    letterSpacing: 0.6,
+    textTransform: "uppercase" as const,
+    fontWeight: theme.fontWeight.medium,
   },
   textSm: {
-    fontSize: 11,
+    fontSize: 10,
   },
 });

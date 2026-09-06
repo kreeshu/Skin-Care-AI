@@ -1,56 +1,81 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import { colors, conditionColors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Card } from "../../components/ui/Card";
 import { Badge } from "../../components/ui/Badge";
+import { Eyebrow } from "../../components/ui/Card";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { RoutineStep } from "../../components/RoutineStep";
 import { Condition } from "../../types";
 import { api } from "../../services/api";
+import { isApiError, toUserMessage } from "../../services/apiError";
 
 export default function ConditionDetailScreen() {
   const params = useLocalSearchParams<{ name: string }>();
   const [condition, setCondition] = useState<Condition | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<unknown>(null);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
+      setLoading(true);
+      setError(null);
       try {
         const data = (await api.getCondition(params.name || "")) as Condition;
-        setCondition(data);
-      } catch (error) {
-        console.error("Failed to load condition:", error);
+        if (!cancelled) setCondition(data);
+      } catch (err) {
+        console.error("Failed to load condition:", err);
+        if (!cancelled) setError(err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
-  }, [params.name]);
+    return () => {
+      cancelled = true;
+    };
+  }, [params.name, retryKey]);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={colors.dispensary} />
       </View>
+    );
+  }
+
+  if (error) {
+    if (isApiError(error) && error.kind === "http" && error.status === 404) {
+      return (
+        <View style={styles.empty}>
+          <Eyebrow>Monograph missing</Eyebrow>
+          <Text style={styles.emptyTitle}>No entry for this name.</Text>
+        </View>
+      );
+    }
+    const { title, message } = toUserMessage(error);
+    return (
+      <ErrorState
+        title={title}
+        message={message}
+        baseUrl={api.getBaseUrl()}
+        onRetry={() => setRetryKey((k) => k + 1)}
+      />
     );
   }
 
   if (!condition) {
     return (
       <View style={styles.empty}>
-        <Text style={styles.emptyText}>Condition not found</Text>
+        <Eyebrow>Monograph missing</Eyebrow>
+        <Text style={styles.emptyTitle}>No entry for this name.</Text>
       </View>
     );
   }
 
-  const conditionColor = conditionColors[condition.name] || colors.textTertiary;
+  const conditionColor = conditionColors[condition.name] || colors.textSecondary;
 
   return (
     <ScrollView
@@ -58,124 +83,77 @@ export default function ConditionDetailScreen() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      <View
-        style={[
-          styles.headerCard,
-          { backgroundColor: `${conditionColor}10`, borderColor: `${conditionColor}30` },
-        ]}
-      >
-        <View style={[styles.dot, { backgroundColor: conditionColor }]} />
-        <View>
-          <Text style={[styles.conditionName, { color: conditionColor }]}>
-            {condition.title}
-          </Text>
-          {condition.is_medical && (
-            <Badge label="Medical" color={colors.white} backgroundColor={colors.error} size="sm" />
-          )}
-        </View>
+      <Eyebrow>Monograph · {condition.is_medical ? "Flag for dermatologist" : "Common condition"}</Eyebrow>
+      <Text style={styles.name}>{condition.title}</Text>
+      <View style={styles.rule}>
+        <View style={[styles.tick, { backgroundColor: conditionColor }]} />
+        <Text style={styles.ruleText}>{condition.name.toUpperCase()}</Text>
       </View>
 
       <Text style={styles.description}>{condition.description}</Text>
 
       {condition.causes.length > 0 && (
-        <Card variant="elevated" style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="help-circle-outline" size={20} color={colors.primary} />
-            <Text style={styles.sectionTitle}>Causes</Text>
-          </View>
+        <View style={styles.section}>
+          <Eyebrow>Usual causes</Eyebrow>
           {condition.causes.map((cause, idx) => (
-            <View key={idx} style={styles.listItem}>
-              <View style={[styles.bullet, { backgroundColor: conditionColor }]} />
-              <Text style={styles.listText}>{cause}</Text>
+            <View key={idx} style={styles.line}>
+              <Text style={styles.lineText}>{cause}</Text>
             </View>
           ))}
-        </Card>
+        </View>
       )}
 
       {condition.recommended_ingredients.length > 0 && (
-        <Card variant="elevated" style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="flask-outline" size={20} color={colors.primary} />
-            <Text style={styles.sectionTitle}>Recommended Ingredients</Text>
-          </View>
+        <View style={styles.section}>
+          <Eyebrow>Ask for</Eyebrow>
           <View style={styles.tagRow}>
             {condition.recommended_ingredients.map((ing) => (
-              <Badge
-                key={ing}
-                label={ing}
-                color={colors.primaryDark}
-                backgroundColor={colors.primaryLight}
-              />
+              <Badge key={ing} label={ing} size="sm" />
             ))}
           </View>
-        </Card>
+        </View>
       )}
 
       {condition.recommended_categories.length > 0 && (
-        <Card variant="elevated" style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="basket-outline" size={20} color={colors.primary} />
-            <Text style={styles.sectionTitle}>Product Categories</Text>
-          </View>
+        <View style={styles.section}>
+          <Eyebrow>Shop</Eyebrow>
           <View style={styles.tagRow}>
             {condition.recommended_categories.map((cat) => (
-              <Badge
-                key={cat}
-                label={cat}
-                color={colors.info}
-                backgroundColor={`${colors.info}15`}
-              />
+              <Badge key={cat} label={cat} size="sm" />
             ))}
           </View>
-        </Card>
+        </View>
       )}
 
       {condition.avoid_ingredients.length > 0 && (
-        <Card variant="elevated" style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="close-circle-outline" size={20} color={colors.error} />
-            <Text style={[styles.sectionTitle, { color: colors.error }]}>
-              Avoid Ingredients
-            </Text>
-          </View>
+        <View style={[styles.section, styles.avoid]}>
+          <Eyebrow>Leave out</Eyebrow>
           <View style={styles.tagRow}>
             {condition.avoid_ingredients.map((ing) => (
-              <Badge
-                key={ing}
-                label={ing}
-                color={colors.error}
-                backgroundColor={`${colors.error}15`}
-              />
+              <Badge key={ing} label={ing} size="sm" />
             ))}
           </View>
-        </Card>
+        </View>
       )}
 
       {condition.tips.length > 0 && (
-        <Card variant="elevated" style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="bulb-outline" size={20} color={colors.warning} />
-            <Text style={styles.sectionTitle}>Tips</Text>
-          </View>
+        <View style={styles.section}>
+          <Eyebrow>Daily care</Eyebrow>
           {condition.tips.map((tip, idx) => (
-            <View key={idx} style={styles.listItem}>
-              <View style={[styles.bullet, { backgroundColor: colors.warning }]} />
-              <Text style={styles.listText}>{tip}</Text>
+            <View key={idx} style={styles.line}>
+              <Text style={styles.lineText}>{tip}</Text>
             </View>
           ))}
-        </Card>
+        </View>
       )}
 
       {condition.routine_steps.length > 0 && (
-        <Card variant="elevated" style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="calendar-outline" size={20} color={colors.primary} />
-            <Text style={styles.sectionTitle}>Suggested Routine</Text>
-          </View>
+        <View style={styles.section}>
+          <Eyebrow>Steps in order</Eyebrow>
           {condition.routine_steps.map((step, idx) => (
             <RoutineStep key={idx} step={idx + 1} title={step} />
           ))}
-        </Card>
+        </View>
       )}
     </ScrollView>
   );
@@ -189,6 +167,7 @@ const styles = StyleSheet.create({
   content: {
     padding: theme.spacing.md,
     paddingBottom: theme.spacing.xxl,
+    gap: 12,
   },
   loadingContainer: {
     flex: 1,
@@ -196,73 +175,72 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.background,
   },
-  headerCard: {
+  name: {
+    fontFamily: theme.fontFamily.display,
+    fontSize: 30,
+    letterSpacing: -0.5,
+    color: colors.textPrimary,
+    lineHeight: 34,
+  },
+  rule: {
     flexDirection: "row",
     alignItems: "center",
-    padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    marginBottom: theme.spacing.md,
-    gap: 12,
+    gap: 8,
   },
-  dot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+  tick: {
+    width: 24,
+    height: 3,
+    borderRadius: 2,
   },
-  conditionName: {
-    fontSize: theme.fontSize.xl,
-    fontWeight: theme.fontWeight.bold,
+  ruleText: {
+    fontFamily: theme.fontFamily.mono,
+    fontSize: 11,
+    letterSpacing: 1,
+    color: colors.textSecondary,
   },
   description: {
+    fontFamily: theme.fontFamily.body,
     fontSize: theme.fontSize.md,
     color: colors.textSecondary,
-    lineHeight: 22,
-    marginBottom: theme.spacing.md,
+    lineHeight: 23,
   },
   section: {
-    marginBottom: theme.spacing.md,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: theme.spacing.sm,
-  },
-  sectionTitle: {
-    fontSize: theme.fontSize.md,
-    fontWeight: theme.fontWeight.bold,
-    color: colors.textPrimary,
-  },
-  listItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 6,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: theme.borderRadius.md,
+    padding: theme.spacing.md,
     gap: 8,
   },
-  bullet: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+  avoid: {
+    borderColor: colors.oxblood,
   },
-  listText: {
-    flex: 1,
+  line: {
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.line,
+  },
+  lineText: {
+    fontFamily: theme.fontFamily.body,
     fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
     lineHeight: 20,
   },
   tagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 6,
   },
   empty: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+    padding: theme.spacing.lg,
+    gap: 8,
   },
-  emptyText: {
-    fontSize: theme.fontSize.md,
-    color: colors.textTertiary,
+  emptyTitle: {
+    fontFamily: theme.fontFamily.display,
+    fontSize: theme.fontSize.lg,
+    color: colors.textPrimary,
   },
 });
