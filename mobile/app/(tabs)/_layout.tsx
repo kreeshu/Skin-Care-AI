@@ -20,17 +20,16 @@ export default function TabLayout() {
           paddingTop: 8,
         },
         tabBarLabelStyle: {
-          fontFamily: theme.fontFamily.mono,
-          fontSize: 10,
-          letterSpacing: 0.8,
-          textTransform: "uppercase",
+          fontFamily: theme.fontFamily.bodySemi,
+          fontSize: 11,
+          letterSpacing: 0.2,
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Scan",
+          title: "Check",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="scan-outline" size={size} color={color} />
           ),
@@ -39,27 +38,27 @@ export default function TabLayout() {
       <Tabs.Screen
         name="catalog"
         options={{
-          title: "Index",
+          title: "Shop",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="library-outline" size={size} color={color} />
+            <Ionicons name="search-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: "Filed",
+          title: "Saved",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="archive-outline" size={size} color={color} />
+            <Ionicons name="bookmark-outline" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Setup",
+          title: "Settings",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="options-outline" size={size} color={color} />
+            <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />

@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Eyebrow } from "../../components/ui/Card";
+import { Eyebrow, DisplayLg, BodySm } from "../../components/ui/Typography";
+import { EmptyState } from "../../components/ui/EmptyState";
 import { ConditionBadge } from "../../components/ConditionBadge";
 import { Button } from "../../components/ui/Button";
 import { useHistory } from "../../hooks/useHistory";
@@ -17,7 +18,7 @@ export default function HistoryScreen() {
   const router = useRouter();
 
   const confirmClear = () => {
-    Alert.alert("Clear filed readings?", "This removes all saved readings from this device.", [
+    Alert.alert("Clear saved results?", "This removes all saved results from this device.", [
       { text: "Keep", style: "cancel" },
       { text: "Clear", style: "destructive", onPress: clearAll },
     ]);
@@ -26,20 +27,25 @@ export default function HistoryScreen() {
   const renderItem = ({ item }: { item: ScanHistoryItem }) => (
     <TouchableOpacity
       style={styles.row}
-      onPress={() => router.push({ pathname: `/analysis/${item.id}`, params: { result: JSON.stringify(item.result) } })}
+      onPress={() =>
+        router.push({ pathname: "/analysis/[id]", params: { id: item.id, result: JSON.stringify(item.result) } })
+      }
       activeOpacity={0.75}
+      accessibilityRole="button"
     >
       <View style={styles.rowHead}>
         <ConditionBadge condition={item.condition} size="sm" />
-        <Text style={styles.date}>{formatDate(item.date).toUpperCase()}</Text>
+        <BodySm style={styles.date}>{formatDate(item.date)}</BodySm>
       </View>
-      <Text style={styles.skinLine}>
-        {item.skin_type ? item.skin_type.toUpperCase() : "SKIN TYPE —"} · FILED {item.id.slice(0, 8).toUpperCase()}
-      </Text>
+      <BodySm style={styles.skinLine}>
+        {item.skin_type ? item.skin_type : "Skin type unknown"}
+      </BodySm>
       <TouchableOpacity
         onPress={() => removeScan(item.id)}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         style={styles.trash}
+        accessibilityRole="button"
+        accessibilityLabel="Remove this reading"
       >
         <Ionicons name="trash-outline" size={16} color={colors.textTertiary} />
       </TouchableOpacity>
@@ -50,21 +56,23 @@ export default function HistoryScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <View style={styles.headerText}>
-          <Eyebrow>Filed · {history.length} readings</Eyebrow>
-          <Text style={styles.title}>Past readings.</Text>
+          <Eyebrow>Saved · {history.length} results</Eyebrow>
+          <DisplayLg>Your past checks.</DisplayLg>
         </View>
-        {history.length > 0 && (
+        {history.length > 0 ? (
           <Button title="Clear" variant="ghost" size="sm" onPress={confirmClear} />
-        )}
+        ) : null}
       </View>
 
       {history.length === 0 ? (
-        <View style={styles.empty}>
-          <Eyebrow>Nothing filed yet</Eyebrow>
-          <Text style={styles.emptyTitle}>Your readings will land here.</Text>
-          <Text style={styles.emptyText}>File your first photo from Scan.</Text>
-          <Button title="Go to Scan" onPress={() => router.push("/(tabs)")} style={styles.cta} />
-        </View>
+        <EmptyState
+          eyebrow="Nothing saved yet"
+          title="Your results will land here."
+          message="Check your first photo from Check."
+          icon="bookmark-outline"
+          actionLabel="Go to Check"
+          onAction={() => router.push("/(tabs)")}
+        />
       ) : (
         <FlatList
           data={history}
@@ -89,22 +97,16 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingHorizontal: theme.spacing.md,
     paddingTop: theme.spacing.sm,
-    gap: 12,
+    gap: theme.spacing.md,
   },
   headerText: {
     flex: 1,
-    gap: 6,
-  },
-  title: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.xl,
-    letterSpacing: -0.3,
-    color: colors.textPrimary,
+    gap: theme.spacing.xs2,
   },
   listContent: {
     padding: theme.spacing.md,
     paddingBottom: 100,
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   row: {
     backgroundColor: colors.surface,
@@ -112,50 +114,24 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.md,
-    gap: 6,
+    gap: theme.spacing.xs2,
   },
   rowHead: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   date: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 10,
-    letterSpacing: 0.8,
     color: colors.textTertiary,
   },
   skinLine: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.4,
     color: colors.textSecondary,
   },
   trash: {
     position: "absolute",
-    right: 8,
-    bottom: 8,
-    padding: 6,
-  },
-  empty: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    padding: theme.spacing.lg,
-    gap: 8,
-  },
-  emptyTitle: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.lg,
-    color: colors.textPrimary,
-  },
-  emptyText: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
-  },
-  cta: {
-    marginTop: theme.spacing.sm,
+    right: theme.spacing.sm,
+    bottom: theme.spacing.sm,
+    padding: theme.spacing.xs2,
   },
 });

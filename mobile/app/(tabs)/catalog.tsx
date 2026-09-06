@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
   TextInput,
@@ -13,12 +12,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Eyebrow } from "../../components/ui/Card";
+import { Eyebrow, DisplayLg } from "../../components/ui/Typography";
 import { ProductCard } from "../../components/ProductCard";
-import { LoadingSpinner } from "../../components/ui/LoadingSpinner";
+import { LoadingState } from "../../components/ui/LoadingState";
 import { ErrorState } from "../../components/ui/ErrorState";
+import { EmptyState } from "../../components/ui/EmptyState";
 import { api } from "../../services/api";
 import { toUserMessage } from "../../services/apiError";
+import { useFetcher } from "../../hooks/useFetcher";
 import { useFavorites } from "../../hooks/useFavorites";
 import { Product, ProductsResponse } from "../../types";
 
@@ -29,55 +30,40 @@ const SORT_OPTIONS = [
   { label: "Reviewed", value: "reviews" },
 ];
 
+const PAGE_SIZE = 20;
+
 export default function CatalogScreen() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("rating");
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState<string[]>([]);
-  const [error, setError] = useState<unknown>(null);
-  const [retryKey, setRetryKey] = useState(0);
   const router = useRouter();
   const { favorites, toggle } = useFavorites();
 
+  // Categories are non-critical — load silently, don't block the list.
   useEffect(() => {
     api
       .getCategories()
       .then((data) => setCategories(data.categories))
-      .catch((err) => {
-        console.warn("Failed to load categories:", err);
-      });
-  }, [retryKey]);
+      .catch((err) => console.warn("Failed to load categories:", err));
+  }, []);
 
-  const loadProducts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = (await api.getProducts({
+  const { data, loading, error, retry } = useFetcher<ProductsResponse>(
+    () =>
+      api.getProducts({
         search: search || undefined,
         category: selectedCategory || undefined,
         sort_by: sortBy,
         page,
-        page_size: 20,
-      })) as ProductsResponse;
-      setProducts(data.products);
-      setTotalPages(data.total_pages);
-      setTotal(data.total);
-    } catch (err) {
-      console.error("Failed to load products:", err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [search, selectedCategory, sortBy, page, retryKey]);
+        page_size: PAGE_SIZE,
+      }),
+    [search, selectedCategory, sortBy, page],
+  );
 
-  useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+  const products = data?.products ?? [];
+  const totalPages = data?.total_pages ?? 1;
+  const total = data?.total ?? 0;
 
   const handleSearch = (text: string) => {
     setSearch(text);
@@ -89,23 +75,17 @@ export default function CatalogScreen() {
     setPage(1);
   };
 
-  const handleRetry = () => {
-    setRetryKey((k) => k + 1);
-  };
-
-  if (!loading && error) {
+  // Show the error state as a full screen when the *first* load fails.
+  if (!loading && error && products.length === 0) {
     const { title, message } = toUserMessage(error);
     return (
       <SafeAreaView style={styles.container} edges={["top"]}>
-        <View style={styles.header}>
-          <Eyebrow>Index</Eyebrow>
-          <Text style={styles.title}>Find what fits your routine.</Text>
-        </View>
+        <Header total={0} />
         <ErrorState
           title={title}
           message={message}
           baseUrl={api.getBaseUrl()}
-          onRetry={handleRetry}
+          onRetry={retry}
         />
       </SafeAreaView>
     );
@@ -113,12 +93,7 @@ export default function CatalogScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <View style={styles.header}>
-        <Eyebrow>
-          Index · {loading ? "…" : `${total} items`}
-        </Eyebrow>
-        <Text style={styles.title}>Find what fits your routine.</Text>
-      </View>
+      <Header total={total} loading={loading} />
 
       <View style={styles.searchRow}>
         <Ionicons name="search-outline" size={18} color={colors.textTertiary} />
@@ -129,11 +104,11 @@ export default function CatalogScreen() {
           value={search}
           onChangeText={handleSearch}
         />
-        {search.length > 0 && (
-          <TouchableOpacity onPress={() => handleSearch("")}>
+        {search.length > 0 ? (
+          <TouchableOpacity onPress={() => handleSearch("")} accessibilityRole="button">
             <Ionicons name="close-circle" size={18} color={colors.textTertiary} />
           </TouchableOpacity>
-        )}
+        ) : null}
       </View>
 
       <ScrollView
@@ -143,11 +118,11 @@ export default function CatalogScreen() {
       >
         <TouchableOpacity
           style={[styles.tab, selectedCategory === null && styles.tabActive]}
-          onPress={() => handleCategorySelect(selectedCategory)}
+          onPress={() => handleCategorySelect(null)}
         >
-          <Text style={[styles.tabText, selectedCategory === null && styles.tabTextActive]}>
+          <Eyebrow style={[styles.tabText, selectedCategory === null && styles.tabTextActive]}>
             All
-          </Text>
+          </Eyebrow>
         </TouchableOpacity>
         {categories.map((cat) => (
           <TouchableOpacity
@@ -155,37 +130,40 @@ export default function CatalogScreen() {
             style={[styles.tab, selectedCategory === cat && styles.tabActive]}
             onPress={() => handleCategorySelect(cat)}
           >
-            <Text style={[styles.tabText, selectedCategory === cat && styles.tabTextActive]}>
+            <Eyebrow style={[styles.tabText, selectedCategory === cat && styles.tabTextActive]}>
               {cat}
-            </Text>
+            </Eyebrow>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       <View style={styles.sortRow}>
-        <Text style={styles.sortLabel}>Sort</Text>
+        <Eyebrow style={styles.sortLabel}>Sort</Eyebrow>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {SORT_OPTIONS.map((option) => (
-            <TouchableOpacity
-              key={option.value}
-              style={[styles.sortItem, sortBy === option.value && styles.sortItemActive]}
-              onPress={() => {
-                setSortBy(option.value);
-                setPage(1);
-              }}
-            >
-              <Text
-                style={[styles.sortText, sortBy === option.value && styles.sortTextActive]}
+          {SORT_OPTIONS.map((option) => {
+            const active = sortBy === option.value;
+            return (
+              <TouchableOpacity
+                key={option.value}
+                style={[styles.sortItem, active && styles.sortItemActive]}
+                onPress={() => {
+                  setSortBy(option.value);
+                  setPage(1);
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
               >
-                {option.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Eyebrow style={[styles.sortText, active && styles.sortTextActive]}>
+                  {option.label}
+                </Eyebrow>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
       </View>
 
-      {loading ? (
-        <LoadingSpinner />
+      {loading && products.length === 0 ? (
+        <LoadingState eyebrow="Shop · loading" rows={4} compact />
       ) : (
         <FlatList
           data={products}
@@ -201,37 +179,55 @@ export default function CatalogScreen() {
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={
-            <View style={styles.empty}>
-              <Eyebrow>Nothing filed</Eyebrow>
-              <Text style={styles.emptyTitle}>No matches for this combination.</Text>
-              <Text style={styles.emptyText}>Loosen one filter — start with category.</Text>
-            </View>
+            <EmptyState
+              eyebrow="No matches"
+              title="No matches for this combination."
+              message="Clear one filter — start with category."
+              icon="search-outline"
+              actionLabel="Clear filters"
+              onAction={() => {
+                setSearch("");
+                setSelectedCategory(null);
+                setPage(1);
+              }}
+            />
           }
         />
       )}
 
-      {totalPages > 1 && !loading && !error && (
+      {totalPages > 1 && products.length > 0 ? (
         <View style={styles.pagination}>
           <TouchableOpacity
             style={[styles.pageButton, page <= 1 && styles.pageButtonDisabled]}
             onPress={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
+            accessibilityRole="button"
           >
             <Ionicons name="chevron-back" size={18} color={page <= 1 ? colors.textTertiary : colors.pine} />
           </TouchableOpacity>
-          <Text style={styles.pageText}>
+          <Eyebrow style={styles.pageText}>
             {page} / {totalPages}
-          </Text>
+          </Eyebrow>
           <TouchableOpacity
             style={[styles.pageButton, page >= totalPages && styles.pageButtonDisabled]}
             onPress={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page >= totalPages}
+            accessibilityRole="button"
           >
             <Ionicons name="chevron-forward" size={18} color={page >= totalPages ? colors.textTertiary : colors.pine} />
           </TouchableOpacity>
         </View>
-      )}
+      ) : null}
     </SafeAreaView>
+  );
+}
+
+function Header({ total, loading }: { total: number; loading?: boolean }) {
+  return (
+    <View style={styles.header}>
+      <Eyebrow>Shop{loading ? " · loading" : ` · ${total} items`}</Eyebrow>
+      <DisplayLg>Find what fits your routine.</DisplayLg>
+    </View>
   );
 }
 
@@ -243,13 +239,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: theme.spacing.md,
     paddingTop: theme.spacing.sm,
-    gap: 6,
-  },
-  title: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.xl,
-    letterSpacing: -0.3,
-    color: colors.textPrimary,
+    gap: theme.spacing.xs2,
   },
   searchRow: {
     flexDirection: "row",
@@ -257,10 +247,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.line,
-    borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.spacing.sm,
-    height: 46,
-    gap: 8,
+    borderRadius: 999,
+    paddingHorizontal: theme.spacing.md,
+    height: 52,
+    gap: theme.spacing.sm,
     margin: theme.spacing.md,
     marginBottom: theme.spacing.sm,
   },
@@ -272,12 +262,11 @@ const styles = StyleSheet.create({
   },
   tabs: {
     paddingHorizontal: theme.spacing.md,
-    gap: 0,
   },
   tab: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginRight: 4,
+    paddingHorizontal: theme.spacing.md - 4,
+    paddingVertical: theme.spacing.sm,
+    marginRight: theme.spacing.xs,
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
   },
@@ -285,10 +274,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.dispensary,
   },
   tabText: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
     color: colors.textSecondary,
   },
   tabTextActive: {
@@ -299,22 +284,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: theme.spacing.md,
     marginVertical: theme.spacing.sm,
-    gap: 12,
+    gap: theme.spacing.md - 4,
   },
   sortLabel: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.8,
-    textTransform: "uppercase",
     color: colors.textTertiary,
   },
   sortItem: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    marginRight: 8,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    marginRight: theme.spacing.sm,
     borderWidth: 1,
     borderColor: colors.line,
-    borderRadius: 6,
+    borderRadius: 999,
     backgroundColor: colors.surface,
   },
   sortItemActive: {
@@ -322,8 +303,6 @@ const styles = StyleSheet.create({
     borderColor: colors.pine,
   },
   sortText: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
     color: colors.textSecondary,
   },
   sortTextActive: {
@@ -333,21 +312,6 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     paddingTop: theme.spacing.sm,
     paddingBottom: 100,
-  },
-  empty: {
-    alignItems: "flex-start",
-    gap: 6,
-    paddingVertical: 48,
-  },
-  emptyTitle: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.lg,
-    color: colors.textPrimary,
-  },
-  emptyText: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
   },
   pagination: {
     flexDirection: "row",
@@ -373,8 +337,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   pageText: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 12,
     color: colors.textPrimary,
   },
 });

@@ -1,41 +1,62 @@
+/**
+ * Blush Apothecary palette.
+ *
+ * Use these names directly. They are the only colors the design system
+ * recognises. If a screen needs a new shade, add it here, not inline.
+ *
+ * Old dispensary keys (pine/dispensary/sage/...) are kept as aliases so
+ * existing screens keep working — they now point at pink values.
+ */
 export const colors = {
-  // Dispensary identity (full pivot off pink pastel)
-  pine: "#0F241E",
-  dispensary: "#1E5B44",
-  paper: "#FCFCF8",
-  sage: "#E4EAE1",
-  line: "#DDE3DA",
-  amber: "#B96A0B",
-  oxblood: "#8E2A2A",
-  moss: "#9CAF88",
-  slateBlue: "#3E6B8C",
-
-  // Semantic aliases (kept so existing imports keep working)
-  primary: "#1E5B44",
-  primaryDark: "#0F241E",
-  primaryLight: "#E4EAE1",
-  accent: "#1E5B44",
-  accentLight: "#9CAF88",
-  white: "#FFFFFF",
-  background: "#FCFCF8",
+  // Blush ground
+  pine: "#4A1F33",
+  dispensary: "#DB2777",
+  paper: "#FFF5F7",
   surface: "#FFFFFF",
-  surfaceVariant: "#E4EAE1",
-  border: "#DDE3DA",
-  textPrimary: "#0F241E",
-  textSecondary: "#4A5A52",
-  textTertiary: "#8A9A90",
-  success: "#1E5B44",
-  warning: "#B96A0B",
-  error: "#8E2A2A",
-  info: "#3E6B8C",
+  sage: "#FCE7EE",
+  line: "#F4C6D7",
+  amber: "#E893A8",
+  oxblood: "#8E2A2A",
+  moss: "#F0A6BE",
+  slateBlue: "#8A4A64",
+
+  // Friendly aliases — prefer these in new code
+  blush: "#FFF5F7",
+  petal: "#FCE7EE",
+  rose: "#DB2777",
+  plum: "#4A1F33",
+  peach: "#E893A8",
+  glow: "#F472A6",
+
+  // Neutrals (sparse — plum carries hierarchy, petal carries surface)
+  white: "#FFFFFF",
+  background: "#FFF5F7", // alias of blush — keep for screens that read "background"
+  textPrimary: "#4A1F33",
+  textSecondary: "#7A4A5E",
+  textTertiary: "#B08A99",
 };
 
+/**
+ * Per-condition accents. Keyed by canonical display name; use
+ * `conditionColor(name)` for case-insensitive lookup so backend
+ * payload casing cannot silently break the badge color.
+ */
 export const conditionColors: Record<string, string> = {
-  Acne: "#2E7D5B",
+  Acne: "#C2185B",
   Carcinoma: "#8E2A2A",
-  "Dark Spot": "#6B5A3E",
-  Eczema: "#B96A0B",
-  Keratosis: "#5A4E7A",
-  Milia: "#3E6B8C",
-  Rosacea: "#A34A3A",
+  "Dark Spot": "#8A5A3B",
+  Eczema: "#C2703D",
+  Keratosis: "#7A5A8A",
+  Milia: "#6B8CA8",
+  Rosacea: "#E0447C",
 };
+
+const CONDITION_COLOR_INDEX: Record<string, string> = Object.fromEntries(
+  Object.entries(conditionColors).map(([k, v]) => [k.toLowerCase(), v]),
+);
+
+/** Case-insensitive lookup. Falls back to `textSecondary` if unknown. */
+export function conditionColor(name: string | null | undefined): string {
+  if (!name) return colors.textSecondary;
+  return CONDITION_COLOR_INDEX[name.toLowerCase().trim()] ?? colors.textSecondary;
+}

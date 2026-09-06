@@ -1,19 +1,34 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Eyebrow } from "../../components/ui/Card";
+import { Eyebrow, DisplayLg, Body, BodySm } from "../../components/ui/Typography";
 import { useSettings } from "../../hooks/useSettings";
 import { useHistory } from "../../hooks/useHistory";
+
+const SKIN_TYPE_CHOICES: { value: string | null; label: string }[] = [
+  { value: null, label: "Auto" },
+  { value: "dry", label: "Dry" },
+  { value: "normal", label: "Normal" },
+  { value: "oily", label: "Oily" },
+];
+
+const ABOUT_ROWS: Array<[string, string]> = [
+  ["Model", "EfficientNetB0, multi-task"],
+  ["Conditions", "7 entries"],
+  ["Skin types", "Dry · Normal · Oily"],
+  ["Stock", "1,500+ items from Nepal"],
+  ["Shops", "Jeevee · Oriflame"],
+];
 
 export default function SettingsScreen() {
   const { settings, update } = useSettings();
   const { clearAll } = useHistory();
 
   const handleClearHistory = () => {
-    Alert.alert("Clear filed readings?", "This removes all saved readings from this device.", [
+    Alert.alert("Clear saved results?", "This removes all saved results from this device.", [
       { text: "Keep", style: "cancel" },
       { text: "Clear", style: "destructive", onPress: clearAll },
     ]);
@@ -27,91 +42,81 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Eyebrow>Setup</Eyebrow>
-          <Text style={styles.title}>Set up the dispensary.</Text>
+          <DisplayLg>Settings.</DisplayLg>
         </View>
 
         <View style={styles.section}>
-          <Eyebrow>Reading</Eyebrow>
+          <Body style={styles.sectionTitle}>Results</Body>
           <View style={styles.settingRow}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingLabel}>Dispenser notes</Text>
-              <Text style={styles.settingDescription}>
-                Short explanations with each routine
-              </Text>
+              <Body>Personal notes</Body>
+              <BodySm>Short explanations with each routine</BodySm>
             </View>
             <Switch
               value={settings.useSlm}
               onValueChange={(val) => update({ useSlm: val })}
-              trackColor={{ false: colors.line, true: colors.sage }}
-              thumbColor={settings.useSlm ? colors.dispensary : colors.textTertiary}
+              trackColor={{ false: colors.line, true: colors.dispensary }}
+              thumbColor={settings.useSlm ? colors.white : colors.textTertiary}
             />
           </View>
 
           <View style={styles.divider} />
 
-          <Text style={styles.settingLabel}>Skin type on file</Text>
-          <Text style={styles.settingDescription}>
-            {settings.skinTypePreference ? `Filed as ${settings.skinTypePreference}` : "Read from each photo"}
-          </Text>
+          <Body>Skin type</Body>
+          <BodySm>
+            {settings.skinTypePreference ? `Saved as ${settings.skinTypePreference}` : "Read from each photo"}
+          </BodySm>
 
           <View style={styles.skinTypeOptions}>
-            {[null, "dry", "normal", "oily"].map((type) => (
-              <TouchableOpacity
-                key={type || "auto"}
-                style={[
-                  styles.skinTypeChoice,
-                  settings.skinTypePreference === type && styles.skinTypeChoiceActive,
-                ]}
-                onPress={() => update({ skinTypePreference: type })}
-              >
-                <Text
-                  style={[
-                    styles.skinTypeText,
-                    settings.skinTypePreference === type && styles.skinTypeTextActive,
-                  ]}
+            {SKIN_TYPE_CHOICES.map(({ value, label }) => {
+              const active = settings.skinTypePreference === value;
+              return (
+                <TouchableOpacity
+                  key={value || "auto"}
+                  style={[styles.skinTypeChoice, active && styles.skinTypeChoiceActive]}
+                  onPress={() => update({ skinTypePreference: value })}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
                 >
-                  {type ? type.toUpperCase() : "AUTO"}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Body style={[styles.skinTypeText, active && styles.skinTypeTextActive]}>
+                    {label}
+                  </Body>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
         <View style={styles.section}>
-          <Eyebrow>Filed readings</Eyebrow>
-          <TouchableOpacity style={styles.settingRow} onPress={handleClearHistory}>
+          <Body style={styles.sectionTitle}>Saved results</Body>
+          <TouchableOpacity
+            style={styles.settingRow}
+            onPress={handleClearHistory}
+            accessibilityRole="button"
+          >
             <View style={styles.settingInfo}>
-              <Text style={[styles.settingLabel, { color: colors.oxblood }]}>
-                Clear filed readings
-              </Text>
-              <Text style={styles.settingDescription}>Removes saved results on this device</Text>
+              <Body style={{ color: colors.oxblood }}>Clear saved results</Body>
+              <BodySm>Removes saved results on this device</BodySm>
             </View>
             <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
           </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
-          <Eyebrow>On file</Eyebrow>
-          {[
-            ["Reader", "EfficientNetB0, multi-task"],
-            ["Conditions", "7 entries"],
-            ["Skin types", "Dry · Normal · Oily"],
-            ["Stock", "1,500+ items from Nepal"],
-            ["Shelves", "Jeevee · Oriflame"],
-          ].map(([k, v]) => (
+          <Body style={styles.sectionTitle}>About</Body>
+          {ABOUT_ROWS.map(([k, v]) => (
             <View key={k} style={styles.aboutRow}>
-              <Text style={styles.aboutLabel}>{k}</Text>
-              <Text style={styles.aboutValue}>{v}</Text>
+              <Eyebrow style={styles.aboutLabel}>{k}</Eyebrow>
+              <BodySm style={styles.aboutValue}>{v}</BodySm>
             </View>
           ))}
         </View>
 
         <View style={styles.footnote}>
-          <Ionicons name="reader-outline" size={16} color={colors.textSecondary} />
-          <Text style={styles.footnoteText}>
+          <Ionicons name="information-circle-outline" size={16} color={colors.textSecondary} />
+          <BodySm style={styles.footnoteText}>
             Cosmetic guidance only. See a dermatologist for medical concerns.
-          </Text>
+          </BodySm>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -133,13 +138,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: theme.spacing.sm,
-    gap: 6,
-  },
-  title: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.xl,
-    letterSpacing: -0.3,
-    color: colors.textPrimary,
+    gap: theme.spacing.xs2,
   },
   section: {
     backgroundColor: colors.surface,
@@ -149,27 +148,21 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     gap: 10,
   },
+  sectionTitle: {
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.md,
+    color: colors.textPrimary,
+  },
   settingRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 4,
+    paddingVertical: theme.spacing.xs,
   },
   settingInfo: {
     flex: 1,
     marginRight: theme.spacing.sm,
     gap: 2,
-  },
-  settingLabel: {
-    fontFamily: theme.fontFamily.bodySemi,
-    fontSize: theme.fontSize.md,
-    color: colors.textPrimary,
-  },
-  settingDescription: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.3,
-    color: colors.textSecondary,
   },
   divider: {
     height: 1,
@@ -177,13 +170,13 @@ const styles = StyleSheet.create({
   },
   skinTypeOptions: {
     flexDirection: "row",
-    gap: 8,
-    marginTop: 4,
+    gap: theme.spacing.sm,
+    marginTop: theme.spacing.xs,
   },
   skinTypeChoice: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 6,
+    borderRadius: 999,
     backgroundColor: colors.paper,
     alignItems: "center",
     borderWidth: 1,
@@ -194,9 +187,8 @@ const styles = StyleSheet.create({
     borderColor: colors.pine,
   },
   skinTypeText: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.8,
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.sm,
     color: colors.textSecondary,
   },
   skinTypeTextActive: {
@@ -205,28 +197,22 @@ const styles = StyleSheet.create({
   aboutRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 12,
+    gap: theme.spacing.md,
     paddingVertical: 7,
     borderTopWidth: 1,
     borderTopColor: colors.line,
   },
   aboutLabel: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
     color: colors.textTertiary,
   },
   aboutValue: {
-    fontFamily: theme.fontFamily.bodyMedium,
-    fontSize: theme.fontSize.sm,
     color: colors.textPrimary,
     textAlign: "right",
   },
   footnote: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 8,
+    gap: theme.spacing.sm,
     padding: theme.spacing.md,
     backgroundColor: colors.sage,
     borderWidth: 1,
@@ -235,9 +221,6 @@ const styles = StyleSheet.create({
   },
   footnoteText: {
     flex: 1,
-    fontFamily: theme.fontFamily.body,
-    fontSize: 12,
-    color: colors.textSecondary,
     lineHeight: 18,
   },
 });

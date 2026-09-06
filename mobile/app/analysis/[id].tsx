@@ -1,40 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import React from "react";
+import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, conditionColors } from "../../constants/colors";
+import { colors, conditionColor } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Ticket, Perforation, Eyebrow } from "../../components/ui/Card";
+import { Ticket, Perforation } from "../../components/ui/Card";
+import { Eyebrow, DisplayHeading, DisplayLg, Body, BodySm, Caption } from "../../components/ui/Typography";
 import { Badge } from "../../components/ui/Badge";
 import { ConfidenceBar } from "../../components/ui/ConfidenceBar";
+import { ErrorState } from "../../components/ui/ErrorState";
+import { LoadingState } from "../../components/ui/LoadingState";
 import { RoutineStrip } from "../../components/RoutineStrip";
 import { RoutineStep } from "../../components/RoutineStep";
-import { LoadingSpinner } from "../../components/ui/LoadingSpinner";
+import { api } from "../../services/api";
+import { toUserMessage } from "../../services/apiError";
+import { useFetcher } from "../../hooks/useFetcher";
 import { AnalysisResult, ProductRecommendation } from "../../types";
 
 function ProductRecCard({ rec, onPress }: { rec: ProductRecommendation; onPress: () => void }) {
   return (
-    <TouchableOpacity style={styles.recCard} onPress={onPress} activeOpacity={0.75}>
+    <TouchableOpacity style={styles.recCard} onPress={onPress} activeOpacity={0.75} accessibilityRole="button">
       <View style={styles.recHeader}>
-        <Text style={styles.recName} numberOfLines={1}>
+        <Body style={styles.recName} numberOfLines={1}>
           {rec.name}
-        </Text>
-        <Text style={styles.recScore}>{rec.score.toFixed(2)}</Text>
+        </Body>
+        <Caption style={styles.recScore}>{rec.score.toFixed(2)}</Caption>
       </View>
-      <Text style={styles.recFacts}>
-        {rec.brand.toUpperCase()} · RS. {Math.round(rec.discounted_price || rec.price || 0).toLocaleString()} ·{" "}
-        {rec.rating ? `★ ${rec.rating.toFixed(1)}` : "UNRATED"}
-      </Text>
-      {rec.matching_ingredients.length > 0 && (
-        <Text style={styles.recIngredients} numberOfLines={1}>
+      <BodySm style={styles.recFacts} numberOfLines={1}>
+        {rec.brand} · Rs. {Math.round(rec.discounted_price || rec.price || 0).toLocaleString()} ·{" "}
+        {rec.rating ? `★ ${rec.rating.toFixed(1)}` : "No rating yet"}
+      </BodySm>
+      {rec.matching_ingredients.length > 0 ? (
+        <BodySm style={styles.recIngredients} numberOfLines={1}>
           Fits · {rec.matching_ingredients.join(", ")}
-        </Text>
-      )}
+        </BodySm>
+      ) : null}
     </TouchableOpacity>
   );
 }
 
-function splitRoutine(steps: string[]): { am: string[]; pm: string[] } {
+/**
+ * Heuristic AM/PM split when the SLM did not return a routine.
+ * Known limitation: splits by count, not by step semantics. The SLM
+ * path is preferred when available.
+ */
+function splitRoutineByCount(steps: string[]): { am: string[]; pm: string[] } {
   if (steps.length <= 1) return { am: steps, pm: [] };
   const half = Math.ceil(steps.length / 2);
   return { am: steps.slice(0, half), pm: steps.slice(half) };
@@ -43,25 +53,48 @@ function splitRoutine(steps: string[]): { am: string[]; pm: string[] } {
 export default function AnalysisScreen() {
   const params = useLocalSearchParams<{ id: string; result?: string }>();
   const router = useRouter();
-  const [result, setResult] = useState<AnalysisResult | null>(null);
 
-  useEffect(() => {
-    if (params.result) {
-      try {
-        setResult(JSON.parse(params.result));
-      } catch {}
+  // Fast path: result was passed in via the route (avoids a refetch).
+  const [fastResult, setFastResult] = React.useState<AnalysisResult | null>(() => {
+    if (!params.result) return null;
+    try {
+      return JSON.parse(params.result) as AnalysisResult;
+    } catch {
+      return null;
     }
-  }, [params.result]);
+  });
 
+  // Slow path: fetch by id when fast path is empty.
+  const { data: fetched, loading, error, retry } = useFetcher<AnalysisResult>(
+    () => api.getAnalysis(params.id),
+    [params.id],
+    { enabled: !fastResult && Boolean(params.id) },
+  );
+
+  const result = fastResult ?? fetched;
   if (!result) {
-    return <LoadingSpinner />;
+    if (error) {
+      const { title, message } = toUserMessage(error);
+      return (
+        <View style={styles.centered}>
+          <ErrorState
+            title={title}
+            message={message}
+            baseUrl={api.getBaseUrl()}
+            onRetry={retry}
+          />
+        </View>
+      );
+    }
+    return <LoadingState eyebrow="Result · loading" rows={2} compact />;
   }
 
-  const conditionColor = conditionColors[result.detected_condition] || colors.textSecondary;
-  const strip = result.slm && (result.slm.routine.am.length > 0 || result.slm.routine.pm.length > 0)
-    ? result.slm.routine
-    : splitRoutine(result.routine_suggestion || []);
-  const isSerious = result.is_medical && result.detected_condition === "Carcinoma";
+  const accent = conditionColor(result.detected_condition);
+  const strip =
+    result.slm && (result.slm.routine.am.length > 0 || result.slm.routine.pm.length > 0)
+      ? result.slm.routine
+      : splitRoutineByCount(result.routine_suggestion || []);
+  const isSerious = result.is_medical && result.detected_condition?.toLowerCase() === "carcinoma";
 
   return (
     <ScrollView
@@ -70,46 +103,48 @@ export default function AnalysisScreen() {
       showsVerticalScrollIndicator={false}
     >
       <Ticket>
-        <Eyebrow>Prescription · filed {String(params.id || "").slice(0, 8)}</Eyebrow>
-        <Text style={styles.condition}>{result.detected_condition}</Text>
-        <Text style={styles.readout}>
-          {result.skin_type ? `${result.skin_type.toUpperCase()} ${Math.round(result.skin_type_confidence * 100)}%` : ""}{result.skin_type ? "  ·  " : ""}READING {Math.round(result.condition_confidence * 100)}%
-        </Text>
+        <Eyebrow>Your result</Eyebrow>
+        <DisplayHeading style={styles.condition}>{result.detected_condition}</DisplayHeading>
+        <BodySm style={styles.readout}>
+          {result.skin_type ? `${result.skin_type} · ${Math.round(result.skin_type_confidence * 100)}% skin type` : ""}
+          {result.skin_type ? "  ·  " : ""}
+          {Math.round(result.condition_confidence * 100)}% reading
+        </BodySm>
         <View style={styles.meterGap}>
-          <ConfidenceBar label="Reading confidence" confidence={result.condition_confidence} color={conditionColor} />
-          {result.skin_type_confidence > 0 && (
+          <ConfidenceBar label="Reading confidence" confidence={result.condition_confidence} color={accent} />
+          {result.skin_type_confidence > 0 ? (
             <ConfidenceBar label="Skin type" confidence={result.skin_type_confidence} />
-          )}
+          ) : null}
         </View>
 
         <Perforation />
 
-        <Eyebrow>Your routine</Eyebrow>
+        <Body style={styles.sectionTitle}>Your routine</Body>
         <View style={styles.stripGap}>
           <RoutineStrip am={strip.am} pm={strip.pm} />
         </View>
 
-        {isSerious && (
+        {isSerious ? (
           <View style={styles.serious}>
             <Ionicons name="alert-circle" size={18} color={colors.oxblood} />
-            <Text style={styles.seriousText}>
+            <BodySm style={styles.seriousText}>
               This reading needs a dermatologist promptly. This app does not diagnose.
-            </Text>
+            </BodySm>
           </View>
-        )}
+        ) : null}
       </Ticket>
 
-      <Text style={styles.title}>{result.title}</Text>
-      <Text style={styles.description}>{result.description}</Text>
+      <DisplayLg>{result.title}</DisplayLg>
+      <Body style={styles.description}>{result.description}</Body>
 
-      {result.recommendations && Object.keys(result.recommendations).length > 0 && (
-        <>
-          <Eyebrow>Why these fit</Eyebrow>
+      {result.recommendations && Object.keys(result.recommendations).length > 0 ? (
+        <View>
+          <Body style={styles.sectionTitle}>Why these fit</Body>
           {Object.entries(result.recommendations).map(([category, recs]) => (
             <View key={category} style={styles.section}>
               <View style={styles.sectionHead}>
-                <Text style={styles.sectionName}>{category}</Text>
-                <Text style={styles.sectionCount}>{recs.length} items</Text>
+                <Body style={styles.sectionName}>{category}</Body>
+                <Caption>{recs.length} items</Caption>
               </View>
               {recs.slice(0, 3).map((rec) => (
                 <ProductRecCard
@@ -120,40 +155,40 @@ export default function AnalysisScreen() {
               ))}
             </View>
           ))}
-        </>
-      )}
+        </View>
+      ) : null}
 
-      {result.slm && (
-        <>
-          <Eyebrow>Dispenser notes</Eyebrow>
+      {result.slm ? (
+        <View>
+          <Body style={styles.sectionTitle}>Personal notes</Body>
           <View style={styles.section}>
             {result.slm.chosen.map((item, idx) => (
               <View key={idx} style={styles.slmItem}>
-                <Text style={styles.slmName}>{item.name}</Text>
-                <Text style={styles.slmCategory}>{item.category}</Text>
-                <Text style={styles.slmReason}>{item.reason}</Text>
+                <Body style={styles.slmName}>{item.name}</Body>
+                <Caption style={styles.slmCategory}>{item.category}</Caption>
+                <BodySm style={styles.slmReason}>{item.reason}</BodySm>
               </View>
             ))}
           </View>
-        </>
-      )}
+        </View>
+      ) : null}
 
-      {result.routine_suggestion.length > 0 && !(result.slm?.routine.am.length || result.slm?.routine.pm.length) && (
-        <>
-          <Eyebrow>Steps in order</Eyebrow>
+      {result.routine_suggestion.length > 0 && !(result.slm?.routine.am.length || result.slm?.routine.pm.length) ? (
+        <View>
+          <Body style={styles.sectionTitle}>Steps in order</Body>
           <View style={styles.section}>
             {result.routine_suggestion.map((step, idx) => (
               <RoutineStep key={idx} step={idx + 1} title={step} />
             ))}
           </View>
-        </>
-      )}
+        </View>
+      ) : null}
 
       <View style={styles.footnote}>
         <Badge label="Cosmetic only" size="sm" />
-        <Text style={styles.footnoteText}>
+        <BodySm style={styles.footnoteText}>
           Not medical advice. See a dermatologist for medical concerns.
-        </Text>
+        </BodySm>
       </View>
     </ScrollView>
   );
@@ -169,20 +204,16 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing.xxl,
     gap: theme.spacing.md,
   },
+  centered: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   condition: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: 30,
-    letterSpacing: -0.5,
-    color: colors.textPrimary,
-    marginTop: 8,
+    marginTop: theme.spacing.sm,
   },
   readout: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.8,
+    marginTop: theme.spacing.xs2,
     color: colors.textSecondary,
-    marginTop: 6,
-    textTransform: "uppercase",
   },
   meterGap: {
     marginTop: theme.spacing.md,
@@ -203,21 +234,18 @@ const styles = StyleSheet.create({
   },
   seriousText: {
     flex: 1,
-    fontFamily: theme.fontFamily.bodyMedium,
-    fontSize: theme.fontSize.sm,
     color: colors.oxblood,
     lineHeight: 20,
   },
-  title: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.lg,
-    color: colors.textPrimary,
-  },
   description: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.md,
-    color: colors.textSecondary,
+    marginTop: -theme.spacing.sm,
     lineHeight: 23,
+  },
+  sectionTitle: {
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.md,
+    color: colors.textPrimary,
+    marginBottom: theme.spacing.sm,
   },
   section: {
     backgroundColor: colors.surface,
@@ -233,16 +261,9 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.sm,
   },
   sectionName: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 12,
-    letterSpacing: 1,
-    textTransform: "uppercase",
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.sm,
     color: colors.textPrimary,
-  },
-  sectionCount: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    color: colors.textTertiary,
   },
   recCard: {
     paddingVertical: theme.spacing.sm,
@@ -253,30 +274,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   recName: {
     flex: 1,
     fontFamily: theme.fontFamily.bodySemi,
     fontSize: theme.fontSize.sm,
-    color: colors.textPrimary,
   },
   recScore: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
     color: colors.dispensary,
   },
   recFacts: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 10,
-    letterSpacing: 0.4,
-    color: colors.textSecondary,
     marginTop: 3,
+    color: colors.textSecondary,
   },
   recIngredients: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: 12,
-    color: colors.textTertiary,
     marginTop: 3,
   },
   slmItem: {
@@ -287,21 +299,12 @@ const styles = StyleSheet.create({
   slmName: {
     fontFamily: theme.fontFamily.bodySemi,
     fontSize: theme.fontSize.sm,
-    color: colors.textPrimary,
   },
   slmCategory: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 10,
-    letterSpacing: 0.8,
-    color: colors.textTertiary,
-    textTransform: "uppercase",
     marginTop: 2,
   },
   slmReason: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
-    marginTop: 4,
+    marginTop: theme.spacing.xs,
     lineHeight: 20,
   },
   footnote: {
@@ -316,9 +319,6 @@ const styles = StyleSheet.create({
   },
   footnoteText: {
     flex: 1,
-    fontFamily: theme.fontFamily.body,
-    fontSize: 12,
-    color: colors.textSecondary,
     lineHeight: 18,
   },
 });

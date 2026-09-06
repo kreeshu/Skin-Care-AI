@@ -37,9 +37,9 @@ export function ImagePickerComponent({ imageUri, onImageSelected }: ImagePickerP
     return (
       <View style={styles.filed}>
         <Ionicons name="checkmark-circle" size={20} color={colors.dispensary} />
-        <Text style={styles.filedText}>Photo filed · ready to analyze</Text>
+        <Text style={styles.filedText}>Photo ready — you can check it</Text>
         <TouchableOpacity onPress={() => onImageSelected("")} hitSlop={8}>
-          <Text style={styles.replace}>Replace</Text>
+          <Text style={styles.replace}>Retake</Text>
         </TouchableOpacity>
       </View>
     );
@@ -89,10 +89,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   optionSub: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 10,
-    letterSpacing: 0.6,
-    textTransform: "uppercase" as const,
+    fontFamily: theme.fontFamily.body,
+    fontSize: 12,
+    letterSpacing: 0,
     color: colors.textSecondary,
   },
   filed: {
@@ -108,11 +107,10 @@ const styles = StyleSheet.create({
   },
   filedText: {
     flex: 1,
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.4,
+    fontFamily: theme.fontFamily.bodyMedium,
+    fontSize: theme.fontSize.sm,
+    letterSpacing: 0,
     color: colors.textPrimary,
-    textTransform: "uppercase" as const,
   },
   replace: {
     fontFamily: theme.fontFamily.bodySemi,

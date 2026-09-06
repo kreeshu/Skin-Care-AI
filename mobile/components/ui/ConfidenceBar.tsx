@@ -9,7 +9,7 @@ interface ConfidenceBarProps {
   color?: string;
 }
 
-/** Lab readout: mono label + hairline meter, no gradient. */
+/** Dewy meter: mono label + soft petal track with rose fill. Data, not decoration. */
 export function ConfidenceBar({
   label,
   confidence,
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
     fontWeight: theme.fontWeight.semibold,
   },
   track: {
-    height: 4,
+    height: 8,
     backgroundColor: colors.sage,
-    borderRadius: 2,
+    borderRadius: 999,
     overflow: "hidden",
   },
   fill: {
     height: "100%",
-    borderRadius: 2,
+    borderRadius: 999,
   },
 });

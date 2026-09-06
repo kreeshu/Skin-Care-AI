@@ -14,7 +14,7 @@ interface ProductCardProps {
   isFavorite?: boolean;
 }
 
-/** Ledger row: thumb + ruled facts, not a pastel pill card. */
+/** Soft row: petal thumb + plain facts, price first. */
 export function ProductCard({ product, onPress, onFavorite, isFavorite = false }: ProductCardProps) {
   const priceInfo = formatDiscount(product.price, product.discounted_price);
 
@@ -24,7 +24,9 @@ export function ProductCard({ product, onPress, onFavorite, isFavorite = false }
         <Image source={{ uri: product.image_url }} style={styles.thumb} resizeMode="cover" />
       ) : (
         <View style={styles.thumbPlaceholder}>
-          <Ionicons name="leaf-outline" size={24} color={colors.textTertiary} />
+          <Text style={styles.thumbInitials}>
+            {(product.brand || product.name || "?").trim().charAt(0).toUpperCase()}
+          </Text>
         </View>
       )}
 
@@ -79,42 +81,47 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     overflow: "hidden",
     marginBottom: theme.spacing.sm,
-    minHeight: 104,
+    minHeight: 120,
   },
   thumb: {
-    width: 92,
+    width: 112,
     height: "100%",
-    minHeight: 104,
+    minHeight: 120,
     backgroundColor: colors.sage,
   },
   thumbPlaceholder: {
-    width: 92,
-    minHeight: 104,
+    width: 112,
+    minHeight: 120,
     backgroundColor: colors.sage,
     justifyContent: "center",
     alignItems: "center",
   },
+  thumbInitials: {
+    fontFamily: theme.fontFamily.display,
+    fontSize: 28,
+    color: colors.dispensary,
+  },
   content: {
     flex: 1,
-    padding: theme.spacing.sm,
-    gap: 3,
+    padding: theme.spacing.md,
+    gap: 4,
   },
   index: {
     fontFamily: theme.fontFamily.mono,
     fontSize: 10,
-    letterSpacing: 0.8,
+    letterSpacing: 0.6,
     color: colors.textTertiary,
   },
   name: {
     fontFamily: theme.fontFamily.bodySemi,
-    fontSize: theme.fontSize.sm,
+    fontSize: theme.fontSize.md,
     color: colors.textPrimary,
-    lineHeight: 19,
+    lineHeight: 21,
   },
   facts: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    color: colors.textSecondary,
+    fontFamily: theme.fontFamily.bodyMedium,
+    fontSize: 13,
+    color: colors.textPrimary,
   },
   tagRow: {
     flexDirection: "row",

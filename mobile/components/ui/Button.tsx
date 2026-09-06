@@ -6,9 +6,10 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
+  Platform,
 } from "react-native";
 import { colors } from "../../constants/colors";
-import { theme } from "../../constants/theme";
+import { theme, shadow } from "../../constants/theme";
 
 interface ButtonProps {
   title: string;
@@ -19,6 +20,7 @@ interface ButtonProps {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  fullWidth?: boolean;
 }
 
 export function Button({
@@ -30,26 +32,20 @@ export function Button({
   disabled = false,
   style,
   textStyle,
+  fullWidth = false,
 }: ButtonProps) {
-  const buttonStyles = [
-    styles.base,
-    styles[variant],
-    styles[`size_${size}`],
-    disabled && styles.disabled,
-    style,
-  ];
-
-  const textStyles = [
-    styles.text,
-    styles[`text_${variant}`],
-    styles[`textSize_${size}`],
-    disabled && styles.textDisabled,
-    textStyle,
-  ];
-
   return (
     <TouchableOpacity
-      style={buttonStyles}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      style={[
+        styles.base,
+        styles[variant],
+        styles[`size_${size}`],
+        disabled && styles.disabled,
+        fullWidth && styles.fullWidth,
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.85}
@@ -60,11 +56,23 @@ export function Button({
           size="small"
         />
       ) : (
-        <Text style={textStyles}>{title}</Text>
+        <Text style={[styles.text, styles[`text_${variant}`], styles[`textSize_${size}`], textStyle]}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
 }
+
+const FOCUS_RING: ViewStyle = Platform.select({
+  web: {
+    outlineStyle: "solid",
+    outlineWidth: 2,
+    outlineOffset: 2,
+    outlineColor: colors.dispensary,
+  },
+  default: {},
+}) as ViewStyle;
 
 const styles = StyleSheet.create({
   base: {
@@ -72,6 +80,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    ...shadow.hairline,
+    ...FOCUS_RING,
   },
   primary: {
     backgroundColor: colors.dispensary,
@@ -87,17 +97,20 @@ const styles = StyleSheet.create({
   ghost: {
     backgroundColor: "transparent",
   },
+  fullWidth: {
+    alignSelf: "stretch",
+  },
   size_sm: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
   },
   size_md: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: theme.spacing.xs2 + 6, // 12
+    paddingHorizontal: theme.spacing.lg,
   },
   size_lg: {
     paddingVertical: 15,
-    paddingHorizontal: 32,
+    paddingHorizontal: theme.spacing.xl,
   },
   disabled: {
     opacity: 0.5,
@@ -126,9 +139,6 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.md,
   },
   textSize_lg: {
-    fontSize: theme.fontSize.md,
-  },
-  textDisabled: {
-    opacity: 0.7,
+    fontSize: theme.fontSize.lg,
   },
 });

@@ -8,7 +8,7 @@ interface RoutineStepProps {
   title: string;
 }
 
-/** Dose line: mono index + body text on a ruled line. */
+/** Step line: mono index + body text on a ruled line. Only numbered list in the app. */
 export function RoutineStep({ step, title }: RoutineStepProps) {
   return (
     <View style={styles.container}>

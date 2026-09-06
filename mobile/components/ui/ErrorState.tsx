@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
-import { theme } from "../../constants/theme";
+import { theme, shadow } from "../../constants/theme";
 import { Button } from "./Button";
+import { Eyebrow } from "./Typography";
 
 interface ErrorStateProps {
   title: string;
@@ -12,6 +13,7 @@ interface ErrorStateProps {
   icon?: keyof typeof Ionicons.glyphMap;
   onRetry: () => void;
   retryLabel?: string;
+  /** When true, removes the full-page flex so the component can sit inside a card or section. */
   compact?: boolean;
 }
 
@@ -19,14 +21,14 @@ export function ErrorState({
   title,
   message,
   baseUrl,
-  icon = "reader-outline",
+  icon = "alert-circle-outline",
   onRetry,
   retryLabel = "Retry",
   compact = false,
 }: ErrorStateProps) {
   return (
     <View style={[styles.container, compact && styles.compact]}>
-      <Text style={styles.eyebrow}>Dispensary note</Text>
+      <Eyebrow>Something went wrong</Eyebrow>
       <View style={styles.iconWell}>
         <Ionicons name={icon} size={28} color={colors.pine} />
       </View>
@@ -52,38 +54,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: theme.spacing.lg,
-    gap: 8,
+    gap: theme.spacing.sm,
     backgroundColor: colors.paper,
   },
   compact: {
     flex: 0,
     paddingVertical: theme.spacing.md,
   },
-  eyebrow: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 1.2,
-    textTransform: "uppercase" as const,
-    color: colors.textSecondary,
-  },
   iconWell: {
     width: 56,
     height: 56,
-    borderRadius: 10,
+    borderRadius: 28,
     backgroundColor: colors.sage,
     borderWidth: 1,
     borderColor: colors.line,
     justifyContent: "center",
     alignItems: "center",
     marginVertical: theme.spacing.sm,
-    ...Platform.select({
-      web: {
-        boxShadow: "0 1px 4px rgba(15,36,30,0.08)",
-      } as any,
-      default: {
-        elevation: 1,
-      },
-    }),
+    ...shadow.hairline,
   },
   title: {
     fontFamily: theme.fontFamily.display,
@@ -97,7 +85,7 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.sm,
     color: colors.textSecondary,
     textAlign: "center",
-    lineHeight: 20,
+    lineHeight: theme.lineHeight.bodySm,
     maxWidth: 340,
   },
   hintBox: {

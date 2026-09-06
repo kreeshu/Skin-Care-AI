@@ -146,7 +146,7 @@ class ApiClient {
     sort_by?: string;
     page?: number;
     page_size?: number;
-  } = {}) {
+  } = {}): Promise<any> {
     const query = new URLSearchParams();
     if (params.search) query.set("search", params.search);
     if (params.category) query.set("category", params.category);
@@ -159,27 +159,31 @@ class ApiClient {
     return this.request(`/api/products${qs ? `?${qs}` : ""}`);
   }
 
-  async getProduct(productId: number) {
+  async getProduct(productId: number): Promise<any> {
     return this.request(`/api/products/${productId}`);
   }
 
-  async getCategories() {
-    return this.request<{ categories: string[] }>("/api/products/categories");
+  async getAnalysis(analysisId: string): Promise<any> {
+    return this.request(`/api/analysis/${encodeURIComponent(analysisId)}`);
   }
 
-  async getConditions() {
-    return this.request<{ conditions: any[] }>("/api/conditions");
+  async getCategories(): Promise<{ categories: string[] }> {
+    return this.request("/api/products/categories");
   }
 
-  async getCondition(name: string) {
+  async getConditions(): Promise<{ conditions: any[] }> {
+    return this.request("/api/conditions");
+  }
+
+  async getCondition(name: string): Promise<any> {
     return this.request(`/api/conditions/${encodeURIComponent(name)}`);
   }
 
-  async getSkinTypes() {
-    return this.request<{ skin_types: any[] }>("/api/conditions/skin-types");
+  async getSkinTypes(): Promise<{ skin_types: any[] }> {
+    return this.request("/api/conditions/skin-types");
   }
 
-  async healthCheck() {
+  async healthCheck(): Promise<any> {
     return this.request("/api/health");
   }
 }

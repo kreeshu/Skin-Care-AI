@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Button } from "../../components/ui/Button";
-import { Ticket, Well, Perforation, Eyebrow } from "../../components/ui/Card";
+import { Card, Well } from "../../components/ui/Card";
+import { DisplayHeading, Body, BodySm, Caption } from "../../components/ui/Typography";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { RoutineStrip } from "../../components/RoutineStrip";
 import { ImagePickerComponent } from "../../components/ImagePicker";
@@ -14,6 +15,14 @@ import { api } from "../../services/api";
 import { toUserMessage } from "../../services/apiError";
 import { useSettings } from "../../hooks/useSettings";
 import { AnalysisResult } from "../../types";
+
+const HOW_IT_WORKS: Array<[string, string]> = [
+  ["Take", "One clear photo in daylight"],
+  ["Check", "Condition and skin type from the photo"],
+  ["Follow", "Morning and evening steps that fit"],
+];
+
+const CONDITION_LINE = "Acne · Dark spot · Eczema · Keratosis · Milia · Rosacea · Carcinoma is flagged for a dermatologist";
 
 export default function ScanScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -29,7 +38,10 @@ export default function ScanScreen() {
     setAnalyzeError(null);
     try {
       const result = (await api.analyzeImage(imageUri, settings.useSlm)) as AnalysisResult;
-      router.push({ pathname: `/analysis/${result.id}`, params: { result: JSON.stringify(result) } });
+      router.push({
+        pathname: "/analysis/[id]",
+        params: { id: result.id, result: JSON.stringify(result) },
+      });
     } catch (error: any) {
       console.error("Analysis failed:", error);
       setAnalyzeError(error);
@@ -46,15 +58,12 @@ export default function ScanScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Eyebrow>Scan · Skincare dispensary</Eyebrow>
-          <Text style={styles.title}>Check your skin,{"\n"}get tomorrow's routine.</Text>
-          <Text style={styles.subtitle}>
-            One clear photo in daylight. We file the reading and write the routine.
-          </Text>
+          <DisplayHeading>Check your skin.</DisplayHeading>
+          <BodySm>One clear photo in daylight — get a routine that fits what we see.</BodySm>
         </View>
 
-        <Ticket style={styles.ticket}>
-          <Eyebrow>Your photo</Eyebrow>
+        <Card variant="elevated">
+          <Body style={styles.sectionTitle}>Your photo</Body>
           <View style={styles.wellGap}>
             <Well style={styles.photoWell}>
               <ImagePickerComponent
@@ -63,17 +72,18 @@ export default function ScanScreen() {
               />
               <View style={styles.wellHint}>
                 <Ionicons name="sunny-outline" size={14} color={colors.textSecondary} />
-                <Text style={styles.wellHintText}>Daylight · no filter · face fills the frame</Text>
+                <Caption>Daylight · no filter · face fills the frame</Caption>
               </View>
             </Well>
           </View>
 
           <Button
-            title={analyzing ? "Reading…" : "Analyze skin"}
+            title={analyzing ? "Checking…" : "Check my skin"}
             onPress={handleAnalyze}
             loading={analyzing}
             disabled={!imageUri || analyzing}
             size="lg"
+            fullWidth
             style={styles.analyzeButton}
           />
           {analyzeError ? (
@@ -87,37 +97,28 @@ export default function ScanScreen() {
             />
           ) : null}
 
-          <Perforation />
-
-          <Eyebrow>Tomorrow's shape</Eyebrow>
+          <Body style={styles.sectionTitle}>A sample routine</Body>
           <View style={styles.stripGap}>
             <RoutineStrip
               am={["Gel cleanser", "Niacinamide", "SPF 30"]}
               pm={["Gentle cleanse", "Moisturizer"]}
             />
           </View>
-        </Ticket>
+        </Card>
 
         <View style={styles.ledger}>
-          <Eyebrow>How the reading works</Eyebrow>
-          {[
-            ["File", "Take or upload one photo"],
-            ["Read", "We check condition and skin type"],
-            ["Write", "You get an AM/PM routine that fits"],
-          ].map(([k, v]) => (
+          <Body style={styles.sectionTitle}>How it works</Body>
+          {HOW_IT_WORKS.map(([k, v]) => (
             <View key={k} style={styles.ledgerRow}>
-              <Text style={styles.ledgerKey}>{k}</Text>
-              <Text style={styles.ledgerValue}>{v}</Text>
+              <Caption style={styles.ledgerKey}>{k}</Caption>
+              <BodySm style={styles.ledgerValue}>{v}</BodySm>
             </View>
           ))}
         </View>
 
         <View style={styles.ledger}>
-          <Eyebrow>Checks 7 common conditions</Eyebrow>
-          <Text style={styles.conditionLine}>
-            Acne · Dark spot · Eczema · Keratosis · Milia · Rosacea · Carcinoma flagged for a
-            dermatologist
-          </Text>
+          <Body style={styles.sectionTitle}>Covers 7 common conditions</Body>
+          <BodySm style={styles.conditionLine}>{CONDITION_LINE}</BodySm>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -138,24 +139,12 @@ const styles = StyleSheet.create({
     gap: theme.spacing.md,
   },
   header: {
-    paddingTop: theme.spacing.sm,
-    gap: 8,
+    paddingTop: theme.spacing.md,
+    gap: theme.spacing.xs2,
   },
-  title: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: 30,
-    lineHeight: 34,
-    letterSpacing: theme.letterSpacing.tightDisplay,
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  ticket: {
-    padding: theme.spacing.md,
+  sectionTitle: {
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.md,
   },
   wellGap: {
     marginTop: theme.spacing.sm,
@@ -166,15 +155,8 @@ const styles = StyleSheet.create({
   wellHint: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: theme.spacing.xs2,
     marginTop: theme.spacing.sm,
-  },
-  wellHintText: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 10,
-    letterSpacing: 0.6,
-    textTransform: "uppercase",
-    color: colors.textSecondary,
   },
   analyzeButton: {
     marginTop: theme.spacing.md,
@@ -192,31 +174,21 @@ const styles = StyleSheet.create({
   },
   ledgerRow: {
     flexDirection: "row",
-    gap: 12,
+    gap: theme.spacing.md - 4,
     alignItems: "baseline",
     borderTopWidth: 1,
     borderTopColor: colors.line,
     paddingTop: 10,
   },
   ledgerKey: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.8,
     color: colors.dispensary,
     width: 52,
-    textTransform: "uppercase",
   },
   ledgerValue: {
     flex: 1,
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textPrimary,
     lineHeight: 20,
   },
   conditionLine: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textSecondary,
     lineHeight: 22,
   },
 });

@@ -10,7 +10,7 @@ interface BadgeProps {
   size?: "sm" | "md";
 }
 
-/** Dose tag: mono uppercase ticket label, not a pastel pill. */
+/** Soft pill tag for categories, skin types, concerns. Mono stays — it's data, not a heading. */
 export function Badge({
   label,
   color = colors.pine,
@@ -18,7 +18,7 @@ export function Badge({
   size = "md",
 }: BadgeProps) {
   return (
-    <View style={[styles.badge, { backgroundColor }, size === "sm" && styles.sm]}>
+    <View style={[styles.badge, { backgroundColor, borderColor: backgroundColor }, size === "sm" && styles.sm]}>
       <Text style={[styles.text, { color }, size === "sm" && styles.textSm]}>{label}</Text>
     </View>
   );
@@ -26,9 +26,9 @@ export function Badge({
 
 const styles = StyleSheet.create({
   badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
     alignSelf: "flex-start",
     borderWidth: 1,
     borderColor: colors.line,

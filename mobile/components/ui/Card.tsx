@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet, ViewStyle, Platform } from "react-native";
+import { View, Text, StyleSheet, ViewStyle } from "react-native";
 import { colors } from "../../constants/colors";
-import { theme } from "../../constants/theme";
+import { theme, shadow } from "../../constants/theme";
 
 interface CardProps {
   children: React.ReactNode;
@@ -13,12 +13,12 @@ export function Card({ children, style, variant = "default" }: CardProps) {
   return <View style={[styles.card, styles[variant], style]}>{children}</View>;
 }
 
-/** Prescription ticket: white sheet with hairline border + perforated divider. */
+/** Glow ticket: white sheet with pink veil border + soft rose lift. Only used for the analysis result. */
 export function Ticket({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
   return <View style={[styles.card, styles.ticket, style]}>{children}</View>;
 }
 
-/** Pressed sage well for photo inputs and inactive surfaces. */
+/** Pressed petal well for photo inputs and inactive surfaces. */
 export function Well({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
   return <View style={[styles.well, style]}>{children}</View>;
 }
@@ -26,11 +26,6 @@ export function Well({ children, style }: { children: React.ReactNode; style?: V
 /** Dashed perforation line used inside tickets. */
 export function Perforation({ style }: { style?: ViewStyle }) {
   return <View style={[styles.perforation, style]} />;
-}
-
-/** Mono eyebrow label: SCAN / INDEX / PRESCRIPTION / LABEL / MONOGRAPH */
-export function Eyebrow({ children, style }: { children: React.ReactNode; style?: any }) {
-  return <Text style={[styles.eyebrow, style]}>{children}</Text>;
 }
 
 interface CardHeaderProps {
@@ -66,14 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.line,
-    ...Platform.select({
-      web: {
-        boxShadow: "0 1px 4px rgba(15,36,30,0.08)",
-      } as any,
-      default: {
-        elevation: 1,
-      },
-    }),
+    ...shadow.hairline,
   },
   outlined: {
     backgroundColor: "transparent",
@@ -84,14 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.line,
-    ...Platform.select({
-      web: {
-        boxShadow: "0 2px 10px rgba(15,36,30,0.08)",
-      } as any,
-      default: {
-        elevation: 2,
-      },
-    }),
+    ...shadow.ticket,
   },
   well: {
     backgroundColor: colors.sage,
@@ -103,15 +84,8 @@ const styles = StyleSheet.create({
   perforation: {
     borderTopWidth: 1,
     borderTopColor: colors.line,
-    borderStyle: "dashed" as any,
+    borderStyle: "dashed",
     marginVertical: theme.spacing.md,
-  },
-  eyebrow: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: theme.letterSpacing.monoEyebrow,
-    textTransform: "uppercase" as const,
-    color: colors.textSecondary,
   },
   header: {
     flexDirection: "row",
@@ -127,15 +101,13 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.md,
     fontWeight: theme.fontWeight.semibold,
     color: colors.textPrimary,
-    letterSpacing: 0.6,
-    textTransform: "uppercase" as const,
+    letterSpacing: 0,
   },
   subtitle: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 0.8,
+    fontFamily: theme.fontFamily.body,
+    fontSize: theme.fontSize.sm,
+    letterSpacing: 0,
     color: colors.textSecondary,
-    marginTop: 4,
-    textTransform: "uppercase" as const,
+    marginTop: theme.spacing.xs,
   },
 });

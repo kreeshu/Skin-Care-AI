@@ -1,81 +1,65 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import React from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { colors, conditionColors } from "../../constants/colors";
+import { colors, conditionColor } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Badge } from "../../components/ui/Badge";
-import { Eyebrow } from "../../components/ui/Card";
+import { Eyebrow, DisplayHeading, Body, BodySm, Caption } from "../../components/ui/Typography";
 import { ErrorState } from "../../components/ui/ErrorState";
+import { EmptyState } from "../../components/ui/EmptyState";
+import { LoadingState } from "../../components/ui/LoadingState";
 import { RoutineStep } from "../../components/RoutineStep";
 import { Condition } from "../../types";
 import { api } from "../../services/api";
 import { isApiError, toUserMessage } from "../../services/apiError";
+import { useFetcher } from "../../hooks/useFetcher";
 
 export default function ConditionDetailScreen() {
   const params = useLocalSearchParams<{ name: string }>();
-  const [condition, setCondition] = useState<Condition | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<unknown>(null);
-  const [retryKey, setRetryKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = (await api.getCondition(params.name || "")) as Condition;
-        if (!cancelled) setCondition(data);
-      } catch (err) {
-        console.error("Failed to load condition:", err);
-        if (!cancelled) setError(err);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [params.name, retryKey]);
+  const { data: condition, loading, error, retry } = useFetcher<Condition>(
+    () => api.getCondition(params.name || ""),
+    [params.name],
+  );
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.dispensary} />
-      </View>
-    );
+    return <LoadingState eyebrow="Guide · loading" rows={3} compact />;
   }
 
   if (error) {
     if (isApiError(error) && error.kind === "http" && error.status === 404) {
       return (
-        <View style={styles.empty}>
-          <Eyebrow>Monograph missing</Eyebrow>
-          <Text style={styles.emptyTitle}>No entry for this name.</Text>
+        <View style={styles.container}>
+          <EmptyState
+            eyebrow="Not found"
+            title="No guide for this name."
+            message="The name may be misspelled, or the guide isn't ready yet."
+            icon="search-outline"
+            actionLabel="Back to history"
+          />
         </View>
       );
     }
     const { title, message } = toUserMessage(error);
     return (
-      <ErrorState
-        title={title}
-        message={message}
-        baseUrl={api.getBaseUrl()}
-        onRetry={() => setRetryKey((k) => k + 1)}
-      />
+      <View style={styles.container}>
+        <ErrorState title={title} message={message} baseUrl={api.getBaseUrl()} onRetry={retry} />
+      </View>
     );
   }
 
   if (!condition) {
     return (
-      <View style={styles.empty}>
-        <Eyebrow>Monograph missing</Eyebrow>
-        <Text style={styles.emptyTitle}>No entry for this name.</Text>
+      <View style={styles.container}>
+        <EmptyState
+          eyebrow="Not found"
+          title="No guide for this name."
+          icon="search-outline"
+        />
       </View>
     );
   }
 
-  const conditionColor = conditionColors[condition.name] || colors.textSecondary;
+  const accent = conditionColor(condition.name);
 
   return (
     <ScrollView
@@ -83,78 +67,78 @@ export default function ConditionDetailScreen() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      <Eyebrow>Monograph · {condition.is_medical ? "Flag for dermatologist" : "Common condition"}</Eyebrow>
-      <Text style={styles.name}>{condition.title}</Text>
+      <Eyebrow>Guide · {condition.is_medical ? "See a dermatologist" : "Common condition"}</Eyebrow>
+      <DisplayHeading>{condition.title}</DisplayHeading>
       <View style={styles.rule}>
-        <View style={[styles.tick, { backgroundColor: conditionColor }]} />
-        <Text style={styles.ruleText}>{condition.name.toUpperCase()}</Text>
+        <View style={[styles.tick, { backgroundColor: accent }]} />
+        <Caption style={styles.ruleText}>{condition.name.toUpperCase()}</Caption>
       </View>
 
-      <Text style={styles.description}>{condition.description}</Text>
+      <Body style={styles.description}>{condition.description}</Body>
 
-      {condition.causes.length > 0 && (
+      {condition.causes.length > 0 ? (
         <View style={styles.section}>
-          <Eyebrow>Usual causes</Eyebrow>
+          <Body style={styles.sectionTitle}>Usual causes</Body>
           {condition.causes.map((cause, idx) => (
             <View key={idx} style={styles.line}>
-              <Text style={styles.lineText}>{cause}</Text>
+              <BodySm>{cause}</BodySm>
             </View>
           ))}
         </View>
-      )}
+      ) : null}
 
-      {condition.recommended_ingredients.length > 0 && (
+      {condition.recommended_ingredients.length > 0 ? (
         <View style={styles.section}>
-          <Eyebrow>Ask for</Eyebrow>
+          <Body style={styles.sectionTitle}>Look for</Body>
           <View style={styles.tagRow}>
             {condition.recommended_ingredients.map((ing) => (
               <Badge key={ing} label={ing} size="sm" />
             ))}
           </View>
         </View>
-      )}
+      ) : null}
 
-      {condition.recommended_categories.length > 0 && (
+      {condition.recommended_categories.length > 0 ? (
         <View style={styles.section}>
-          <Eyebrow>Shop</Eyebrow>
+          <Body style={styles.sectionTitle}>Shop by category</Body>
           <View style={styles.tagRow}>
             {condition.recommended_categories.map((cat) => (
               <Badge key={cat} label={cat} size="sm" />
             ))}
           </View>
         </View>
-      )}
+      ) : null}
 
-      {condition.avoid_ingredients.length > 0 && (
+      {condition.avoid_ingredients.length > 0 ? (
         <View style={[styles.section, styles.avoid]}>
-          <Eyebrow>Leave out</Eyebrow>
+          <Body style={styles.sectionTitle}>Skip these</Body>
           <View style={styles.tagRow}>
             {condition.avoid_ingredients.map((ing) => (
               <Badge key={ing} label={ing} size="sm" />
             ))}
           </View>
         </View>
-      )}
+      ) : null}
 
-      {condition.tips.length > 0 && (
+      {condition.tips.length > 0 ? (
         <View style={styles.section}>
-          <Eyebrow>Daily care</Eyebrow>
+          <Body style={styles.sectionTitle}>Daily care</Body>
           {condition.tips.map((tip, idx) => (
             <View key={idx} style={styles.line}>
-              <Text style={styles.lineText}>{tip}</Text>
+              <BodySm>{tip}</BodySm>
             </View>
           ))}
         </View>
-      )}
+      ) : null}
 
-      {condition.routine_steps.length > 0 && (
+      {condition.routine_steps.length > 0 ? (
         <View style={styles.section}>
-          <Eyebrow>Steps in order</Eyebrow>
+          <Body style={styles.sectionTitle}>Steps in order</Body>
           {condition.routine_steps.map((step, idx) => (
             <RoutineStep key={idx} step={idx + 1} title={step} />
           ))}
         </View>
-      )}
+      ) : null}
     </ScrollView>
   );
 }
@@ -167,25 +151,12 @@ const styles = StyleSheet.create({
   content: {
     padding: theme.spacing.md,
     paddingBottom: theme.spacing.xxl,
-    gap: 12,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.background,
-  },
-  name: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: 30,
-    letterSpacing: -0.5,
-    color: colors.textPrimary,
-    lineHeight: 34,
+    gap: theme.spacing.md - 4,
   },
   rule: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: theme.spacing.sm,
   },
   tick: {
     width: 24,
@@ -193,16 +164,10 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   ruleText: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 1,
     color: colors.textSecondary,
   },
   description: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.md,
-    color: colors.textSecondary,
-    lineHeight: 23,
+    lineHeight: theme.lineHeight.body,
   },
   section: {
     backgroundColor: colors.surface,
@@ -210,37 +175,24 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.md,
-    gap: 8,
+    gap: theme.spacing.sm,
+  },
+  sectionTitle: {
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.md,
+    color: colors.textPrimary,
   },
   avoid: {
     borderColor: colors.oxblood,
   },
   line: {
-    paddingVertical: 8,
+    paddingVertical: theme.spacing.sm,
     borderTopWidth: 1,
     borderTopColor: colors.line,
-  },
-  lineText: {
-    fontFamily: theme.fontFamily.body,
-    fontSize: theme.fontSize.sm,
-    color: colors.textPrimary,
-    lineHeight: 20,
   },
   tagRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 6,
-  },
-  empty: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    padding: theme.spacing.lg,
-    gap: 8,
-  },
-  emptyTitle: {
-    fontFamily: theme.fontFamily.display,
-    fontSize: theme.fontSize.lg,
-    color: colors.textPrimary,
+    gap: theme.spacing.xs2,
   },
 });

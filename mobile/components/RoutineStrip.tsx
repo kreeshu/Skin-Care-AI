@@ -4,8 +4,9 @@ import { colors } from "../constants/colors";
 import { theme } from "../constants/theme";
 
 /**
- * Signature element: AM/PM light strip.
- * A two-column routine split by a daylight divider — order means something here.
+ * Signature element: AM/PM daylight ribbon.
+ * A two-column routine split by a peach-to-plum spine — order means something here.
+ * Solid two-half spine, no gradient dep needed.
  */
 export function RoutineStrip({
   am,
@@ -17,7 +18,7 @@ export function RoutineStrip({
   return (
     <View style={styles.strip}>
       <View style={styles.column}>
-        <Text style={styles.columnLabel}>AM · Daylight</Text>
+        <Text style={styles.columnLabel}>Morning · daylight</Text>
         {am.length === 0 ? (
           <Text style={styles.empty}>No morning steps</Text>
         ) : (
@@ -29,9 +30,12 @@ export function RoutineStrip({
           ))
         )}
       </View>
-      <View style={styles.divider} />
+      <View style={styles.divider}>
+        <View style={styles.dividerAm} />
+        <View style={styles.dividerPm} />
+      </View>
       <View style={styles.column}>
-        <Text style={[styles.columnLabel, styles.pmLabel]}>PM · Night</Text>
+        <Text style={[styles.columnLabel, styles.pmLabel]}>Evening · night</Text>
         {pm.length === 0 ? (
           <Text style={styles.empty}>No evening steps</Text>
         ) : (
@@ -62,20 +66,27 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   columnLabel: {
-    fontFamily: theme.fontFamily.mono,
-    fontSize: 11,
-    letterSpacing: 1,
-    textTransform: "uppercase" as const,
-    color: colors.amber,
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: 13,
+    letterSpacing: 0,
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   pmLabel: {
     color: colors.pine,
   },
   divider: {
-    width: 2,
+    width: 3,
+    borderRadius: 999,
+    overflow: "hidden",
+  },
+  dividerAm: {
+    flex: 1,
     backgroundColor: colors.amber,
-    opacity: 0.55,
+  },
+  dividerPm: {
+    flex: 1,
+    backgroundColor: colors.pine,
   },
   doseLine: {
     flexDirection: "row",

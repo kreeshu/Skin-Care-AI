@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { colors } from "../constants/colors";
+import { colors, conditionColor } from "../constants/colors";
 import { theme } from "../constants/theme";
-import { conditionColors } from "../constants/colors";
 
 interface ConditionBadgeProps {
   condition: string;
@@ -11,7 +10,7 @@ interface ConditionBadgeProps {
 }
 
 export function ConditionBadge({ condition, confidence, size = "md" }: ConditionBadgeProps) {
-  const color = conditionColors[condition] || colors.textSecondary;
+  const color = conditionColor(condition);
 
   return (
     <View style={[styles.badge, size === "sm" && styles.sm, size === "lg" && styles.lg]}>
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 6,
+    borderRadius: 999,
     borderWidth: 1,
     borderColor: colors.line,
     backgroundColor: colors.surface,

@@ -40,7 +40,7 @@ export default function RootLayout() {
           name="analysis/[id]"
           options={{
             headerShown: true,
-            headerTitle: "Prescription",
+            headerTitle: "Your result",
             headerTintColor: colors.textPrimary,
             headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
@@ -51,7 +51,7 @@ export default function RootLayout() {
           name="product/[id]"
           options={{
             headerShown: true,
-            headerTitle: "Label",
+            headerTitle: "Product",
             headerTintColor: colors.textPrimary,
             headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
@@ -62,7 +62,7 @@ export default function RootLayout() {
           name="condition/[name]"
           options={{
             headerShown: true,
-            headerTitle: "Monograph",
+            headerTitle: "Guide",
             headerTintColor: colors.textPrimary,
             headerStyle: { backgroundColor: colors.background },
             headerShadowVisible: false,
