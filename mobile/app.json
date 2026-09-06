@@ -9,9 +9,15 @@
     "scheme": "skincare-ai",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.skincare.ai"
+      "bundleIdentifier": "com.skincare.ai",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
     },
     "android": {
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#FCFCF8",
         "foregroundImage": "./assets/android-icon-foreground.png",

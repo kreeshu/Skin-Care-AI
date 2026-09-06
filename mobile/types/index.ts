@@ -105,7 +105,7 @@ export interface ScanHistoryItem {
 export type ChatTurn =
   | { role: "user"; content: string }
   | { role: "assistant"; content: string }
-  | { role: "user"; kind: "photo"; imageUri: string; status: "analyzing" | "done" | "error" }
+  | { role: "user"; kind: "photo"; imageUri: string; status: "analyzing" | "done" | "error"; fileSize?: number; mimeType?: string }
   | { role: "assistant"; kind: "result"; result: AnalysisResult };
 
 export interface ChatContext {

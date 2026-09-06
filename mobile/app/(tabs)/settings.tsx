@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
@@ -7,6 +7,7 @@ import { theme } from "../../constants/theme";
 import { Eyebrow, DisplayLg, Body, BodySm } from "../../components/ui/Typography";
 import { useSettings } from "../../hooks/useSettings";
 import { useHistory } from "../../hooks/useHistory";
+import { api } from "../../services/api";
 
 const SKIN_TYPE_CHOICES: { value: string | null; label: string }[] = [
   { value: null, label: "Auto" },
@@ -26,6 +27,21 @@ const ABOUT_ROWS: Array<[string, string]> = [
 export default function SettingsScreen() {
   const { settings, update } = useSettings();
   const { clearAll } = useHistory();
+  const [connStatus, setConnStatus] = useState<string | null>(null);
+  const [connBusy, setConnBusy] = useState(false);
+
+  const testConnection = async () => {
+    setConnBusy(true);
+    setConnStatus(null);
+    try {
+      await api.healthCheck();
+      setConnStatus("Reachable");
+    } catch (e: any) {
+      setConnStatus(e?.message ?? "Unreachable");
+    } finally {
+      setConnBusy(false);
+    }
+  };
 
   const handleClearHistory = () => {
     Alert.alert("Clear saved results?", "This removes all saved results from this device.", [
@@ -85,6 +101,27 @@ export default function SettingsScreen() {
               );
             })}
           </View>
+        </View>
+
+        <View style={styles.section}>
+          <Body style={styles.sectionTitle}>Connection</Body>
+          <BodySm numberOfLines={1}>Server · {api.getBaseUrl()}</BodySm>
+          <TouchableOpacity
+            style={styles.settingRow}
+            onPress={testConnection}
+            disabled={connBusy}
+            accessibilityRole="button"
+          >
+            <View style={styles.settingInfo}>
+              <Body>Test connection</Body>
+              <BodySm>{connBusy ? "Checking…" : (connStatus ?? "Health · /api/health")}</BodySm>
+            </View>
+            {connBusy ? (
+              <ActivityIndicator size="small" color={colors.dispensary} />
+            ) : (
+              <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+            )}
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>

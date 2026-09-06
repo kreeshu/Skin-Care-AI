@@ -35,7 +35,7 @@ export function toUserMessage(error: unknown): { title: string; message: string 
     if (error.kind === "network") {
       return {
         title: "Backend offline",
-        message: `Can't reach the server. Is the backend running?`,
+        message: `Can't reach the server at ${error.baseUrl}. Same Wi-Fi as the laptop? Backend on :8000?`,
       };
     }
     if (error.kind === "timeout") {

@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import { File, UploadType, type UploadResult } from "expo-file-system";
 import { API_BASE_URL } from "../constants/config";
 import { ApiError } from "./apiError";
 
@@ -81,39 +82,116 @@ class ApiClient {
     return response.json();
   }
 
-  async analyzeImage(imageUri: string, useSlm: boolean = false) {
-    const formData = new FormData();
-    const filename = imageUri.split("/").pop() || "photo.jpg";
+  async analyzeImage(imageUri: string, useSlm: boolean = false, fileInfo?: { fileSize?: number; mimeType?: string }) {
+    const url = this.toUrl("/api/analyze");
+    if (fileInfo?.fileSize && fileInfo.fileSize > 10 * 1024 * 1024) {
+      throw new ApiError({
+        kind: "http",
+        url,
+        baseUrl: this.baseUrl,
+        status: 400,
+        message: "Photo is too large (max 10MB). Retake with lower quality and try again.",
+      });
+    }
+    // Expo Go cache URIs may be single- or double-encoded (%40/@, %2F//).
+    // Android resolves %2F as a literal dirname, so probe each decoding
+    // level and upload with the first one that exists on disk.
+    const candidates = [imageUri];
+    try {
+      if (imageUri.includes("%25")) candidates.push(decodeURI(imageUri));
+    } catch {}
+    try {
+      candidates.push(decodeURIComponent(candidates[candidates.length - 1]));
+    } catch {}
+    let fileUri = candidates[0];
+    let resolved = false;
+    for (const c of candidates) {
+      try {
+        const f = new File(c);
+        if (f.exists && !resolved) {
+          fileUri = c;
+          resolved = true;
+        }
+      } catch {}
+    }
+    if (!resolved) {
+      throw new ApiError({
+        kind: "http",
+        url,
+        baseUrl: this.baseUrl,
+        status: 400,
+        message: "Photo file not found on this device. Please retake the photo and try again.",
+      });
+    }
+    const filename = (fileUri.split("/").pop() || "photo.jpg").split("?")[0] || "photo.jpg";
     const match = /\.(\w+)$/.exec(filename);
-    const type = match ? `image/${match[1]}` : "image/jpeg";
+    const type = fileInfo?.mimeType || (match ? `image/${match[1].toLowerCase()}` : "image/jpeg");
+    console.log("[analyze] uploading:", fileUri.split("?")[0].slice(0, 100), `${Math.round((fileInfo?.fileSize ?? 0) / 1024)}KB`, type);
 
-    // Web fetch requires a real Blob; the {uri,name,type} object only
-    // works on native (Expo handles it there). Plain objects get
-    // stringified to "[object Object]" on web and FastAPI 422s.
+    // Web uploads a real Blob; native uploads the file directly (see below).
     if (Platform.OS === "web") {
+      const formData = new FormData();
       const blobRes = await fetch(imageUri);
       formData.append("image", await blobRes.blob(), filename);
-    } else {
-      formData.append("image", {
-        uri: imageUri,
-        name: filename,
-        type,
-      } as any);
-    }
-    formData.append("use_slm", String(useSlm));
+      formData.append("use_slm", String(useSlm));
 
-    const url = this.toUrl("/api/analyze");
+      const controller = new AbortController();
+      // Image analysis (esp. with SLM) can take a while — own 120s timeout.
+      const timeoutId = setTimeout(() => controller.abort(), 120000);
+
+      let response: Response;
+      try {
+        // NOTE: do not set Content-Type manually for FormData — fetch sets the
+        // multipart boundary automatically. Setting it breaks uploads.
+        response = await fetch(url, {
+          method: "POST",
+          body: formData,
+          signal: controller.signal,
+        });
+      } catch (error: any) {
+        if (error?.name === "AbortError") {
+          throw new ApiError({
+            kind: "timeout",
+            url,
+            baseUrl: this.baseUrl,
+            message: `Analysis timed out: ${url}`,
+          });
+        }
+        throw new ApiError({
+          kind: "network",
+          url,
+          baseUrl: this.baseUrl,
+          message: `Failed to fetch: ${url}. Is the backend running at ${this.baseUrl}?`,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      if (!response.ok) {
+        const detail = await this.parseErrorBody(response, "Analysis failed");
+        throw new ApiError({
+          kind: "http",
+          url,
+          baseUrl: this.baseUrl,
+          status: response.status,
+          message: detail || `HTTP ${response.status}`,
+        });
+      }
+
+      return response.json();
+    }
+    // Native: RN's fetch can't stream Expo cache files (rejects with a
+    // network error while the backend stays silent). Upload natively.
     const controller = new AbortController();
     // Image analysis (esp. with SLM) can take a while — own 120s timeout.
     const timeoutId = setTimeout(() => controller.abort(), 120000);
-
-    let response: Response;
+    let result: UploadResult;
     try {
-      // NOTE: do not set Content-Type manually for FormData — fetch sets the
-      // multipart boundary automatically. Setting it breaks uploads.
-      response = await fetch(url, {
-        method: "POST",
-        body: formData,
+      result = await new File(fileUri).upload(url, {
+        uploadType: UploadType.MULTIPART,
+        fieldName: "image",
+        mimeType: type,
+        parameters: { use_slm: String(useSlm) },
         signal: controller.signal,
       });
     } catch (error: any) {
@@ -135,18 +213,34 @@ class ApiClient {
       clearTimeout(timeoutId);
     }
 
-    if (!response.ok) {
-      const detail = await this.parseErrorBody(response, "Analysis failed");
+    if (result.status < 200 || result.status >= 300) {
+      let detail = "Analysis failed";
+      try {
+        const data = JSON.parse(result.body);
+        if (data && typeof data.detail === "string" && data.detail) detail = data.detail;
+      } catch {
+        if (result.body) detail = result.body.slice(0, 200);
+      }
       throw new ApiError({
         kind: "http",
         url,
         baseUrl: this.baseUrl,
-        status: response.status,
-        message: detail || `HTTP ${response.status}`,
+        status: result.status,
+        message: detail,
       });
     }
 
-    return response.json();
+    try {
+      return JSON.parse(result.body);
+    } catch {
+      throw new ApiError({
+        kind: "http",
+        url,
+        baseUrl: this.baseUrl,
+        status: result.status,
+        message: "Invalid response from server.",
+      });
+    }
   }
 
   async getProducts(params: {

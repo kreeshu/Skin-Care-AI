@@ -24,11 +24,14 @@ npx expo start
 Create a `.env` file in the `mobile/` directory:
 
 ```
-EXPO_PUBLIC_API_URL=http://localhost:8000
+EXPO_PUBLIC_API_URL=http://192.168.1.4:8000
 ```
 
+Use your laptop's LAN IP (same Wi-Fi as the phone). Without `.env`,
+the app derives it from the Expo dev server automatically.
 For Android emulator, use `http://10.0.2.2:8000` instead.
 For iOS simulator, `http://localhost:8000` works.
+After changing `.env`, restart Expo with `npx expo start -c`.
 
 ## Project Structure
 

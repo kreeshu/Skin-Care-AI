@@ -11,7 +11,7 @@ import { api } from "../../services/api";
 import { toUserMessage } from "../../services/apiError";
 import { useHistory } from "../../hooks/useHistory";
 import { useSettings } from "../../hooks/useSettings";
-import { pickSkinImage } from "../../utils/pickImage";
+import { pickSkinImage, PickedSkinImage } from "../../utils/pickImage";
 import { ChatTurn, AnalysisResult } from "../../types";
 
 const QUICK_REPLIES = ["Explain my result", "Compare my top 2 cleansers", "Build my AM/PM routine"];
@@ -116,16 +116,18 @@ export default function ChatScreen() {
       )
     );
 
-  const analyzePhoto = async (uri: string) => {
+  const analyzePhoto = async (photo: PickedSkinImage) => {
+    const uri = photo.uri;
     setPhotoBusy(true);
     setError(null);
     try {
-      const result = (await api.analyzeImage(uri, settings.useSlm)) as AnalysisResult;
+      const result = (await api.analyzeImage(uri, settings.useSlm, photo)) as AnalysisResult;
       await addScan(result);
       setActiveResult(result);
       markPhoto(uri, "done");
       setMessages((prev) => [...prev, { role: "assistant", kind: "result", result }]);
     } catch (e: any) {
+      console.log("[analyze] upload failed:", e?.kind ?? "", e?.url ?? "", e?.message ?? e);
       markPhoto(uri, "error");
       const { title, message } = toUserMessage(e);
       setError(`${title}: ${message}`);
@@ -135,10 +137,11 @@ export default function ChatScreen() {
   };
 
   const pickThenAnalyze = async (source: "camera" | "gallery") => {
-    const uri = await pickSkinImage(source);
-    if (!uri) return;
-    setMessages((prev) => [...prev, { role: "user", kind: "photo", imageUri: uri, status: "analyzing" }]);
-    await analyzePhoto(uri);
+    const photo = await pickSkinImage(source);
+    if (!photo) return;
+    const uri = photo.uri;
+    setMessages((prev) => [...prev, { role: "user", kind: "photo", imageUri: uri, status: "analyzing", fileSize: photo.fileSize, mimeType: photo.mimeType }]);
+    await analyzePhoto(photo);
   };
 
   const onPlus = () => {
@@ -165,7 +168,7 @@ export default function ChatScreen() {
         <TouchableOpacity
           style={[styles.bubble, styles.user, styles.photoBubble]}
           disabled={!failed || photoBusy}
-          onPress={() => analyzePhoto(item.imageUri)}
+          onPress={() => analyzePhoto({ uri: item.imageUri, fileSize: item.fileSize, mimeType: item.mimeType })}
           activeOpacity={0.8}
         >
           <Image source={{ uri: item.imageUri }} style={styles.photo} />

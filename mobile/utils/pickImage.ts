@@ -1,7 +1,13 @@
 import * as ImagePicker from "expo-image-picker";
 
-/** Camera/gallery pick for skin photos. Returns uri or null (denied/cancelled). */
-export async function pickSkinImage(source: "camera" | "gallery"): Promise<string | null> {
+export interface PickedSkinImage {
+  uri: string;
+  fileSize?: number;
+  mimeType?: string;
+}
+
+/** Camera/gallery pick for skin photos. Returns asset info or null (denied/cancelled). */
+export async function pickSkinImage(source: "camera" | "gallery"): Promise<PickedSkinImage | null> {
   const { status } = await (source === "camera"
     ? ImagePicker.requestCameraPermissionsAsync()
     : ImagePicker.requestMediaLibraryPermissionsAsync());
@@ -16,5 +22,6 @@ export async function pickSkinImage(source: "camera" | "gallery"): Promise<strin
     quality: 0.8,
   });
   if (result.canceled || !result.assets[0]) return null;
-  return result.assets[0].uri;
+  const asset = result.assets[0];
+  return { uri: asset.uri, fileSize: asset.fileSize, mimeType: asset.mimeType };
 }
