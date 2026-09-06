@@ -1,0 +1,146 @@
+---
+title: SkinCare AI — End-to-End Workflow
+config:
+  theme: base
+  themeVariables:
+    primaryColor: "#ffffff"
+    primaryTextColor: "#1a1a1a"
+    primaryBorderColor: "#1a1a1a"
+    lineColor: "#1a1a1a"
+    secondaryColor: "#f5f5f5"
+    tertiaryColor: "#ffffff"
+    fontFamily: "Inter, Helvetica, Arial, sans-serif"
+    fontSize: "14px"
+  flowchart:
+    htmlLabels: true
+    curve: basis
+    nodeSpacing: 60
+    rankSpacing: 80
+    padding: 20
+---
+flowchart TD
+
+    User(["User"])
+
+    subgraph Clients["Client Surfaces"]
+        direction LR
+        Web["Web App<br/>Streamlit"]
+        Mobile["Mobile App<br/>React Native · Expo"]
+    end
+
+    User --> Web
+    User --> Mobile
+
+    Web --> ApiLayer
+    Mobile --> ApiLayer
+
+    subgraph ApiLayer["API Layer · FastAPI"]
+        direction TB
+        Routes["routes/<br/>analyze · products · conditions"]
+        Services["services/<br/>analyzer_service · product_service"]
+        CORS["CORS · run.py / uvicorn"]
+        Routes --> Services --> CORS
+    end
+
+    CORS --> Engine
+
+    subgraph Engine["Inference Engine"]
+        direction TB
+        Analyzer["SkinAnalyzer<br/>predict.py"]
+        Preprocess["Preprocess<br/>224×224 · normalize"]
+        Predict["Multi-task predict<br/>condition 7 · type 3"]
+        Guard{"Carcinoma?"}
+        Output["condition + type + confidence"]
+        Analyzer --> Preprocess --> Predict --> Guard
+        Guard -->|"no"| Output
+        Guard -->|"yes"| Warn["Dermatologist warning<br/>no products returned"]
+    end
+
+    Output --> Rules
+
+    subgraph Reco["Recommendation Engine"]
+        direction TB
+        Rules["condition_rules.py<br/>condition + type → ingredients"]
+        Scoring["scoring.py<br/>ingredient + skin-type match"]
+        Engine2["engine.py<br/>deterministic shortlist"]
+        SLMTitle["SLM Layer  optional"]
+        SLMCfg["config.py"]
+        SLMEng["engine.py<br/>Qwen2.5-1.5B-Instruct"]
+        SLMRec["recommender.py<br/>prompt · JSON · guardrails"]
+        Final["Ranked recs + reasons + AM/PM routine"]
+        Rules --> Scoring --> Engine2
+        Engine2 --> SLMRec
+        SLMCfg --> SLMEng --> SLMRec
+        SLMRec --> Final
+    end
+
+    Final --> Web
+    Final --> Mobile
+
+    Catalog[(Product Catalog<br/>unified_products.csv)]
+    Engine2 -. filter .-> Catalog
+    Catalog -.-> Scoring
+
+    subgraph Data["Data Pipeline"]
+        direction TB
+        Src1["ForEveryNG"]
+        Src2["Jeevee"]
+        Src3["Oriflame"]
+        Merge["merge_sources.py"]
+        Dedup["deduplicator.py<br/>fuzzy dedup"]
+        Enrich["enricher.py<br/>ingredient · skin-type · concern"]
+        Unified["unified_products.csv"]
+        Mappings["data/mappings/<br/>keyword maps"]
+        Src1 --> Merge
+        Src2 --> Merge
+        Src3 --> Merge
+        Merge --> Dedup --> Enrich --> Unified
+        Enrich --> Mappings
+    end
+
+    Unified --> Catalog
+    Mappings --> Enrich
+
+    subgraph ML["ML Training"]
+        direction TB
+        Imgs[/"dataset/<br/>Conditions · Types"/]
+        Dataset["dataset_multitask.py<br/>70 / 15 / 15 split"]
+        Model["multitask.py<br/>EfficientNetB0 + 2 heads"]
+        Train["train_multitask.py<br/>Phase A frozen → Phase B fine-tune"]
+        Eval["evaluate_multitask.py<br/>per-task metrics"]
+        Weights["weights.h5"]
+        Imgs --> Dataset --> Model --> Train --> Eval --> Weights
+    end
+
+    Weights --> Analyzer
+
+    subgraph CLI["Pipeline CLI"]
+        direction TB
+        Run["run_pipeline.py<br/>--step data / train / inference / all"]
+        StepData["--step data"]
+        StepTrain["--step train"]
+        StepInf["--step inference"]
+        Tests["scripts/<br/>test_predict_integration · test_slm_logic"]
+        Run --> StepData
+        Run --> StepTrain
+        Run --> StepInf
+        Run --> Tests
+    end
+
+    StepData -.-> Merge
+    StepTrain -.-> Train
+    StepInf -.-> Analyzer
+    Tests -.-> Analyzer
+
+    classDef entry fill:#ffffff,stroke:#1a1a1a,stroke-width:1.5px,color:#1a1a1a
+    classDef section fill:#f5f5f5,stroke:#1a1a1a,stroke-width:1px,color:#1a1a1a
+    classDef step fill:#ffffff,stroke:#333333,stroke-width:1px,color:#1a1a1a
+    classDef decision fill:#ffffff,stroke:#1a1a1a,stroke-width:1.5px,color:#1a1a1a
+    classDef data fill:#ffffff,stroke:#1a1a1a,stroke-width:1.5px,color:#1a1a1a
+    classDef warn fill:#ffffff,stroke:#1a1a1a,stroke-width:1.5px,color:#1a1a1a
+
+    class User entry
+    class Warn warn
+    class Guard decision
+    class Catalog,Imgs,Unified,Weights data
+    class Web,Mobile,ApiLayer,Engine,Reco,Data,ML,CLI section
