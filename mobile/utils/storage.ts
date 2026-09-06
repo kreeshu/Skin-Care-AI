@@ -30,7 +30,7 @@ export async function clearHistory(): Promise<void> {
   await AsyncStorage.removeItem(HISTORY_KEY);
 }
 
-export async function getFavorites(): Promise<number[]> {
+export async function getFavorites(): Promise<string[]> {
   try {
     const data = await AsyncStorage.getItem(FAVORITES_KEY);
     return data ? JSON.parse(data) : [];
@@ -39,10 +39,10 @@ export async function getFavorites(): Promise<number[]> {
   }
 }
 
-export async function toggleFavorite(productId: number): Promise<boolean> {
+export async function toggleFavorite(productId: string): Promise<boolean> {
   const favorites = await getFavorites();
   const index = favorites.indexOf(productId);
-  let updated: number[];
+  let updated: string[];
 
   if (index > -1) {
     updated = favorites.filter((id) => id !== productId);
@@ -54,7 +54,7 @@ export async function toggleFavorite(productId: number): Promise<boolean> {
   return index === -1;
 }
 
-export async function isFavorite(productId: number): Promise<boolean> {
+export async function isFavorite(productId: string): Promise<boolean> {
   const favorites = await getFavorites();
   return favorites.includes(productId);
 }

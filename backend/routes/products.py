@@ -36,7 +36,7 @@ async def list_categories():
 
 
 @router.get("/{product_id}")
-async def get_product_detail(product_id: int):
+async def get_product_detail(product_id: str):
     product = get_product(product_id)
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")

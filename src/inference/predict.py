@@ -1,4 +1,5 @@
 import os
+import logging
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -8,6 +9,8 @@ from PIL import Image
 from src.model.multitask import load_multitask_model
 from src.recommendation.condition_rules import ConditionRules
 from src.recommendation.engine import RecommendationEngine
+
+logger = logging.getLogger(__name__)
 
 IMG_SIZE = 224
 
@@ -50,9 +53,13 @@ class SkinAnalyzer:
         self.slm_recommender = None
         self.slm_top_n = slm_top_n
         if use_slm:
-            from src.slm import SlmEngine, SlmRecommender
+            try:
+                from src.slm import SlmEngine, SlmRecommender
 
-            self.slm_recommender = SlmRecommender(SlmEngine(slm_config).load())
+                self.slm_recommender = SlmRecommender(SlmEngine(slm_config).load())
+            except Exception as exc:
+                # SLM is best-effort: analysis still works, just without AI notes.
+                logger.warning("SLM unavailable, continuing without it: %s", exc)
 
     # ------------------------------------------------------------------ #
     # Predictions

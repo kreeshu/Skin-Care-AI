@@ -23,6 +23,7 @@ class SlmEngine:
 
     def load(self):
         cfg = self.config
+        errors = []
         for model_name in [cfg["model_name"], cfg["fallback_model"]]:
             try:
                 self._load_model(model_name, cfg)
@@ -31,7 +32,8 @@ class SlmEngine:
                 return self
             except Exception as exc:
                 logger.warning("Failed to load %s: %s", model_name, exc)
-        raise RuntimeError("Could not load any SLM model")
+                errors.append(f"{model_name}: {exc}")
+        raise RuntimeError(f"Could not load any SLM model ({'; '.join(errors)})")
 
     def _load_model(self, model_name: str, cfg: Dict):
         from transformers import AutoModelForCausalLM, AutoTokenizer

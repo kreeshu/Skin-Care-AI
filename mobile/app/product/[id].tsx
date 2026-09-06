@@ -22,10 +22,10 @@ import { useFetcher } from "../../hooks/useFetcher";
 import { useFavorites } from "../../hooks/useFavorites";
 import { formatDiscount, formatRating } from "../../utils/format";
 
-function parseProductId(raw: string | undefined): number | null {
+function parseProductId(raw: string | undefined): string | null {
   if (!raw) return null;
-  const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : null;
+  const id = raw.trim();
+  return id.length > 0 ? id : null;
 }
 
 export default function ProductDetailScreen() {
@@ -34,7 +34,7 @@ export default function ProductDetailScreen() {
   const { favorites, toggle } = useFavorites();
 
   const { data: product, loading, error, retry } = useFetcher<Product>(
-    () => api.getProduct(productId as number),
+    () => api.getProduct(productId as string),
     [params.id],
     { enabled: productId !== null },
   );

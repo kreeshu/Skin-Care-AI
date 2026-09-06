@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getFavorites, toggleFavorite } from "../utils/storage";
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadFavorites = useCallback(async () => {
@@ -17,7 +17,7 @@ export function useFavorites() {
   }, [loadFavorites]);
 
   const toggle = useCallback(
-    async (productId: number) => {
+    async (productId: string) => {
       const isFav = await toggleFavorite(productId);
       await loadFavorites();
       return isFav;
@@ -26,7 +26,7 @@ export function useFavorites() {
   );
 
   const isFav = useCallback(
-    (productId: number) => favorites.includes(productId),
+    (productId: string) => favorites.includes(productId),
     [favorites]
   );
 

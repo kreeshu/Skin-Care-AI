@@ -13,7 +13,7 @@ BASE_DIR = os.path.join(os.path.dirname(__file__), "..")
 MODEL_PATH = os.path.join(BASE_DIR, "models", "skin_classifier_multitask.weights.h5")
 PRODUCTS_PATH = os.path.join(BASE_DIR, "data", "enriched", "unified_products.csv")
 MAPPINGS_DIR = os.path.join(BASE_DIR, "data", "mappings")
-SKIN_DIR = os.path.join(BASE_DIR, "..", "dataset", "Conditions")
+SKIN_DIR = os.path.join(BASE_DIR, "dataset", "Conditions")
 
 CONDITION_COLORS = {
     "Acne": "#FF6B6B",
@@ -126,7 +126,7 @@ def main():
             )
             if uploaded_file:
                 uploaded_image = Image.open(uploaded_file)
-                st.image(uploaded_image, caption="Uploaded Image", use_container_width=True)
+                st.image(uploaded_image, caption="Uploaded Image", width="stretch")
 
         with tab_sample:
             selected_condition = st.selectbox(
@@ -140,7 +140,7 @@ def main():
                 st.image(
                     selected_image_path,
                     caption=f"Sample: {selected_condition}",
-                    use_container_width=True,
+                    width="stretch",
                 )
 
         image_to_analyze = None
@@ -152,7 +152,7 @@ def main():
         analyze_clicked = st.button(
             "🔍 Analyze",
             type="primary",
-            use_container_width=True,
+            width="stretch",
             disabled=image_to_analyze is None,
         )
 

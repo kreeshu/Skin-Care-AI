@@ -1,5 +1,5 @@
 export interface Product {
-  product_id: number;
+  product_id: string;
   name: string;
   brand: string;
   price: number | null;
@@ -16,7 +16,7 @@ export interface Product {
 }
 
 export interface ProductRecommendation {
-  product_id: number;
+  product_id: string;
   name: string;
   brand: string;
   price: number | null;
@@ -31,7 +31,7 @@ export interface ProductRecommendation {
 
 export interface SlmChosen {
   category: string;
-  product_id: number;
+  product_id: string;
   name: string;
   reason: string;
 }
@@ -100,4 +100,25 @@ export interface ScanHistoryItem {
   skin_type: string;
   date: string;
   result: AnalysisResult;
+}
+
+export type ChatTurn =
+  | { role: "user"; content: string }
+  | { role: "assistant"; content: string }
+  | { role: "user"; kind: "photo"; imageUri: string; status: "analyzing" | "done" | "error" }
+  | { role: "assistant"; kind: "result"; result: AnalysisResult };
+
+export interface ChatContext {
+  condition?: string;
+  skin_type?: string;
+  is_medical?: boolean;
+  product_ids?: string[];
+  recommendations?: Record<string, ProductRecommendation[]>;
+}
+
+export interface ChatReply {
+  reply: string;
+  product_cards: { product_id: string; name: string; brand: string }[];
+  disclaimer: string;
+  generated_by?: string;
 }

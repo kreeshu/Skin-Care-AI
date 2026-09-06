@@ -15,7 +15,7 @@ SYSTEM_PROMPT = (
     "(1-2 sentences) for each that references its matching ingredients.\n"
     "3. Build a personalized AM/PM routine for the user's skin type and condition.\n"
     "4. Reply with valid JSON only, exactly matching this schema:\n"
-    '{{"chosen": [{{"category": "...", "product_id": 0, "name": "...", "reason": "..."}}], '
+    '{{"chosen": [{{"category": "...", "product_id": "fng_19052", "name": "...", "reason": "..."}}], '
     '"routine": {{"am": ["..."], "pm": ["..."]}}, "summary": "..."}}'
 )
 
@@ -78,15 +78,17 @@ class SlmRecommender:
         ]
 
     def _parse_response(self, raw: str, candidates: List[Dict]) -> Optional[Dict]:
-        allowed = {c["product_id"] for c in candidates}
+        # IDs are strings (e.g. "fng_19052") but the model may echo them back
+        # as numbers — compare normalized, keep the canonical candidate ID.
+        allowed = {str(c["product_id"]): c["product_id"] for c in candidates}
         data = self._extract_json(raw)
         if data is None:
             return None
         try:
             chosen = []
             for item in data.get("chosen", []):
-                pid = item.get("product_id")
-                if pid not in allowed:
+                pid = allowed.get(str(item.get("product_id")))
+                if pid is None:
                     continue
                 chosen.append({
                     "category": item.get("category"),

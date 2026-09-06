@@ -28,7 +28,7 @@ def run_training_pipeline(conditions_dir: str, types_dir: str, model_dir: str):
     print("MULTITASK MODEL TRAINING (condition + skin type)")
     print("=" * 60)
 
-    datasets = prepare_multitask_datasets(conditions_dir, types_dir, quick=True)
+    datasets = prepare_multitask_datasets(conditions_dir, types_dir)
     model = train_multitask(conditions_dir, types_dir, model_dir, quick=False)
 
     print("\n" + "=" * 60)
@@ -105,8 +105,8 @@ def _print_analysis(result: dict):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Skin Care AI Pipeline")
     parser.add_argument("--step", choices=["data", "train", "inference", "all"], default="data")
-    parser.add_argument("--conditions-dir", default=os.path.join(os.path.dirname(__file__), "..", "dataset", "Conditions"))
-    parser.add_argument("--types-dir", default=os.path.join(os.path.dirname(__file__), "..", "dataset", "Types"))
+    parser.add_argument("--conditions-dir", default=os.path.join(os.path.dirname(__file__), "dataset", "Conditions"))
+    parser.add_argument("--types-dir", default=os.path.join(os.path.dirname(__file__), "dataset", "Types"))
     parser.add_argument("--model-dir", default=os.path.join(os.path.dirname(__file__), "models"))
     parser.add_argument("--image", default=None, help="Path to skin image for inference test")
     parser.add_argument("--use-slm", action="store_true", help="Enable local SLM explanation layer")

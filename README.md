@@ -123,9 +123,9 @@ pip install -r requirements.txt
 pip install torch --index-url https://download.pytorch.org/whl/cpu
 ```
 
-**Dataset note:** Training data is expected at `../dataset/` (outside this repo):
-- `../dataset/Conditions/<Condition>/*.jpg` — 7 condition folders.
-- `../dataset/Types/<type>/*.jpg` — 3 skin-type folders (dry / normal / oily).
+**Dataset note:** Training data lives at `dataset/` (inside this repo):
+- `dataset/Conditions/<Condition>/*.jpg` — 7 condition folders.
+- `dataset/Types/<type>/*.jpg` — 3 skin-type folders (dry / normal / oily).
 
 ---
 

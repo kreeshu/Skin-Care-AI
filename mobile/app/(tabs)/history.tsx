@@ -68,9 +68,9 @@ export default function HistoryScreen() {
         <EmptyState
           eyebrow="Nothing saved yet"
           title="Your results will land here."
-          message="Check your first photo from Check."
+          message="Send your first photo from Chat."
           icon="bookmark-outline"
-          actionLabel="Go to Check"
+          actionLabel="Go to Chat"
           onAction={() => router.push("/(tabs)")}
         />
       ) : (

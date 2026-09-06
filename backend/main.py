@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes import router as analysis_router
+from backend.routes.chat import router as chat_router
 from backend.routes.products import router as products_router
 from backend.routes.conditions import router as conditions_router
 
@@ -24,6 +25,7 @@ app.add_middleware(
 )
 
 app.include_router(analysis_router)
+app.include_router(chat_router)
 app.include_router(products_router)
 app.include_router(conditions_router)
 

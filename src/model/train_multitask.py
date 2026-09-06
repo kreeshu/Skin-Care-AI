@@ -169,8 +169,8 @@ if __name__ == "__main__":
     import argparse
 
     base_dir = os.path.join(os.path.dirname(__file__), "..", "..")
-    default_cond = os.path.join(base_dir, "..", "dataset", "Conditions")
-    default_types = os.path.join(base_dir, "..", "dataset", "Types")
+    default_cond = os.path.join(base_dir, "dataset", "Conditions")
+    default_types = os.path.join(base_dir, "dataset", "Types")
 
     parser = argparse.ArgumentParser(description="Multi-task skin model training")
     parser.add_argument("--conditions-dir", default=default_cond)

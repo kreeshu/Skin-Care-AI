@@ -92,9 +92,9 @@ def get_products(
     }
 
 
-def get_product(product_id: int) -> Optional[Dict]:
+def get_product(product_id: str) -> Optional[Dict]:
     df = _load_products()
-    match = df[df["product_id"] == product_id]
+    match = df[df["product_id"].astype(str) == str(product_id)]
     if match.empty:
         return None
     return _format_product(match.iloc[0])
@@ -167,7 +167,7 @@ def get_skin_types() -> List[Dict]:
 
 def _format_product(row) -> Dict:
     return {
-        "product_id": int(row["product_id"]),
+        "product_id": str(row["product_id"]),
         "name": row["name"],
         "brand": row["brand"],
         "price": float(row["price"]) if pd.notna(row["price"]) else None,
