@@ -31,7 +31,7 @@ Upload or pick a skin image and the system detects one of seven skin conditions 
                  └────────────────────────────────────────────┘
                               │
                               ▼
-                 ┌────────────────────────────────────────────┐
+             ┌────────────────────────────────────────────┐
                  │  Rule-based engine (deterministic):        │
                  │  condition + skin type → ingredients        │
                  │  → product scoring/ranking (candidates)     │

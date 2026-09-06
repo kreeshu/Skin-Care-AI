@@ -1,8 +1,11 @@
 import json
 import csv
+from pathlib import Path
+
+DATA_RAW = Path(__file__).resolve().parent.parent / "data" / "raw"
 
 # --- Oriflame ---
-with open("oriflame.json", "r", encoding="utf-8") as f:
+with open(DATA_RAW / "oriflame.json", "r", encoding="utf-8") as f:
     oriflame = json.load(f)
 
 oriflame_headers = [
@@ -11,7 +14,7 @@ oriflame_headers = [
 ]
 
 oriflame_products = oriflame.get("data", {}).get("docs", [])
-with open("oriflame.csv", "w", newline="", encoding="utf-8") as f:
+with open(DATA_RAW / "oriflame.csv", "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=oriflame_headers)
     writer.writeheader()
     for p in oriflame_products:
@@ -35,7 +38,7 @@ print(f"Oriflame: {len(oriflame_products)} products -> oriflame.csv")
 # --- Jeevee ---
 import re
 
-with open("jevee.json", "r", encoding="utf-8") as f:
+with open(DATA_RAW / "jevee.json", "r", encoding="utf-8") as f:
     raw = f.read()
 
 # File may be truncated. Find the "data" array and parse complete objects.
@@ -85,7 +88,7 @@ jeevee_headers = [
     "avg_rating", "rating_count", "review_count", "sold_out", "has_variants", "image_url"
 ]
 
-with open("jevee.csv", "w", newline="", encoding="utf-8") as f:
+with open(DATA_RAW / "jevee.csv", "w", newline="", encoding="utf-8") as f:
     writer = csv.DictWriter(f, fieldnames=jeevee_headers)
     writer.writeheader()
     for p in jeevee_products:

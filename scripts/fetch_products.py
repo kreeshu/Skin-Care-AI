@@ -1,10 +1,11 @@
 import requests
 import csv
 import time
+from pathlib import Path
 
 BASE_URL = "https://www.api.foreveryng.com/api/V2/filter?category=3&page={}"
 PAGES = 38
-OUTPUT_FILE = "products.csv"
+OUTPUT_FILE = Path(__file__).resolve().parent.parent / "data" / "raw" / "products.csv"
 
 HEADERS = [
     "id", "name", "slug", "coverImage", "type",

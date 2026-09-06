@@ -19,3 +19,7 @@ outputs/
 # HuggingFace SLM caches
 .cache/huggingface/
 ~/.cache/huggingface/
+dataset/
+
+# LaTeX build output
+out/
