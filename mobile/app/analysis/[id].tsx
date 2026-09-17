@@ -1,8 +1,7 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { colors, conditionColor } from "../../constants/colors";
+import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Ticket, Perforation } from "../../components/ui/Card";
 import { Eyebrow, DisplayHeading, DisplayLg, Body, BodySm, Caption } from "../../components/ui/Typography";
@@ -55,7 +54,7 @@ export default function AnalysisScreen() {
   const router = useRouter();
 
   // Fast path: result was passed in via the route (avoids a refetch).
-  const [fastResult, setFastResult] = React.useState<AnalysisResult | null>(() => {
+  const [fastResult] = React.useState<AnalysisResult | null>(() => {
     if (!params.result) return null;
     try {
       return JSON.parse(params.result) as AnalysisResult;
@@ -65,7 +64,7 @@ export default function AnalysisScreen() {
   });
 
   // Slow path: fetch by id when fast path is empty.
-  const { data: fetched, loading, error, retry } = useFetcher<AnalysisResult>(
+  const { data: fetched, error, retry } = useFetcher<AnalysisResult>(
     () => api.getAnalysis(params.id),
     [params.id],
     { enabled: !fastResult && Boolean(params.id) },
@@ -89,12 +88,11 @@ export default function AnalysisScreen() {
     return <LoadingState eyebrow="Result · loading" rows={2} compact />;
   }
 
-  const accent = conditionColor(result.detected_condition);
   const strip =
     result.slm && (result.slm.routine.am.length > 0 || result.slm.routine.pm.length > 0)
       ? result.slm.routine
       : splitRoutineByCount(result.routine_suggestion || []);
-  const isSerious = result.is_medical && result.detected_condition?.toLowerCase() === "carcinoma";
+  const present = result.concerns.filter((item) => item.status === "present");
 
   return (
     <ScrollView
@@ -104,17 +102,20 @@ export default function AnalysisScreen() {
     >
       <Ticket>
         <Eyebrow>Your result</Eyebrow>
-        <DisplayHeading style={styles.condition}>{result.detected_condition}</DisplayHeading>
+        <DisplayHeading style={styles.condition}>
+          {present.length ? `${present.length} visible concern${present.length === 1 ? "" : "s"}` : "No visible concerns"}
+        </DisplayHeading>
         <BodySm style={styles.readout}>
-          {result.skin_type ? `${result.skin_type} · ${Math.round(result.skin_type_confidence * 100)}% skin type` : ""}
-          {result.skin_type ? "  ·  " : ""}
-          {Math.round(result.condition_confidence * 100)}% reading
+          {result.skin_type ? `Your skin type · ${result.skin_type}` : "Skin type not provided"}
         </BodySm>
         <View style={styles.meterGap}>
-          <ConfidenceBar label="Reading confidence" confidence={result.condition_confidence} color={accent} />
-          {result.skin_type_confidence > 0 ? (
-            <ConfidenceBar label="Skin type" confidence={result.skin_type_confidence} />
-          ) : null}
+          {result.concerns.map((concern) => (
+            <ConfidenceBar
+              key={concern.name}
+              label={`${concern.name.replace(/_/g, " ")} · ${concern.status}`}
+              confidence={concern.score}
+            />
+          ))}
         </View>
 
         <Perforation />
@@ -124,14 +125,7 @@ export default function AnalysisScreen() {
           <RoutineStrip am={strip.am} pm={strip.pm} />
         </View>
 
-        {isSerious ? (
-          <View style={styles.serious}>
-            <Ionicons name="alert-circle" size={18} color={colors.oxblood} />
-            <BodySm style={styles.seriousText}>
-              This reading needs a dermatologist promptly. This app does not diagnose.
-            </BodySm>
-          </View>
-        ) : null}
+        <BodySm style={styles.readout}>Model scores are cosmetic observations, not diagnoses.</BodySm>
       </Ticket>
 
       <DisplayLg>{result.title}</DisplayLg>

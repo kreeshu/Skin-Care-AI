@@ -1,0 +1,78 @@
+{
+  "existing_conditions": {
+    "status": "partial_review",
+    "license": "unknown",
+    "use": "Only Acne, Dark Spot, and Rosacea as weak cosmetic labels after review",
+    "reason": "Medical folder labels, source provenance unavailable, and substantial cross-source duplication"
+  },
+  "existing_types": {
+    "status": "rejected",
+    "license": "unknown",
+    "use": "none",
+    "reason": "Only 112 images and image-only skin type is outside the revised scope"
+  },
+  "existing_clean_train": {
+    "status": "rejected",
+    "license": "unknown",
+    "use": "none",
+    "reason": "Repeated stock imagery, pre-generated augmentation, and leakage into the named validation set"
+  },
+  "existing_clean_val": {
+    "status": "rejected",
+    "license": "unknown",
+    "use": "none",
+    "reason": "Not an independent validation set; duplicates and source overlap invalidate it"
+  },
+  "facial_skin_concerns": {
+    "status": "partial_review",
+    "license": "Apache-2.0 claimed by Kaggle uploader",
+    "url": "https://www.kaggle.com/datasets/shijo96john/facial-skin-acne-pigmentation-pores-wrinkles",
+    "use": "Weak-label candidate pool for all five concerns",
+    "reason": "Useful label coverage, but no upstream provenance and visible label noise/watermarks"
+  },
+  "skin_issues_v2": {
+    "status": "pending_license",
+    "license": "unknown",
+    "url": "https://www.kaggle.com/datasets/ahmedismaiil/skin-issues-version-2-dataset-balanced",
+    "use": "Review and external evaluation only until licensing is clarified",
+    "reason": "Unknown license, repeated subjects, and extensive overlap with other Kaggle collections"
+  },
+  "rajesh_skin": {
+    "status": "rejected",
+    "license": "MIT claimed by Kaggle uploader",
+    "url": "https://www.kaggle.com/datasets/rajeshpandhare/skin-classification-normal-acne-oily-dry-wrinkle",
+    "use": "none",
+    "reason": "Repeated Getty/stock images, weak provenance, duplicate train/val content, and invalid skin-type labels"
+  },
+  "acne04_level0": {
+    "status": "accepted_academic",
+    "license": "academic use only",
+    "url": "https://huggingface.co/datasets/ManuelHettich/acne04",
+    "use": "Reviewed negative candidates for blemishes"
+  },
+  "acne04_level1": {
+    "status": "accepted_academic",
+    "license": "academic use only",
+    "url": "https://huggingface.co/datasets/ManuelHettich/acne04",
+    "use": "Positive blemish candidates"
+  },
+  "acne04_level2": {
+    "status": "accepted_academic",
+    "license": "academic use only",
+    "url": "https://huggingface.co/datasets/ManuelHettich/acne04",
+    "use": "Positive blemish candidates"
+  },
+  "acne04_level3": {
+    "status": "accepted_academic",
+    "license": "academic use only",
+    "url": "https://huggingface.co/datasets/ManuelHettich/acne04",
+    "use": "Positive blemish candidates"
+  },
+  "pascal_voc_2007": {
+    "status": "evaluation_only",
+    "license": "PASCAL VOC terms",
+    "url": "http://host.robots.ox.ac.uk/pascal/VOC/voc2007/",
+    "use": "Invalid-input/OOD test images only",
+    "reason": "Established object-recognition benchmark with animal, vehicle, and indoor-object annotations"
+  }
+}

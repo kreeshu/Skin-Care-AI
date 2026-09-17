@@ -21,7 +21,8 @@ export function useHistory() {
     async (result: AnalysisResult) => {
       const item: ScanHistoryItem = {
         id: result.id,
-        condition: result.detected_condition,
+        summary: result.concerns.filter((item) => item.status === "present")
+          .map((item) => item.name.replace(/_/g, " ")).join(", ") || "No visible concerns",
         skin_type: result.skin_type || "Unknown",
         date: new Date().toISOString(),
         result,

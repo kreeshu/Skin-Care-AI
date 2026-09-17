@@ -6,31 +6,34 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pandas as pd
 from src.inference.predict import SkinAnalyzer
-from src.recommendation.condition_rules import ConditionRules
-
-from backend.config import MODEL_PATH, PRODUCTS_PATH, MAPPINGS_DIR
+from backend.config import (
+    MAPPINGS_DIR,
+    MODEL_EVALUATION_PATH,
+    MODEL_METADATA_PATH,
+    MODEL_PATH,
+    PRODUCTS_PATH,
+)
 
 logger = logging.getLogger(__name__)
 
-_analyzer = None
+_analyzers = {}
 _chat_engine = None
 _derma_chat = None
 
 
 def get_analyzer(use_slm: bool = False) -> SkinAnalyzer:
-    global _analyzer
-    if _analyzer is None or (_analyzer.slm_recommender is None) != (not use_slm):
+    if use_slm not in _analyzers:
         products_df = pd.read_csv(PRODUCTS_PATH)
-        _analyzer = SkinAnalyzer(
+        _analyzers[use_slm] = SkinAnalyzer(
             MODEL_PATH,
             products_df,
             MAPPINGS_DIR,
-            condition_names=ConditionRules.all_conditions(),
-            skin_type_names=ConditionRules.all_skin_types(),
+            metadata_path=MODEL_METADATA_PATH,
+            evaluation_path=MODEL_EVALUATION_PATH,
             use_slm=use_slm,
         )
         logger.info("SkinAnalyzer loaded (slm=%s)", use_slm)
-    return _analyzer
+    return _analyzers[use_slm]
 
 
 def get_derma_chat():

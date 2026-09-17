@@ -82,7 +82,7 @@ class ApiClient {
     return response.json();
   }
 
-  async analyzeImage(imageUri: string, useSlm: boolean = false, fileInfo?: { fileSize?: number; mimeType?: string }) {
+  async analyzeImage(imageUri: string, useSlm: boolean = false, fileInfo?: { fileSize?: number; mimeType?: string }, skinType?: string | null) {
     const url = this.toUrl("/api/analyze");
     if (fileInfo?.fileSize && fileInfo.fileSize > 10 * 1024 * 1024) {
       throw new ApiError({
@@ -134,6 +134,7 @@ class ApiClient {
       const blobRes = await fetch(imageUri);
       formData.append("image", await blobRes.blob(), filename);
       formData.append("use_slm", String(useSlm));
+      if (skinType) formData.append("skin_type", skinType);
 
       const controller = new AbortController();
       // Image analysis (esp. with SLM) can take a while — own 120s timeout.
@@ -191,7 +192,7 @@ class ApiClient {
         uploadType: UploadType.MULTIPART,
         fieldName: "image",
         mimeType: type,
-        parameters: { use_slm: String(useSlm) },
+        parameters: { use_slm: String(useSlm), ...(skinType ? { skin_type: skinType } : {}) },
         signal: controller.signal,
       });
     } catch (error: any) {
@@ -288,9 +289,9 @@ class ApiClient {
   }
 
   async sendChatMessage(message: string, history: { role: string; content: string }[] = [], context?: {
-    condition?: string;
+    concerns?: any[];
+    analysis_quality?: Record<string, any>;
     skin_type?: string;
-    is_medical?: boolean;
     product_ids?: string[];
     recommendations?: Record<string, any>;
   }): Promise<any> {

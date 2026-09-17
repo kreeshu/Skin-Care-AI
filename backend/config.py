@@ -1,7 +1,10 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "skin_classifier_multitask.weights.h5")
+MODEL_DIR = os.path.join(BASE_DIR, "models", "concern_pilot")
+MODEL_PATH = os.path.join(MODEL_DIR, "skin_concern_pilot.weights.h5")
+MODEL_METADATA_PATH = os.path.join(MODEL_DIR, "skin_concern_pilot.json")
+MODEL_EVALUATION_PATH = os.path.join(MODEL_DIR, "evaluation.json")
 PRODUCTS_PATH = os.path.join(BASE_DIR, "data", "enriched", "unified_products.csv")
 MAPPINGS_DIR = os.path.join(BASE_DIR, "data", "mappings")
 CONDITIONS_DIR = os.path.join(BASE_DIR, "..", "dataset", "Conditions")

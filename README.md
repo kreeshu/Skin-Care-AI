@@ -1,8 +1,8 @@
 # SkinCare AI
 
-AI-powered skin condition + skin type detection and cosmetic product recommendations for the Nepal market.
+AI-assisted cosmetic skin-concern observations and product recommendations for the Nepal market.
 
-Upload or pick a skin image and the system detects one of seven skin conditions **and** the skin type (dry / normal / oily) using a multi-task deep learning model, then recommends ranked products (cleanser, serum, moisturizer, etc.) from a unified catalog of Nepal retailers. A local on-device SLM (small language model) can explain the picks and build a personalized AM/PM routine.
+Upload a facial image and the system independently scores five visible cosmetic concerns: blemishes, dark spots, redness, visible pores, and fine lines. A user-provided skin type can refine deterministic catalog recommendations. A backend-hosted local Qwen SLM explains approved products, builds AM/PM routines, and answers grounded skincare questions.
 
 > **Disclaimer:** This project is for educational/academic purposes only. Detections are not medical diagnoses and product suggestions are cosmetic recommendations only. Always consult a dermatologist for medical concerns.
 
@@ -10,15 +10,14 @@ Upload or pick a skin image and the system detects one of seven skin conditions 
 
 ## Features
 
-- **Multi-task classification** with a shared EfficientNetB0 backbone and two heads:
-  - Condition head (7 classes): Acne, Carcinoma, Dark Spot, Eczema, Keratosis, Milia, Rosacea.
-  - Skin-type head (3 classes): dry, normal, oily.
-- **Two-phase training**: frozen-base feature extraction, then fine-tuning of the top layers (per-task masked losses + class weights for imbalanced conditions).
-- **Skin-type-aware recommendation engine**: deterministic rule-based candidate generation (condition → ingredients → product scoring), with skin-type match boosting in the ranking.
+- **Multi-label cosmetic concern model** with an EfficientNetB0 backbone and five independent sigmoid outputs.
+- **Explicit uncertainty**: each concern is present, absent, or uncertain using per-label deployment thresholds.
+- **Questionnaire skin type**: skin type is user-provided, never inferred from a photo.
+- **Skin-type-aware recommendation engine**: deterministic concern-to-ingredient candidate generation with catalog scoring.
 - **Hybrid RAG-style SLM layer (optional)**: a small local LLM (Qwen2.5-Instruct) reranks the deterministic shortlist and writes reasons + a personalized AM/PM routine. It can only pick products that already passed the rule engine — it never invents products.
 - **Product catalog enrichment**: merges, deduplicates (fuzzy matching) and enriches products with ingredient/skin-type/concern data from three Nepal retailers.
-- **Medical-condition handling**: Carcinoma predictions surface a strong dermatologist warning, bypass the SLM, and return no product suggestions.
-- **Streamlit web app** for interactive image upload / sample browsing and results visualization.
+- **Cosmetic-only safety boundary**: the vision model does not diagnose diseases; chat uses symptom red flags only to recommend professional care.
+- **Streamlit and Expo apps** for analysis, routines, grounded chat, and catalog browsing.
 
 ---
 
@@ -26,20 +25,20 @@ Upload or pick a skin image and the system detects one of seven skin conditions 
 
 ```
                  ┌────────────────────────────────────────────┐
-   skin image → │  Multi-task EfficientNetB0                 │ → condition + skin type
-                 │  (shared backbone, two heads)             │    + confidences
+    skin image → │  Multi-label EfficientNetB0                │ → five concern scores
+                 │  (independent sigmoid outputs)             │    + uncertainty states
                  └────────────────────────────────────────────┘
                               │
                               ▼
              ┌────────────────────────────────────────────┐
                  │  Rule-based engine (deterministic):        │
-                 │  condition + skin type → ingredients        │
+                 │  concerns + stated skin type → ingredients  │
                  │  → product scoring/ranking (candidates)     │
                  └────────────────────────────────────────────┘
                               │
                               ▼
                  ┌────────────────────────────────────────────┐
-                 │  SLM layer (optional, on-device):          │
+                 │  SLM layer (optional, backend-hosted):     │
                  │  rerank shortlist + reasons + AM/PM routine │
                  └────────────────────────────────────────────┘
                               │
@@ -48,13 +47,13 @@ Upload or pick a skin image and the system detects one of seven skin conditions 
                    + suggested routine (+ AI explanation)
 ```
 
-**Guardrails:** the SLM receives only the deterministic candidate shortlist, its output is validated in code (any product not in the shortlist is dropped), and Carcinoma bypasses the SLM entirely.
+**Guardrails:** the SLM receives only present cosmetic concerns and the deterministic candidate shortlist. Product IDs, names, and categories are canonicalized against that shortlist; symptom red flags are handled in code rather than inferred from image scores.
 
 ---
 
 ## Tech Stack
 
-- **Deep learning**: TensorFlow / Keras (EfficientNetB0, multi-task)
+- **Deep learning**: TensorFlow / Keras (EfficientNetB0, multi-label)
 - **SLM**: PyTorch + HuggingFace transformers (Qwen2.5-1.5B-Instruct, 0.5B fallback), CPU-optimized
 - **Data**: pandas, numpy, scikit-learn
 - **Matching/dedup**: rapidfuzz

@@ -23,12 +23,12 @@ facts = [{"product_id": "7", "name": "Gentle Foam Cleanser", "brand": "X",
           "price": 500, "rating": 4.5, "matching_ingredients": ["niacinamide"]}]
 msgs = chat.build_messages("Is this good for me?",
                            [{"role": "user", "content": "hi"}],
-                           {"condition": "Acne", "skin_type": "oily"}, facts)
+                            {"concerns": [{"name": "blemishes", "status": "present"}], "skin_type": "oily"}, facts)
 assert msgs[0]["role"] == "system" and msgs[-1]["role"] == "user"
-assert "Gentle Foam Cleanser" in msgs[-1]["content"] and "Acne" in msgs[-1]["content"]
+assert "Gentle Foam Cleanser" in msgs[-1]["content"] and "blemishes" in msgs[-1]["content"]
 
 # no facts -> no product names promised
-msgs = chat.build_messages("what is retinol?", [], {"condition": "Acne", "skin_type": "oily"}, [])
+msgs = chat.build_messages("what is retinol?", [], {"concerns": [], "skin_type": "oily"}, [])
 assert "no product names" in msgs[-1]["content"]
 
 # grounding: substring match + card filter
@@ -38,7 +38,7 @@ assert mentioned_cards("Try Gentle Foam Cleanser daily", facts)
 assert not mentioned_cards("Try Magic Cream 3000", facts)
 
 # guardrails without model
-out = chat.reply("hi", analysis={"is_medical": True, "condition": "Carcinoma"})
+out = chat.reply("This is bleeding and rapidly changing")
 assert out["product_cards"] == [] and "dermatologist" in out["reply"]
 out = chat.reply("hi", facts=facts)
 assert out["product_cards"] and out["disclaimer"]

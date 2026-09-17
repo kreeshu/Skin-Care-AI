@@ -1,0 +1,64 @@
+{
+  "threshold_source": "data/vision/manifests/gold_validation.csv",
+  "metrics": {
+    "blemishes": {
+      "samples": 26,
+      "positives": 26,
+      "negatives": 0,
+      "threshold": 0.5,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "note": "Unavailable: both positive and negative gold samples are required."
+    },
+    "dark_spots": {
+      "samples": 25,
+      "positives": 15,
+      "negatives": 10,
+      "threshold": 0.22218719124794006,
+      "precision": 0.7058823529411765,
+      "recall": 0.8,
+      "f1": 0.75,
+      "pr_auc": 0.75283684180743,
+      "roc_auc": 0.6533333333333333
+    },
+    "redness": {
+      "samples": 26,
+      "positives": 24,
+      "negatives": 2,
+      "threshold": 0.5,
+      "precision": 0.9166666666666666,
+      "recall": 0.4583333333333333,
+      "f1": 0.6111111111111112,
+      "pr_auc": 0.9288260083884072,
+      "roc_auc": 0.4375,
+      "note": "Preliminary only: fewer than five positive or negative gold samples."
+    },
+    "visible_pores": {
+      "samples": 20,
+      "positives": 16,
+      "negatives": 4,
+      "threshold": 0.5,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75,
+      "pr_auc": 0.7140346023085961,
+      "roc_auc": 0.265625,
+      "note": "Preliminary only: fewer than five positive or negative gold samples."
+    },
+    "fine_lines": {
+      "samples": 26,
+      "positives": 2,
+      "negatives": 24,
+      "threshold": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "pr_auc": 0.20833333333333331,
+      "roc_auc": 0.7291666666666666,
+      "note": "Preliminary only: fewer than five positive or negative gold samples."
+    }
+  }
+}

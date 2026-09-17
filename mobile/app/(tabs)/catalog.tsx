@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -21,7 +21,7 @@ import { api } from "../../services/api";
 import { toUserMessage } from "../../services/apiError";
 import { useFetcher } from "../../hooks/useFetcher";
 import { useFavorites } from "../../hooks/useFavorites";
-import { Product, ProductsResponse } from "../../types";
+import { ProductsResponse } from "../../types";
 
 const SORT_OPTIONS = [
   { label: "Top rated", value: "rating" },

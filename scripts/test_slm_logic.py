@@ -10,7 +10,9 @@ from src.slm.recommender import SlmRecommender  # noqa: E402
 
 df = pd.read_csv(os.path.join("data", "enriched", "unified_products.csv"))
 engine = RecommendationEngine(df, os.path.join("data", "mappings"))
-result = engine.recommend("Dark Spot", skin_type="dry")
+result = engine.recommend_concerns([
+    {"name": "dark_spots", "score": 0.8, "status": "present"}
+], skin_type="dry")
 
 rec = SlmRecommender()
 out = rec.recommend(result)

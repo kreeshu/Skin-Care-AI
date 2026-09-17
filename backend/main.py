@@ -12,8 +12,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(level
 
 app = FastAPI(
     title="SkinCare AI API",
-    description="AI-powered skin condition detection and product recommendation API",
-    version="1.0.0",
+    description="Cosmetic skin-concern observations and grounded product recommendations",
+    version="2.0.0",
 )
 
 app.add_middleware(

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated, View, StyleSheet, ViewStyle } from "react-native";
 import { colors } from "../../constants/colors";
 import { theme, shadow } from "../../constants/theme";
@@ -18,7 +18,7 @@ interface LoadingStateProps {
  * same rate so the screen reads as "we're working" not "we froze".
  */
 export function LoadingState({ eyebrow, title, rows = 3, style, compact = false }: LoadingStateProps) {
-  const opacity = useRef(new Animated.Value(0.45)).current;
+  const [opacity] = useState(() => new Animated.Value(0.45));
 
   useEffect(() => {
     const loop = Animated.loop(

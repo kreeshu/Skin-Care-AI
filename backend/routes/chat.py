@@ -22,10 +22,9 @@ class ChatMessage(BaseModel):
 
 
 class ChatContext(BaseModel):
-    condition: Optional[str] = None
-    detected_condition: Optional[str] = None
+    concerns: List[Dict] = Field(default_factory=list)
+    analysis_quality: Optional[Dict] = None
     skin_type: Optional[str] = None
-    is_medical: bool = False
     product_ids: List[str] = Field(default_factory=list)
     recommendations: Optional[Dict] = None
 
@@ -79,8 +78,6 @@ async def chat(req: ChatRequest):
         return {"reply": "Please type a question.", "product_cards": [],
                 "disclaimer": "Cosmetic advice only."}
     ctx = req.context.model_dump() if req.context else None
-    if ctx and not ctx.get("condition") and ctx.get("detected_condition"):
-        ctx["condition"] = ctx["detected_condition"]
     facts = _context_products(req.context, message)
     derma = get_derma_chat()
     history = [m.model_dump() for m in req.history]

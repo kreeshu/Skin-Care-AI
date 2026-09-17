@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = (
     "You are a friendly skincare assistant inside a skin-analysis app, "
-    "talking like a helpful dermatologist. You give cosmetic advice only and "
+    "talking like a helpful skincare educator. You give cosmetic advice only and "
     "never diagnose, prescribe, or replace a doctor. "
     "RULES:\n"
     "1. Recommend or compare ONLY products listed under CATALOG_FACTS. "
@@ -106,11 +106,12 @@ class DermaChat:
         hist = truncate_history(history or [], cfg.get("chat_history_limit", 10))
         lines = []
         if analysis:
-            lines.append(
-                "User skin context: condition=%s, skin_type=%s."
-                % (analysis.get("condition") or analysis.get("detected_condition"),
-                   analysis.get("skin_type"))
-            )
+            present = [
+                item.get("name") for item in analysis.get("concerns", [])
+                if item.get("status") == "present"
+            ]
+            lines.append("User skin context: visible_concerns=%s, stated_skin_type=%s."
+                         % (present, analysis.get("skin_type")))
         if facts:
             lines.append("CATALOG_FACTS (only recommend/compare these):")
             lines.extend(fact_block(p) for p in facts)
@@ -130,8 +131,7 @@ class DermaChat:
         facts: List[Dict] = None,
     ) -> Dict:
         facts = facts or []
-        allowed = {str(p.get("product_id")) for p in facts}
-        is_medical = bool((analysis or {}).get("is_medical"))
+        is_medical = has_red_flags(message)
         if self.engine is None:
             return self._fallback(message, facts, is_medical)
         messages = self.build_messages(message, history, analysis, facts)
@@ -169,6 +169,17 @@ class DermaChat:
         return {"reply": reply, "product_cards": cards,
                 "disclaimer": DISCLAIMER, "generated_by": "deterministic_fallback"}
 
+
+RED_FLAG_TERMS = (
+    "bleeding", "rapidly changing", "rapid change", "severe pain", "severe swelling",
+    "infected", "infection", "eye swelling", "can't breathe", "cannot breathe",
+)
+
+
+def has_red_flags(message: str) -> bool:
+    text = (message or "").lower()
+    return any(term in text for term in RED_FLAG_TERMS)
+
     # assert-based self-check: `python src/slm/chat.py`
     @staticmethod
     def demo():
@@ -181,7 +192,7 @@ class DermaChat:
         assert match_products("compare Gentle Foam Cleanser vs other?", facts)
         assert not match_products("what is retinol?", facts)
         assert mentioned_cards("Try Gentle Foam Cleanser daily", facts)
-        out = c.reply("hi", analysis={"is_medical": True})
+        out = c.reply("This is bleeding and rapidly changing")
         assert out["generated_by"] == "medical_guardrail"
         print("chat demo ok")
 

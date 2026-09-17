@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Eyebrow, DisplayLg, BodySm, Body } from "../../components/ui/Typography";
-import { ConditionBadge } from "../../components/ConditionBadge";
 import { api } from "../../services/api";
 import { toUserMessage } from "../../services/apiError";
 import { useHistory } from "../../hooks/useHistory";
@@ -24,9 +23,9 @@ function contextFromResult(result?: AnalysisResult) {
     if (product_ids.length >= 6) break;
   }
   return {
-    condition: result.detected_condition,
-    skin_type: result.skin_type,
-    is_medical: result.is_medical,
+    concerns: result.concerns,
+    analysis_quality: result.analysis_quality,
+    skin_type: result.skin_type ?? undefined,
     product_ids: product_ids.slice(0, 6),
   };
 }
@@ -43,25 +42,23 @@ function topPicks(result: AnalysisResult): string[] {
 }
 
 function ResultCard({ result, onPress }: { result: AnalysisResult; onPress: () => void }) {
-  const serious = result.is_medical && result.detected_condition?.toLowerCase() === "carcinoma";
+  const present = result.concerns.filter((item) => item.status === "present");
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8} accessibilityRole="button">
       <Eyebrow>Your result · tap for details</Eyebrow>
       <View style={styles.cardHead}>
-        <ConditionBadge condition={result.detected_condition} size="sm" />
-        <BodySm style={styles.muted}>{Math.round(result.condition_confidence * 100)}% reading</BodySm>
+        <Body>{present.length ? present.map((item) => item.name.replace(/_/g, " ")).join(", ") : "No visible concerns"}</Body>
+        <BodySm style={styles.muted}>{result.model_version}</BodySm>
       </View>
       {result.skin_type ? (
         <BodySm style={styles.muted}>
-          {result.skin_type} · {Math.round(result.skin_type_confidence * 100)}% skin type
+          Your skin type · {result.skin_type}
         </BodySm>
       ) : null}
       {topPicks(result).map((name) => (
         <BodySm key={name} numberOfLines={1} style={styles.pick}>• {name}</BodySm>
       ))}
-      {serious ? (
-        <BodySm style={styles.warn}>Needs a dermatologist promptly — this app does not diagnose.</BodySm>
-      ) : null}
+      <BodySm style={styles.muted}>Cosmetic observation only, not a diagnosis.</BodySm>
     </TouchableOpacity>
   );
 }
@@ -100,8 +97,8 @@ export default function ChatScreen() {
     setInput("");
     setSending(true);
     try {
-      const res = await api.sendChatMessage(message, textHistory(next), context);
-      setMessages([...next, { role: "assistant", content: res.reply }]);
+      const res = await api.sendChatMessage(message, textHistory(messages), context);
+      setMessages([...next, { role: "assistant", content: res.reply, product_cards: res.product_cards }]);
     } catch (e: any) {
       setError(e?.message ?? "Chat failed. Is the backend running?");
     } finally {
@@ -121,7 +118,7 @@ export default function ChatScreen() {
     setPhotoBusy(true);
     setError(null);
     try {
-      const result = (await api.analyzeImage(uri, settings.useSlm, photo)) as AnalysisResult;
+      const result = (await api.analyzeImage(uri, settings.useSlm, photo, settings.skinTypePreference)) as AnalysisResult;
       await addScan(result);
       setActiveResult(result);
       markPhoto(uri, "done");
@@ -159,6 +156,9 @@ export default function ChatScreen() {
       return (
         <View style={[styles.bubble, isUser ? styles.user : styles.ai]}>
           <Body style={isUser ? styles.userText : undefined}>{item.content}</Body>
+          {item.product_cards?.map((card) => (
+            <BodySm key={card.product_id} style={styles.pick}>{card.brand} · {card.name}</BodySm>
+          ))}
         </View>
       );
     }
@@ -199,7 +199,7 @@ export default function ChatScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <View style={styles.headerText}>
-          <Eyebrow>Skin chat{context ? ` · ${context.condition} · ${context.skin_type}` : ""}</Eyebrow>
+          <Eyebrow>Skin chat{context?.skin_type ? ` · ${context.skin_type}` : ""}</Eyebrow>
           <DisplayLg>Ask about your skin.</DisplayLg>
         </View>
       </View>
@@ -229,9 +229,6 @@ export default function ChatScreen() {
         <TouchableOpacity onPress={() => setError(null)} style={styles.error}>
           <BodySm style={styles.errorText}>{error}</BodySm>
         </TouchableOpacity>
-      ) : null}
-      {context?.is_medical ? (
-        <BodySm style={styles.warn}>Possible medical condition — please see a dermatologist.</BodySm>
       ) : null}
 
       <View style={styles.inputRow}>

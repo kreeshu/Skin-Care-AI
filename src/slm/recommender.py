@@ -13,7 +13,8 @@ SYSTEM_PROMPT = (
     "brands, prices or links.\n"
     "2. Choose up to {top_n} products per category and give a short reason "
     "(1-2 sentences) for each that references its matching ingredients.\n"
-    "3. Build a personalized AM/PM routine for the user's skin type and condition.\n"
+    "3. Build a personalized AM/PM routine for the user's stated skin type and only concerns marked present. "
+    "Scores are cosmetic observations, not diagnoses. Never infer a disease or skin type.\n"
     "4. Reply with valid JSON only, exactly matching this schema:\n"
     '{{"chosen": [{{"category": "...", "product_id": "fng_19052", "name": "...", "reason": "..."}}], '
     '"routine": {{"am": ["..."], "pm": ["..."]}}, "summary": "..."}}'
@@ -34,7 +35,7 @@ class SlmRecommender:
     def recommend(self, engine_result: Dict, top_n: int = 3) -> Dict:
         candidates = self._build_candidates(engine_result, top_n)
         if not candidates:
-            return self._fallback_response(engine_result, [], is_medical=True)
+            return self._fallback_response(engine_result, [])
 
         messages = self._build_messages(engine_result, candidates, top_n)
         raw = self.engine.generate(messages) if self.engine else None
@@ -66,8 +67,8 @@ class SlmRecommender:
 
     def _build_messages(self, engine_result: Dict, candidates: List[Dict], top_n: int) -> List[Dict]:
         user_payload = {
-            "detected_condition": engine_result.get("detected_condition"),
-            "is_medical": engine_result.get("is_medical"),
+            "concerns": engine_result.get("concerns", []),
+            "analysis_quality": engine_result.get("analysis_quality"),
             "skin_type": engine_result.get("skin_type"),
             "skin_type_title": engine_result.get("skin_type_title"),
             "candidate_products": candidates,
@@ -80,30 +81,34 @@ class SlmRecommender:
     def _parse_response(self, raw: str, candidates: List[Dict]) -> Optional[Dict]:
         # IDs are strings (e.g. "fng_19052") but the model may echo them back
         # as numbers — compare normalized, keep the canonical candidate ID.
-        allowed = {str(c["product_id"]): c["product_id"] for c in candidates}
+        allowed = {str(c["product_id"]): c for c in candidates}
         data = self._extract_json(raw)
         if data is None:
             return None
         try:
             chosen = []
-            for item in data.get("chosen", []):
-                pid = allowed.get(str(item.get("product_id")))
-                if pid is None:
+            seen = set()
+            max_total = self.config.get("max_total_products", 9)
+            for item in data.get("chosen", [])[:max_total]:
+                candidate = allowed.get(str(item.get("product_id")))
+                if candidate is None or candidate["product_id"] in seen:
                     continue
+                seen.add(candidate["product_id"])
                 chosen.append({
-                    "category": item.get("category"),
-                    "product_id": pid,
-                    "name": item.get("name"),
-                    "reason": item.get("reason"),
+                    "category": candidate["category"],
+                    "product_id": candidate["product_id"],
+                    "name": candidate["name"],
+                    "reason": str(item.get("reason", ""))[:300],
                 })
             routine = data.get("routine", {})
             return {
                 "chosen": chosen,
                 "routine": {
-                    "am": routine.get("am", []),
-                    "pm": routine.get("pm", []),
+                    "am": self._clean_steps(routine.get("am", [])),
+                    "pm": self._clean_steps(routine.get("pm", [])),
                 },
-                "summary": data.get("summary", ""),
+                "summary": str(data.get("summary", ""))[:500],
+                "generated_by": "slm",
             }
         except (AttributeError, TypeError):
             return None
@@ -125,10 +130,19 @@ class SlmRecommender:
                 return None
         return None
 
-    def _fallback_response(self, engine_result: Dict, candidates: List[Dict], is_medical: bool = False) -> Dict:
+    @staticmethod
+    def _clean_steps(steps) -> List[str]:
+        if not isinstance(steps, list):
+            return []
+        return [str(step)[:200] for step in steps[:6] if isinstance(step, str) and step.strip()]
+
+    def _fallback_response(self, engine_result: Dict, candidates: List[Dict]) -> Dict:
         chosen = []
+        max_total = self.config.get("max_total_products", 9)
         for cat, recs in engine_result.get("recommendations", {}).items():
             for rec in recs[: self.config.get("max_candidates_per_category", 3)]:
+                if len(chosen) >= max_total:
+                    break
                 chosen.append({
                     "category": cat,
                     "product_id": rec["product_id"],
@@ -136,6 +150,8 @@ class SlmRecommender:
                     "reason": "Matched recommended ingredients: "
                     + ", ".join(rec.get("matching_ingredients", []) or ["none"]),
                 })
+            if len(chosen) >= max_total:
+                break
         return {
             "chosen": chosen,
             "routine": {

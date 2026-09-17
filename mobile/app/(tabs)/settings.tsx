@@ -10,16 +10,18 @@ import { useHistory } from "../../hooks/useHistory";
 import { api } from "../../services/api";
 
 const SKIN_TYPE_CHOICES: { value: string | null; label: string }[] = [
-  { value: null, label: "Auto" },
+  { value: null, label: "Not provided" },
   { value: "dry", label: "Dry" },
   { value: "normal", label: "Normal" },
   { value: "oily", label: "Oily" },
+  { value: "combination", label: "Combination" },
+  { value: "sensitive", label: "Sensitive" },
 ];
 
-const ABOUT_ROWS: Array<[string, string]> = [
-  ["Model", "EfficientNetB0, multi-task"],
-  ["Conditions", "7 entries"],
-  ["Skin types", "Dry · Normal · Oily"],
+const ABOUT_ROWS: [string, string][] = [
+  ["Model", "EfficientNetB0, multi-label"],
+  ["Concerns", "5 cosmetic observations"],
+  ["Skin type", "Provided by you"],
   ["Stock", "1,500+ items from Nepal"],
   ["Shops", "Jeevee · Oriflame"],
 ];

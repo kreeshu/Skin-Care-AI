@@ -48,11 +48,11 @@ export interface SlmResult {
 
 export interface AnalysisResult {
   id: string;
-  detected_condition: string;
-  condition_confidence: number;
-  skin_type: string;
-  skin_type_confidence: number;
-  is_medical: boolean;
+  schema_version: 2;
+  model_version: string;
+  analysis_quality: { status: "usable" | "rejected" | "uncertain"; reasons: string[] };
+  concerns: ConcernResult[];
+  skin_type: string | null;
   title: string;
   description: string;
   skin_type_title: string | null;
@@ -61,6 +61,13 @@ export interface AnalysisResult {
   total_products_found: number;
   disclaimer: string;
   slm: SlmResult | null;
+}
+
+export interface ConcernResult {
+  name: "blemishes" | "dark_spots" | "redness" | "visible_pores" | "fine_lines";
+  score: number;
+  threshold: number;
+  status: "present" | "absent" | "uncertain";
 }
 
 export interface Condition {
@@ -96,22 +103,22 @@ export interface ProductsResponse {
 
 export interface ScanHistoryItem {
   id: string;
-  condition: string;
+  summary: string;
   skin_type: string;
   date: string;
   result: AnalysisResult;
 }
 
 export type ChatTurn =
-  | { role: "user"; content: string }
-  | { role: "assistant"; content: string }
+  | { role: "user"; content: string; product_cards?: never }
+  | { role: "assistant"; content: string; product_cards?: ChatReply["product_cards"] }
   | { role: "user"; kind: "photo"; imageUri: string; status: "analyzing" | "done" | "error"; fileSize?: number; mimeType?: string }
   | { role: "assistant"; kind: "result"; result: AnalysisResult };
 
 export interface ChatContext {
-  condition?: string;
+  concerns?: ConcernResult[];
+  analysis_quality?: AnalysisResult["analysis_quality"];
   skin_type?: string;
-  is_medical?: boolean;
   product_ids?: string[];
   recommendations?: Record<string, ProductRecommendation[]>;
 }

@@ -12,6 +12,7 @@ SLM_CONFIG = {
     "temperature": 0.3,
     "cache_dir": None,
     "max_candidates_per_category": 3,
+    "max_total_products": 9,
     # Free-form dermachat (single-turn generate with injected context + history).
     "chat_max_new_tokens": 256,
     "chat_temperature": 0.5,

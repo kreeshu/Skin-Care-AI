@@ -8,7 +8,10 @@ const SETTINGS_KEY = "@skincare_settings";
 export async function getHistory(): Promise<ScanHistoryItem[]> {
   try {
     const data = await AsyncStorage.getItem(HISTORY_KEY);
-    return data ? JSON.parse(data) : [];
+    const parsed = data ? JSON.parse(data) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((item) => item?.result?.schema_version === 2)
+      : [];
   } catch {
     return [];
   }

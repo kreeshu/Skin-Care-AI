@@ -68,6 +68,49 @@ class RecommendationEngine:
         }
         return response
 
+    def recommend_concerns(self, concerns: List[Dict], skin_type: str = None, top_n: int = 5) -> Dict:
+        present = [item for item in concerns if item.get("status") == "present"]
+        rules = [(item, ConditionRules.get_concern_rule(item["name"])) for item in present]
+        ingredients = list(dict.fromkeys(
+            ingredient for _, rule in rules for ingredient in rule["recommended_ingredients"]
+        ))
+        categories = list(dict.fromkeys(
+            category for _, rule in rules for category in rule["recommended_categories"]
+        ))
+        skin_type_rule = ConditionRules.get_skin_type_rule(skin_type) if skin_type else None
+        texture_preferences = skin_type_rule.get("texture_preferences") if skin_type_rule else None
+
+        results = {}
+        for category in categories:
+            category_products = self.products[
+                self.products["category"].apply(lambda values: category in values if isinstance(values, list) else False)
+            ]
+            ranked = rank_products(
+                category_products,
+                ingredients,
+                top_n=top_n,
+                skin_type=skin_type,
+                texture_preferences=texture_preferences,
+            )
+            if not ranked.empty:
+                results[category] = self._format_recommendations(ranked, ingredients)
+
+        return {
+            "title": "Your Cosmetic Skin Overview" if present else "Basic Skin Care",
+            "description": (
+                "Recommendations are based on visible cosmetic concerns."
+                if present else "No concern was confidently identified, so keep your routine simple."
+            ),
+            "skin_type": skin_type,
+            "skin_type_title": skin_type_rule.get("title") if skin_type_rule else None,
+            "recommendations": results,
+            "routine_suggestion": list(dict.fromkeys(
+                step for _, rule in rules for step in rule["routine_steps"]
+            )) if present else ["gentle cleanser", "moisturizer", "broad-spectrum sunscreen"],
+            "total_products_found": sum(len(items) for items in results.values()),
+            "disclaimer": "Cosmetic observations only; this is not a medical diagnosis or medical advice.",
+        }
+
     def _build_medical_response(self, condition: str, rule: Dict, skin_type: str = None, skin_type_rule: Dict = None) -> Dict:
         return {
             "detected_condition": condition,

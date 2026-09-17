@@ -12,23 +12,20 @@ products = pd.read_csv(os.path.join("data", "enriched", "unified_products.csv"))
 mappings = os.path.join("data", "mappings")
 
 analyzer = SkinAnalyzer(
-    os.path.join(MODELS, "skin_classifier_multitask.weights.h5"),
+    os.path.join(MODELS, "concern_pilot", "skin_concern_pilot.weights.h5"),
     products,
     mappings,
+    metadata_path=os.path.join(MODELS, "concern_pilot", "skin_concern_pilot.json"),
+    evaluation_path=os.path.join(MODELS, "concern_pilot", "evaluation.json"),
 )
-print("multitask:", analyzer.multitask)
-print("condition names:", analyzer.condition_names)
-print("skin type names:", analyzer.skin_type_names)
+print("concerns:", analyzer.labels)
 
-sample = os.path.join("..", "dataset", "Conditions", "Acne")
+sample = os.path.join("dataset", "Conditions", "Acne")
 imgs = [f for f in os.listdir(sample) if f.lower().endswith((".jpg", ".jpeg", ".png"))]
 if imgs:
     result = analyzer.analyze(os.path.join(sample, imgs[0]))
-    print("condition:", result["detected_condition"],
-          round(result["condition_confidence"], 3))
-    print("skin_type:", result["skin_type"],
-          round(result["skin_type_confidence"], 3))
-    print("is_medical:", result["is_medical"])
+    print("concerns:", [(item["name"], item["status"], round(item["score"], 3))
+                         for item in result["concerns"]])
     cats = {k: len(v) for k, v in result["recommendations"].items()}
     print("recommendation categories:", cats)
     print("slm:", result["slm"])

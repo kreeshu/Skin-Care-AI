@@ -61,29 +61,30 @@ def run_test_inference(
     print("=" * 60)
 
     products_df = pd.read_csv(products_path)
-    analyzer = SkinAnalyzer(model_path, products_df, mappings_dir, use_slm=use_slm)
+    model_dir = os.path.dirname(model_path)
+    analyzer = SkinAnalyzer(
+        model_path,
+        products_df,
+        mappings_dir,
+        metadata_path=os.path.join(model_dir, "skin_concern_pilot.json"),
+        evaluation_path=os.path.join(model_dir, "evaluation.json"),
+        use_slm=use_slm,
+    )
 
     if image_path:
         print(f"\nAnalyzing image: {image_path}")
         result = analyzer.analyze(image_path)
         _print_analysis(result)
     else:
-        print("\nNo image provided. Testing recommendation engine for all conditions:")
-        for condition in analyzer.condition_names:
-            result = analyzer.engine.recommend(condition, skin_type="normal")
-            print(f"\n  {condition}: {result['total_products_found']} products")
-        for skin_type in analyzer.skin_type_names:
-            result = analyzer.engine.recommend("Acne", skin_type=skin_type)
-            print(f"\n  Acne + {skin_type}: {result['total_products_found']} products")
+        print("\nProvide --image to run concern inference.")
 
 
 def _print_analysis(result: dict):
-    print(f"\nCondition: {result['detected_condition']} "
-          f"(conf={result.get('condition_confidence', 0):.3f})")
+    print("\nCosmetic concerns:")
+    for concern in result["concerns"]:
+        print(f"  {concern['name']}: {concern['status']} (score={concern['score']:.3f})")
     if result.get("skin_type"):
-        print(f"Skin type: {result['skin_type']} "
-              f"(conf={result.get('skin_type_confidence', 0):.3f})")
-    print(f"Medical: {result['is_medical']}")
+        print(f"User-provided skin type: {result['skin_type']}")
     print(f"Title: {result['title']}")
     print(f"Description: {result['description']}")
     if result["recommendations"]:
@@ -123,7 +124,7 @@ if __name__ == "__main__":
         run_training_pipeline(args.conditions_dir, args.types_dir, args.model_dir)
 
     if args.step in ("inference", "all"):
-        model_path = os.path.join(args.model_dir, "skin_classifier_multitask.weights.h5")
+        model_path = os.path.join(args.model_dir, "concern_pilot", "skin_concern_pilot.weights.h5")
         if os.path.exists(model_path):
             run_test_inference(model_path, products_path, mappings_dir, args.image, args.use_slm)
         else:

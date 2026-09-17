@@ -1,0 +1,20 @@
+{
+  "total": 5757,
+  "splits": {
+    "train": 4024,
+    "validation": 807,
+    "test": 926
+  },
+  "origins": {
+    "weak": 5593,
+    "gold": 164
+  },
+  "sources": {
+    "existing_conditions": 1406,
+    "facial_skin_concerns": 3961,
+    "acne04_level0": 98,
+    "acne04_level1": 99,
+    "acne04_level2": 98,
+    "acne04_level3": 95
+  }
+}

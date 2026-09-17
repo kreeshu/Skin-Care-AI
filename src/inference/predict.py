@@ -1,136 +1,119 @@
-import os
+import json
 import logging
-from typing import Dict, List, Optional, Tuple
+from pathlib import Path
+from typing import Dict, Optional
 
 import numpy as np
 import tensorflow as tf
 from PIL import Image
 
-from src.model.multitask import load_multitask_model
+from src.model.concern_model import CONCERNS, load_concern_model
 from src.recommendation.condition_rules import ConditionRules
 from src.recommendation.engine import RecommendationEngine
 
 logger = logging.getLogger(__name__)
 
-IMG_SIZE = 224
-
 
 class SkinAnalyzer:
-    """End-to-end: image → condition + skin type → recommendations (+ SLM)."""
+    """Cosmetic concern inference, recommendations, and optional grounded SLM notes."""
 
     def __init__(
         self,
         model_path: str,
         products_df=None,
         mappings_dir: str = None,
-        num_conditions: int = 7,
-        num_skin_types: int = 3,
-        img_size: int = IMG_SIZE,
-        condition_names: Optional[List[str]] = None,
-        skin_type_names: Optional[List[str]] = None,
+        metadata_path: str = None,
+        evaluation_path: str = None,
+        uncertainty_margin: float = 0.05,
         use_slm: bool = False,
         slm_config: Optional[Dict] = None,
         slm_top_n: int = 3,
     ):
-        if model_path.endswith(".weights.h5"):
-            self.model = load_multitask_model(
-                model_path, num_conditions, num_skin_types, img_size
-            )
-            self.multitask = True
-        else:
-            self.model = tf.keras.models.load_model(model_path)
-            self.multitask = False
+        metadata = json.loads(Path(metadata_path).read_text()) if metadata_path else {}
+        self.labels = tuple(metadata.get("labels", CONCERNS))
+        if self.labels != CONCERNS:
+            raise ValueError(f"Model labels must be {CONCERNS}, got {self.labels}")
+        self.img_size = int(metadata.get("img_size", 224))
+        self.model = load_concern_model(model_path, self.img_size)
+        output_width = int(self.model(tf.zeros((1, self.img_size, self.img_size, 3))).shape[-1])
+        if output_width != len(self.labels):
+            raise ValueError("Concern model output does not match metadata labels")
 
-        self.condition_names = condition_names or ConditionRules.all_conditions()
-        self.skin_type_names = skin_type_names or ConditionRules.all_skin_types()
-        self.img_size = img_size
-
-        if products_df is not None and mappings_dir is not None:
-            self.engine = RecommendationEngine(products_df, mappings_dir)
-        else:
-            self.engine = None
+        evaluation = json.loads(Path(evaluation_path).read_text()) if evaluation_path else {}
+        metrics = evaluation.get("metrics", {})
+        self.thresholds = {
+            label: float(metrics.get(label, {}).get("threshold", 0.5)) for label in self.labels
+        }
+        self.uncertainty_margin = uncertainty_margin
+        self.model_version = Path(model_path).stem
+        self.engine = RecommendationEngine(products_df, mappings_dir) if products_df is not None else None
 
         self.slm_recommender = None
         self.slm_top_n = slm_top_n
         if use_slm:
             try:
-                from src.slm import SlmEngine, SlmRecommender
+                from src.slm import SLM_CONFIG, SlmEngine, SlmRecommender
 
-                self.slm_recommender = SlmRecommender(SlmEngine(slm_config).load())
+                config = slm_config or SLM_CONFIG
+                self.slm_recommender = SlmRecommender(SlmEngine(config).load(), config)
             except Exception as exc:
-                # SLM is best-effort: analysis still works, just without AI notes.
                 logger.warning("SLM unavailable, continuing without it: %s", exc)
 
-    # ------------------------------------------------------------------ #
-    # Predictions
-    # ------------------------------------------------------------------ #
     def predict(self, image_input) -> Dict:
-        """Predict condition and skin type from image path, array, or PIL image."""
-        img_batch = self._preprocess(image_input)
-        condition, cond_conf = self._predict_condition(img_batch)
-        skin_type, type_conf = self._predict_skin_type(img_batch)
+        scores = np.asarray(self.model.predict(self._preprocess(image_input), verbose=0))[0]
+        if scores.shape != (len(self.labels),) or not np.isfinite(scores).all():
+            raise ValueError("Concern model returned invalid scores")
+
+        concerns = []
+        for label, raw_score in zip(self.labels, scores):
+            score = float(np.clip(raw_score, 0.0, 1.0))
+            threshold = self.thresholds[label]
+            if abs(score - threshold) <= self.uncertainty_margin:
+                status = "uncertain"
+            else:
+                status = "present" if score > threshold else "absent"
+            concerns.append({
+                "name": label,
+                "score": score,
+                "threshold": threshold,
+                "status": status,
+            })
         return {
-            "condition": condition,
-            "condition_confidence": cond_conf,
-            "skin_type": skin_type,
-            "skin_type_confidence": type_conf,
-            "is_medical": ConditionRules.is_medical(condition),
+            "schema_version": 2,
+            "model_version": self.model_version,
+            "analysis_quality": {"status": "usable", "reasons": []},
+            "concerns": concerns,
         }
 
-    def _predict_condition(self, img_batch: np.ndarray) -> Tuple[str, float]:
-        if self.multitask:
-            cond_probs, _ = self.model.predict_heads(tf.constant(img_batch))
-            cond_probs = cond_probs.numpy()[0]
-        else:
-            out = self.model.predict(img_batch, verbose=0)
-            cond_probs = np.asarray(out[0]) if isinstance(out, list) else np.asarray(out)
-        idx = int(np.argmax(cond_probs))
-        return self.condition_names[idx], float(cond_probs[idx])
-
-    def _predict_skin_type(self, img_batch: np.ndarray) -> Tuple[str, float]:
-        if not self.multitask:
-            return None, 0.0
-        _, type_probs = self.model.predict_heads(tf.constant(img_batch))
-        type_probs = type_probs.numpy()[0]
-        idx = int(np.argmax(type_probs))
-        return self.skin_type_names[idx], float(type_probs[idx])
-
-    # ------------------------------------------------------------------ #
-    # Full analysis
-    # ------------------------------------------------------------------ #
-    def analyze(self, image_input) -> Dict:
+    def analyze(self, image_input, skin_type: str = None) -> Dict:
+        if skin_type and skin_type not in ConditionRules.all_skin_types():
+            raise ValueError(f"Unknown skin type: {skin_type}")
         pred = self.predict(image_input)
-        condition = pred["condition"]
-        skin_type = pred["skin_type"]
-
         if self.engine is None:
-            return {**pred, "recommendations": None, "message": "Recommendation engine not loaded."}
+            return {**pred, "skin_type": skin_type, "recommendations": {}, "slm": None}
 
-        recs = self.engine.recommend(condition, skin_type=skin_type)
-        recs["condition_confidence"] = pred["condition_confidence"]
-        recs["skin_type_confidence"] = pred["skin_type_confidence"]
-
-        if self.slm_recommender is not None and not pred["is_medical"]:
+        result = self.engine.recommend_concerns(pred["concerns"], skin_type=skin_type)
+        result.update(pred)
+        if self.slm_recommender is not None:
             try:
-                recs["slm"] = self.slm_recommender.recommend(recs, top_n=self.slm_top_n)
-            except Exception:
-                recs["slm"] = None
+                result["slm"] = self.slm_recommender.recommend(result, top_n=self.slm_top_n)
+            except Exception as exc:
+                logger.warning("SLM recommendation failed: %s", exc)
+                result["slm"] = None
         else:
-            recs["slm"] = None
+            result["slm"] = None
+        return result
 
-        return recs
-
-    # ------------------------------------------------------------------ #
-    # Preprocessing
-    # ------------------------------------------------------------------ #
     def _preprocess(self, image_input) -> np.ndarray:
-        if isinstance(image_input, str):
-            img = Image.open(image_input).convert("RGB")
+        if isinstance(image_input, (str, Path)):
+            image = Image.open(image_input)
         elif isinstance(image_input, np.ndarray):
-            img = Image.fromarray(image_input).convert("RGB")
+            image = Image.fromarray(image_input)
         else:
-            img = image_input.convert("RGB")
-
-        img = img.resize((self.img_size, self.img_size))
-        img_array = tf.keras.applications.efficientnet.preprocess_input(np.array(img))
-        return np.expand_dims(img_array, axis=0)
+            image = image_input
+        image = image.convert("RGB")
+        if min(image.size) < 64:
+            raise ValueError("Image is too small; use a clear facial photo")
+        image = image.resize((self.img_size, self.img_size))
+        array = tf.keras.applications.efficientnet.preprocess_input(np.asarray(image))
+        return np.expand_dims(array, axis=0)

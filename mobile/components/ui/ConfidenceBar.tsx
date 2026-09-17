@@ -15,7 +15,8 @@ export function ConfidenceBar({
   confidence,
   color = colors.dispensary,
 }: ConfidenceBarProps) {
-  const percentage = Math.round(confidence * 100);
+  const safeConfidence = Number.isFinite(confidence) ? Math.min(1, Math.max(0, confidence)) : 0;
+  const percentage = Math.round(safeConfidence * 100);
 
   return (
     <View style={styles.container}>

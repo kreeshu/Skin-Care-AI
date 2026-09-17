@@ -7,7 +7,6 @@ import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Eyebrow, DisplayLg, BodySm } from "../../components/ui/Typography";
 import { EmptyState } from "../../components/ui/EmptyState";
-import { ConditionBadge } from "../../components/ConditionBadge";
 import { Button } from "../../components/ui/Button";
 import { useHistory } from "../../hooks/useHistory";
 import { formatDate } from "../../utils/format";
@@ -34,7 +33,7 @@ export default function HistoryScreen() {
       accessibilityRole="button"
     >
       <View style={styles.rowHead}>
-        <ConditionBadge condition={item.condition} size="sm" />
+        <BodySm>{item.summary}</BodySm>
         <BodySm style={styles.date}>{formatDate(item.date)}</BodySm>
       </View>
       <BodySm style={styles.skinLine}>
