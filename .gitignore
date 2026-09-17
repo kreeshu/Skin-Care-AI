@@ -11,9 +11,9 @@ venv/
 .vscode/
 
 # Large / regenerable artifacts
-models/**/*.keras
-models/**/*.weights.h5
-models/concern_quick/
+#models/**/*.keras
+#models/**/*.weights.h5
+#models/concern_quick/
 Skin_Conditions/
 outputs/
 
