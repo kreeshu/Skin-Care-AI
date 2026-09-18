@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson 1: The Complete SkinCare AI System</title>
+  <link rel="stylesheet" href="../assets/course.css">
+  <script src="../assets/quiz.js" defer></script>
+</head>
+<body><main>
+  <p class="eyebrow">Lesson 1 · Architecture · 20 minutes</p>
+  <h1>The system is more than one AI model.</h1>
+  <p class="lede">Your first viva win: explain how a photo moves through the project, and identify which decisions are learned, programmed, or generated.</p>
+  <p class="meta">Mission link: explain the project clearly without overstating what its AI can do.</p>
+
+  <section class="checkpoint">
+    <h2>Before reading</h2>
+    <p>On paper, answer: <em>“What do I think happens after the user uploads a photo?”</em> Do not inspect the diagram yet. This effort makes the correction memorable.</p>
+  </section>
+
+  <h2>1. Begin with the problem</h2>
+  <p>SkinCare AI accepts a facial image and independently scores five <strong>visible cosmetic concerns</strong>: blemishes, dark spots, redness, visible pores, and fine lines. It then recommends catalog products using programmed rules and ranking. If enabled, a small language model explains those approved recommendations.</p>
+  <p>The precise wording matters. The project performs cosmetic observation, not medical diagnosis. Skin type is supplied by the user; it is not inferred from the image.</p>
+
+  <div class="callout">
+    <strong>One-sentence viva answer:</strong>
+    <p>“SkinCare AI is a hybrid decision-support system that combines multi-label image classification, deterministic product ranking, and an optional grounded language model to provide cosmetic concern observations and skincare suggestions.”</p>
+  </div>
+
+  <h2>2. Follow one request</h2>
+  <div class="pipeline">
+    <div class="step"><span class="step-number">1</span><div><h3>Upload and validate</h3><p>The mobile or Streamlit interface receives a photograph. The API rejects non-image files and uploads over 10 MiB. Pillow then tries to decode the image.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">2</span><div><h3>Prepare the pixels</h3><p>The image becomes RGB, is checked for a minimum dimension of 64 pixels, and is resized to 224 × 224. A batch dimension is added because neural-network models expect a group of examples, even when that group contains one image.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">3</span><div><h3>Score five concerns</h3><p>An EfficientNetB0-based model produces five values between 0 and 1. These are independent scores: one image can have several concerns at once.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">4</span><div><h3>Turn scores into states</h3><p>Each concern has its own threshold. A score near that threshold is uncertain; above it is present; below it is absent. The uncertainty margin is ±0.05.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">5</span><div><h3>Generate candidates</h3><p>Only present concerns drive recommendations. Programmed rules map them to desired ingredients and product categories. Uncertain concerns fail closed: they do not drive a recommendation.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">6</span><div><h3>Rank catalog products</h3><p>A fixed formula scores matching products using ingredient match, rating, review count, availability, discount, and optional stated skin type.</p></div></div>
+    <div class="arrow">↓ optional</div>
+    <div class="step"><span class="step-number">7</span><div><h3>Explain with Qwen</h3><p>The SLM sees a restricted shortlist, not the complete world. It may choose among those candidates and write explanations and AM/PM steps. Invalid product IDs are discarded.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">8</span><div><h3>Return structured results</h3><p>The interface receives scores, states, products, routine steps, safety text, and optional SLM explanations.</p></div></div>
+  </div>
+  <p><a href="../reference/0001-system-map.html">Open the printable system map →</a></p>
+
+  <h2>3. Know who makes each decision</h2>
+  <div class="compare">
+    <div><span class="tag">Learned from data</span><h3>Vision model</h3><p>Recognizes patterns in pixels. Its parameters were adjusted during training.</p></div>
+    <div><span class="tag">Written by developers</span><h3>Concern rules</h3><p>Specify which ingredients and product categories correspond to each concern.</p></div>
+    <div><span class="tag">Written by developers</span><h3>Ranking formula</h3><p>Calculates a deterministic score. The same inputs produce the same ranking.</p></div>
+    <div><span class="tag">Generated language</span><h3>Qwen SLM</h3><p>Writes natural-language explanations under catalog and safety constraints.</p></div>
+  </div>
+
+  <p>This separation is central to your viva. Saying “the AI recommends products” hides the architecture. A better answer is: the vision model supplies concern states, the deterministic engine retrieves and ranks candidates, and the optional SLM explains or reranks the approved shortlist.</p>
+
+  <h2>4. Current system versus project history</h2>
+  <p>The repository also contains older models. One predicts seven condition classes and three skin types using two softmax heads; another is a single-task classifier. They are research history and are not loaded by the current API.</p>
+  <div class="compare">
+    <div><h3>Current runtime</h3><p>Five independent cosmetic concerns; sigmoid outputs; user-stated skin type; used by the API.</p></div>
+    <div><h3>Legacy experiments</h3><p>Seven-condition and three-skin-type classification; softmax outputs; retained for research history.</p></div>
+  </div>
+  <p>This distinction matters because parts of <code>README.md</code> and <code>run_pipeline.py</code> still describe or train the older architecture. In a viva, describe the current system first, then identify legacy experiments honestly.</p>
+
+  <section class="quiz" data-quiz>
+    <h2>Quick check</h2>
+    <p>Which component directly chooses product candidates in the current system?</p>
+    <button class="quiz-option" data-answer="wrong">The EfficientNet vision model</button>
+    <button class="quiz-option" data-answer="correct">The deterministic rule engine</button>
+    <button class="quiz-option" data-answer="wrong">The optional Qwen language model</button>
+    <button class="quiz-option" data-answer="wrong">The Expo mobile interface layer</button>
+    <p class="feedback" aria-live="polite"></p>
+  </section>
+
+  <section class="viva">
+    <h2>Viva practice</h2>
+    <p><strong>Answer aloud before revealing.</strong></p>
+    <ol>
+      <li>What is the main purpose of this project?</li>
+      <li>Why is it called a multi-label system?</li>
+      <li>Does the model diagnose skin disease or infer skin type?</li>
+      <li>What is the difference between the vision model and the recommendation engine?</li>
+      <li>Why is the Qwen model described as grounded?</li>
+    </ol>
+    <button data-reveal="model-answers">Reveal model answers</button>
+    <div class="answer" id="model-answers">
+      <ol>
+        <li>It observes five visible cosmetic concerns and uses them, plus optional stated skin type, to recommend catalog products and routines.</li>
+        <li>Each of the five concerns is judged independently, so multiple labels may be present in one image.</li>
+        <li>No. It is limited to cosmetic observations, and skin type must be supplied by the user.</li>
+        <li>The vision model learns visual patterns and outputs scores; the recommendation engine follows explicit rules and a fixed scoring formula to rank products.</li>
+        <li>It receives an approved candidate shortlist and catalog facts, and its selected product IDs are checked against that shortlist.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="checkpoint">
+    <h2>Your retrieval task</h2>
+    <p>Close this page. In no more than eight sentences, explain the full path from uploaded image to displayed recommendation. Then answer:</p>
+    <ol>
+      <li>Which step is learned from image data?</li>
+      <li>Which steps are deterministic?</li>
+      <li>What can the project not validly claim?</li>
+    </ol>
+    <p>Send your answer to the teaching agent. Your next lesson will be adapted to what you can already explain.</p>
+  </section>
+
+  <h2>Primary source</h2>
+  <p>Read the opening sections of the <a href="https://developers.google.com/machine-learning/crash-course">Google Machine Learning Crash Course</a>. It introduces the model and classification language used throughout this course.</p>
+  <p class="source-note">Project evidence: <code>backend/routes/__init__.py</code>, <code>backend/services/analyzer_service.py</code>, <code>src/inference/predict.py</code>, and <code>src/recommendation/engine.py</code>. Ask the teaching agent about anything unclear.</p>
+
+  <footer>Lesson 1 · Next: Python and AI foundations through this project's data flow.</footer>
+</main></body>
+</html>

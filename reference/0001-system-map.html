@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkinCare AI System Map</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body><main>
+  <p class="eyebrow">Quick reference · Current production path</p>
+  <h1>System Map</h1>
+  <p class="lede">The project combines one learned vision component with deterministic rules, catalog ranking, and an optional language model.</p>
+
+  <div class="pipeline">
+    <div class="step"><span class="step-number">1</span><div><h3>Input</h3><p>Facial image, optional user-stated skin type, and an optional request for SLM explanations.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">2</span><div><h3>API validation</h3><p>FastAPI checks image MIME type and a 10 MiB size limit; Pillow decodes the image.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">3</span><div><h3>Image preparation</h3><p>Convert to RGB, reject dimensions below 64 pixels, resize to 224 × 224, and add a batch dimension.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">4</span><div><h3>Vision inference</h3><p>EfficientNetB0 produces five independent scores: blemishes, dark spots, redness, visible pores, and fine lines.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">5</span><div><h3>Decision thresholds</h3><p>Each score becomes present, absent, or uncertain using its own threshold and a ±0.05 uncertainty margin.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">6</span><div><h3>Deterministic recommendation</h3><p>Only present concerns become ingredient and product-category requirements. Catalog products are scored and ranked.</p></div></div>
+    <div class="arrow">↓ optional</div>
+    <div class="step"><span class="step-number">7</span><div><h3>Grounded SLM</h3><p>Qwen may rerank the approved shortlist and explain an AM/PM routine. Invented product IDs are removed.</p></div></div>
+    <div class="arrow">↓</div>
+    <div class="step"><span class="step-number">8</span><div><h3>Output</h3><p>Concern states, stated skin type, ranked products, routine, disclaimer, and optional generated explanations.</p></div></div>
+  </div>
+
+  <section class="callout">
+    <h2>Boundary to remember</h2>
+    <p>The system reports <strong>visible cosmetic concerns</strong>. It does not diagnose disease, infer skin type from a photograph, or prove that a recommended product will work.</p>
+  </section>
+
+  <h2>Truth table</h2>
+  <div class="compare">
+    <div><span class="tag">Learned</span><h3>Vision model</h3><p>Learns visual patterns from labeled images and produces concern scores.</p></div>
+    <div><span class="tag">Programmed</span><h3>Rule engine</h3><p>Maps present concerns to ingredients and categories written by the developers.</p></div>
+    <div><span class="tag">Programmed</span><h3>Product ranker</h3><p>Combines ingredient match, rating, reviews, availability, discount, and optional skin-type match.</p></div>
+    <div><span class="tag">Generative</span><h3>Qwen SLM</h3><p>Produces language from constrained candidate facts; it is not the vision classifier.</p></div>
+  </div>
+
+  <p class="source-note">Project anchors: <code>backend/routes/__init__.py</code>, <code>src/inference/predict.py</code>, <code>src/recommendation/engine.py</code>, and <code>src/slm/recommender.py</code>.</p>
+</main></body>
+</html>
