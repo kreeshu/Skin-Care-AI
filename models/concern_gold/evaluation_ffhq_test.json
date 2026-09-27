@@ -1,0 +1,64 @@
+{
+  "threshold_source": "data/vision/manifests_v2/ffhq_validation.csv",
+  "metrics": {
+    "blemishes": {
+      "samples": 0,
+      "positives": 0,
+      "negatives": 0,
+      "threshold": 0.5,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "note": "No labeled test samples; metrics unavailable."
+    },
+    "dark_spots": {
+      "samples": 0,
+      "positives": 0,
+      "negatives": 0,
+      "threshold": 0.5,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "note": "No labeled test samples; metrics unavailable."
+    },
+    "redness": {
+      "samples": 0,
+      "positives": 0,
+      "negatives": 0,
+      "threshold": 0.5,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "note": "No labeled test samples; metrics unavailable."
+    },
+    "visible_pores": {
+      "samples": 0,
+      "positives": 0,
+      "negatives": 0,
+      "threshold": 0.5,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "pr_auc": null,
+      "roc_auc": null,
+      "note": "No labeled test samples; metrics unavailable."
+    },
+    "fine_lines": {
+      "samples": 139,
+      "positives": 63,
+      "negatives": 76,
+      "threshold": 0.3047763407230377,
+      "precision": 0.5132743362831859,
+      "recall": 0.9206349206349206,
+      "f1": 0.6590909090909091,
+      "pr_auc": 0.6486746916239018,
+      "roc_auc": 0.6934001670843776
+    }
+  }
+}

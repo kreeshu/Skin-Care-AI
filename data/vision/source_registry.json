@@ -74,5 +74,12 @@
     "url": "http://host.robots.ox.ac.uk/pascal/VOC/voc2007/",
     "use": "Invalid-input/OOD test images only",
     "reason": "Established object-recognition benchmark with animal, vehicle, and indoor-object annotations"
+  },
+  "ffhq_wrinkle": {
+    "status": "accepted_academic",
+    "license": "CC BY-NC-SA 4.0 (FFHQ-Wrinkle masks and FFHQ images; non-commercial, attribution)",
+    "url": "https://github.com/labhai/ffhq-wrinkle-dataset",
+    "use": "fine_lines only: 1,000 manual wrinkle masks, tertiles of wrinkle-pixel coverage mapped to absent/unknown/present",
+    "reason": "Positives and negatives from one source break the wrinkles-folder shortcut; coverage is also reduced by occlusion (glasses, hats), so labels are noisy"
   }
 }

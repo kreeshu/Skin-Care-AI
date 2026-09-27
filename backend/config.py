@@ -1,7 +1,7 @@
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_DIR = os.path.join(BASE_DIR, "models", "concern_pilot")
+MODEL_DIR = os.path.join(BASE_DIR, "models", "concern_v2")
 MODEL_PATH = os.path.join(MODEL_DIR, "skin_concern_pilot.weights.h5")
 MODEL_METADATA_PATH = os.path.join(MODEL_DIR, "skin_concern_pilot.json")
 MODEL_EVALUATION_PATH = os.path.join(MODEL_DIR, "evaluation.json")

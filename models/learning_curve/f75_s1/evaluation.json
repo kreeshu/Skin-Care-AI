@@ -1,0 +1,61 @@
+{
+  "threshold_source": "data/vision/manifests/validation.csv",
+  "metrics": {
+    "blemishes": {
+      "samples": 101,
+      "positives": 97,
+      "negatives": 4,
+      "threshold": 0.5,
+      "precision": 0.9603960396039604,
+      "recall": 1.0,
+      "f1": 0.9797979797979798,
+      "pr_auc": 0.9903740276430528,
+      "roc_auc": 0.7938144329896907,
+      "note": "Preliminary only: fewer than five positive or negative gold samples."
+    },
+    "dark_spots": {
+      "samples": 87,
+      "positives": 65,
+      "negatives": 22,
+      "threshold": 0.34413114190101624,
+      "precision": 0.7402597402597403,
+      "recall": 0.8769230769230769,
+      "f1": 0.8028169014084507,
+      "pr_auc": 0.8114235331848161,
+      "roc_auc": 0.5573426573426574
+    },
+    "redness": {
+      "samples": 105,
+      "positives": 97,
+      "negatives": 8,
+      "threshold": 0.7080374360084534,
+      "precision": 0.9393939393939394,
+      "recall": 0.9587628865979382,
+      "f1": 0.9489795918367347,
+      "pr_auc": 0.9687501363777961,
+      "roc_auc": 0.7087628865979382
+    },
+    "visible_pores": {
+      "samples": 55,
+      "positives": 46,
+      "negatives": 9,
+      "threshold": 0.0,
+      "precision": 0.8363636363636363,
+      "recall": 1.0,
+      "f1": 0.9108910891089109,
+      "pr_auc": 0.8982486053929499,
+      "roc_auc": 0.6352657004830918
+    },
+    "fine_lines": {
+      "samples": 95,
+      "positives": 53,
+      "negatives": 42,
+      "threshold": 0.3018183708190918,
+      "precision": 0.9107142857142857,
+      "recall": 0.9622641509433962,
+      "f1": 0.9357798165137615,
+      "pr_auc": 0.9898669675940757,
+      "roc_auc": 0.9856244384546272
+    }
+  }
+}

@@ -3,12 +3,17 @@ import os
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from PIL import Image
 
 from src.model.concern_model import CONCERNS
 
 
 def read_manifest(path):
     frame = pd.read_csv(path)
+    for name in CONCERNS:
+        # Reviewed gold manifests carry no weights: every label is human-verified.
+        if name + "_weight" not in frame:
+            frame[name + "_weight"] = 1.0
     required = ["original_path"] + list(CONCERNS) + [name + "_weight" for name in CONCERNS]
     missing = [column for column in required if column not in frame]
     if missing:
@@ -31,8 +36,9 @@ def build_concern_dataset(manifest, img_size=224, batch_size=32, augment=False, 
     )
 
     def load(path, label, weight):
-        image = tf.io.decode_image(tf.io.read_file(path), channels=3, expand_animations=False)
-        image.set_shape((None, None, 3))
+        # PIL, not tf.io.decode_image: some source files are WebP saved with a .png extension.
+        image = tf.numpy_function(lambda p: np.asarray(Image.open(p.decode()).convert("RGB")), [path], tf.uint8)
+        image.set_shape((None, None, 3))  # numpy_function loses static shape
         image = tf.image.resize(image, (img_size, img_size))
         if augment:
             image = augmentation(image, training=True)

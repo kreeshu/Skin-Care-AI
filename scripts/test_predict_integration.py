@@ -12,11 +12,11 @@ products = pd.read_csv(os.path.join("data", "enriched", "unified_products.csv"))
 mappings = os.path.join("data", "mappings")
 
 analyzer = SkinAnalyzer(
-    os.path.join(MODELS, "concern_pilot", "skin_concern_pilot.weights.h5"),
+    os.path.join(MODELS, "concern_v2", "skin_concern_pilot.weights.h5"),
     products,
     mappings,
-    metadata_path=os.path.join(MODELS, "concern_pilot", "skin_concern_pilot.json"),
-    evaluation_path=os.path.join(MODELS, "concern_pilot", "evaluation.json"),
+    metadata_path=os.path.join(MODELS, "concern_v2", "skin_concern_pilot.json"),
+    evaluation_path=os.path.join(MODELS, "concern_v2", "evaluation.json"),
 )
 print("concerns:", analyzer.labels)
 
