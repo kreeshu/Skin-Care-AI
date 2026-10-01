@@ -1,0 +1,29 @@
+{
+  "monitor": "val_macro_roc_auc",
+  "selected": {
+    "checkpoint": "models/concern_human_reviewed/concern_phase_b.weights.h5",
+    "val_macro_pr_auc": 0.8789194393954611,
+    "val_macro_roc_auc": 0.7056868702730281
+  },
+  "candidates": [
+    {
+      "checkpoint": "models/concern_human_reviewed/initial.weights.h5",
+      "val_macro_pr_auc": 0.8769814532473481,
+      "val_macro_roc_auc": 0.6854925329983572
+    },
+    {
+      "checkpoint": "models/concern_human_reviewed/concern_phase_a.weights.h5",
+      "val_macro_pr_auc": 0.8746145177950966,
+      "val_macro_roc_auc": 0.7029840281283797
+    },
+    {
+      "checkpoint": "models/concern_human_reviewed/concern_phase_b.weights.h5",
+      "val_macro_pr_auc": 0.8789194393954611,
+      "val_macro_roc_auc": 0.7056868702730281
+    }
+  ],
+  "train_manifest": "data/vision/manifests_human_reviewed/train.csv",
+  "validation_manifest": "data/vision/manifests_human_reviewed/validation.csv",
+  "balance_labels": false,
+  "seed": 42
+}

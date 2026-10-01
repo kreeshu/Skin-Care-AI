@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import { ScanHistoryItem, AnalysisResult } from "../types";
 import { getHistory, addToHistory, removeFromHistory, clearHistory } from "../utils/storage";
 
@@ -13,9 +14,12 @@ export function useHistory() {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    loadHistory();
-  }, [loadHistory]);
+  // Tabs stay mounted; reload on focus so other screens' writes show up.
+  useFocusEffect(
+    useCallback(() => {
+      loadHistory();
+    }, [loadHistory])
+  );
 
   const addScan = useCallback(
     async (result: AnalysisResult) => {

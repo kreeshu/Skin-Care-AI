@@ -3,11 +3,13 @@ import logging
 from pathlib import Path
 from typing import Dict, Optional
 
+import cv2
 import numpy as np
 import tensorflow as tf
 from PIL import Image
 
 from src.model.concern_model import CONCERNS, load_concern_model
+from src.model.concern_preprocessing import preprocess_concern_image
 from src.recommendation.condition_rules import ConditionRules
 from src.recommendation.engine import RecommendationEngine
 
@@ -28,6 +30,8 @@ class SkinAnalyzer:
         use_slm: bool = False,
         slm_config: Optional[Dict] = None,
         slm_top_n: int = 3,
+        face_detector_path: Optional[str] = None,
+        face_score_threshold: float = 0.9,
     ):
         metadata = json.loads(Path(metadata_path).read_text()) if metadata_path else {}
         self.labels = tuple(metadata.get("labels", CONCERNS))
@@ -47,6 +51,11 @@ class SkinAnalyzer:
         self.uncertainty_margin = uncertainty_margin
         self.model_version = Path(model_path).stem
         self.engine = RecommendationEngine(products_df, mappings_dir) if products_df is not None else None
+        # 0.9 rejected all 300 OOD images in data/vision/reports/face_gate_ood_090.json.
+        self.face_detector = (
+            cv2.FaceDetectorYN.create(str(face_detector_path), "", (320, 320), face_score_threshold)
+            if face_detector_path else None
+        )
 
         self.slm_recommender = None
         self.slm_top_n = slm_top_n
@@ -88,6 +97,22 @@ class SkinAnalyzer:
     def analyze(self, image_input, skin_type: str = None) -> Dict:
         if skin_type and skin_type not in ConditionRules.all_skin_types():
             raise ValueError(f"Unknown skin type: {skin_type}")
+        if self.face_detector is not None and not self._has_face(image_input):
+            return {
+                "schema_version": 2,
+                "model_version": self.model_version,
+                "analysis_quality": {"status": "rejected", "reasons": ["No face found. Retake a clear, front-facing photo in daylight."]},
+                "concerns": [],
+                "skin_type": skin_type,
+                "skin_type_title": None,
+                "title": "No face found",
+                "description": "We only analyse clear photos of a face.",
+                "recommendations": {},
+                "routine_suggestion": [],
+                "total_products_found": 0,
+                "disclaimer": "Cosmetic observations only; this is not a medical diagnosis or medical advice.",
+                "slm": None,
+            }
         pred = self.predict(image_input)
         if self.engine is None:
             return {**pred, "skin_type": skin_type, "recommendations": {}, "slm": None}
@@ -104,16 +129,28 @@ class SkinAnalyzer:
             result["slm"] = None
         return result
 
-    def _preprocess(self, image_input) -> np.ndarray:
+    def _has_face(self, image_input) -> bool:
+        image = self._load_rgb(image_input)
+        # YuNet misses faces that fill a large frame; 320px scored an FFHQ face 0.94 vs 0.70 at 1024px.
+        scale = min(1.0, 320 / max(image.size))
+        if scale < 1:
+            image = image.resize((round(image.width * scale), round(image.height * scale)))
+        bgr = np.ascontiguousarray(np.asarray(image)[:, :, ::-1])
+        self.face_detector.setInputSize((bgr.shape[1], bgr.shape[0]))
+        _, faces = self.face_detector.detect(bgr)
+        return faces is not None and len(faces) > 0
+
+    @staticmethod
+    def _load_rgb(image_input) -> Image.Image:
         if isinstance(image_input, (str, Path)):
-            image = Image.open(image_input)
-        elif isinstance(image_input, np.ndarray):
-            image = Image.fromarray(image_input)
-        else:
-            image = image_input
-        image = image.convert("RGB")
+            return Image.open(image_input).convert("RGB")
+        if isinstance(image_input, np.ndarray):
+            return Image.fromarray(image_input).convert("RGB")
+        return image_input.convert("RGB")
+
+    def _preprocess(self, image_input) -> np.ndarray:
+        image = self._load_rgb(image_input)
         if min(image.size) < 64:
             raise ValueError("Image is too small; use a clear facial photo")
-        image = image.resize((self.img_size, self.img_size))
-        array = tf.keras.applications.efficientnet.preprocess_input(np.asarray(image))
+        array = preprocess_concern_image(np.asarray(image), self.img_size).numpy()
         return np.expand_dims(array, axis=0)

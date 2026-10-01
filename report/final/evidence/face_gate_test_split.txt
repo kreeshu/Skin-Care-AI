@@ -1,0 +1,15 @@
+Face gate (YuNet, 0.9) on manifests_v2/test.csv, n= 479
+                                     count  sum   mean
+source               image_scope                      
+acne04_level1        facial_closeup     12    8  0.667
+                     full_face           4    3  0.750
+acne04_level2        facial_closeup     10   10  1.000
+                     full_face           5    5  1.000
+acne04_level3        facial_closeup      8    2  0.250
+                     full_face           6    3  0.500
+existing_conditions  facial_closeup     54   14  0.259
+                     full_face          23   19  0.826
+facial_skin_concerns facial_closeup    106   64  0.604
+                     full_face          40   34  0.850
+ffhq_wrinkle         full_face         211  211  1.000
+overall pass rate 0.779

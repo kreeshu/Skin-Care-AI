@@ -1,0 +1,11 @@
+{
+  "labels": [
+    "blemishes",
+    "dark_spots",
+    "redness",
+    "visible_pores",
+    "fine_lines"
+  ],
+  "img_size": 224,
+  "fine_tune_layers": 30
+}

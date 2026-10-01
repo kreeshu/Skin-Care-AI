@@ -1,0 +1,123 @@
+\section{Critical Evaluation}
+\label{sec:eval}
+
+SkinCare AI is a working, end-to-end prototype. A user photographs their face and receives a per-concern cosmetic observation with its uncertainty. They can add their skin type and get a short list of products that are in stock at Nepalese retailers, with the reason each was chosen. They can then ask follow-up questions of an assistant that is not allowed to invent products.
+
+This section judges how well the artefact meets its objectives and requirements, how far its evaluation can be trusted, how it compares with the systems reviewed in Section~\ref{sec:lit}, and what the project process itself taught.
+
+\subsection*{Achievement of objectives}
+
+\begin{table}[ht]
+\centering\small
+\caption{Objective attainment}
+\label{tab:objectives}
+\begin{tabularx}{\linewidth}{lcY}
+\toprule
+\textbf{Objective} & \textbf{Status} & \textbf{Evidence and judgement}\\
+\midrule
+O1 Dataset & Met & 26,000+ images audited; 1,400+ reviewed, plus a second review of 200 training images; 2,000+ images in leakage-free splits. Test negatives remain scarce for three concerns.\\
+O2 Model & Partly met & Four versions trained and compared on one fixed test set; the best (pooled accuracy 76.3\%, macro F1 0.789) is deployed. Fine lines are strong (ROC-AUC 0.920); blemishes and redness moderate; dark spots and pores near chance.\\
+O3 Catalogue & Met & 1,500+ products from 3 retailers, above the target of 1,000. Ingredient tags cover only 35\% of products.\\
+O4 Recommender & Met & Transparent weighted ranking that responds to skin type (TC18/19) and shows matched ingredients. Its suitability has not been rated by experts.\\
+O5 Application & Met & All F1--F10 requirements implemented, four only partly met (Table~\ref{tab:reqcheck}); 18 of 19 functional tests passed.\\
+O6 Evaluation & Met & Model metrics, learning curve, 19 functional tests, heuristic review and a participant SUS survey. No fresh, never-inspected test set.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{Requirements check}
+
+Table~\ref{tab:reqcheck} checks every requirement in Table~\ref{tab:spec} against the test evidence. All requirements are present; four are only partly met because testing exposed a specific weakness.
+
+\begin{table}[ht]
+\centering\small
+\caption{Requirements against evidence}
+\label{tab:reqcheck}
+\begin{tabularx}{\linewidth}{lcY}
+\toprule
+\textbf{Req.} & \textbf{Status} & \textbf{Evidence}\\
+\midrule
+F1 Upload & Met & TC05, TC07: wrong type and oversize files rejected with clear messages\\
+F2 Face gate & Partly & All 300 non-face images rejected (TC04), but 22\% of held-out close-ups also rejected (Table~\ref{tab:gate})\\
+F3 Per-concern status & Met & TC02, TC03: score, threshold and status for all five concerns\\
+F4 Skin type & Met & TC17--TC19: invalid type rejected; valid type changes the ranking\\
+F5 Recommendations & Met & Up to five products per category with matched ingredients\\
+F6 Routine & Partly & Routine shown, but sunscreen can appear in the evening (Table~\ref{tab:heuristic})\\
+F7 Catalogue & Met & TC09--TC13: search, filter, sort, detail and 404\\
+F8 History & Met & On-device history under the Saved tab (Figure~\ref{fig:screens})\\
+F9 Chat & Partly & Grounded replies in the first run, but no timeout: queued requests blocked the re-run (TC15)\\
+F10 Disclaimer & Met & Shown on result and chat screens\\
+\midrule
+N1 No medical labels & Met & Only cosmetic concerns; red-flag questions are signposted to a dermatologist\\
+N2 Validation-only thresholds & Met & Thresholds stored with their validation source in \texttt{evaluation.json}\\
+N3 No photo storage & Met & Server is stateless; history kept on the device\\
+N4 Analysis under 2\,s & Met & Warm analysis well under 1\,s (Section~\ref{sec:validation})\\
+N5 Free software only & Met & No paid APIs; Qwen2.5 runs locally\\
+N6 Structured errors & Partly & Correct codes, but the corrupt-image message exposes an internal object name (TC06)\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{Model results}
+
+The central technical result is mixed, and it should be stated plainly. The deployed model is \emph{useful for fine lines}, \emph{moderate for blemishes and redness}, and \emph{not yet useful for dark spots or visible pores}. The interim target of a weighted F1 of at least 80\% was, in effect, replaced. A macro F1 of 0.789 could be presented as ``close to target''. That would be misleading, because F1 rewards always predicting ``present'' when positives far outnumber negatives \citep{chicco2020}. Reporting accuracy, balanced accuracy and ROC-AUC next to F1 is less flattering but truthful.
+
+The sequence of model versions (Table~\ref{tab:modelcompare}) is the clearest evidence in the project about what limits performance:
+\begin{itemize}
+  \item \textbf{Changing the loss did not help.} Class reweighting targets imbalance directly, yet it lowered test F1 and reduced redness specificity to zero.
+  \item \textbf{Adding more positives did not help.} Extra melasma photos raised ROC-AUC slightly but lowered accuracy, and dark spots stayed near chance.
+  \item \textbf{Adding reviewed negatives did help.} Filling unknown labels in existing training images raised the number of negative training labels from 9 to 159 for blemishes and from 19 to 188 for redness. This produced the only candidate that improved all four macro metrics, with the largest gains on exactly those concerns.
+\end{itemize}
+Together with the learning curve (Figure~\ref{fig:lc}), which was still rising for most concerns, these results show that the bottleneck is the quantity and variety of labelled data, especially negatives, and not the network.
+
+The improvement must also be kept in proportion. It is a single stored training run, and same-seed retraining varied by several points on the Apple GPU. The averaged runs still favour the human-reviewed recipe, but the margin over \texttt{concern\_v2} is modest. The deployed model is also worse than \texttt{concern\_v2} on dark spots, so the replacement was a trade-off, made because it was better overall and on the concerns with the largest gains.
+
+\subsection*{Validity of the evaluation}
+
+Four threats to validity must be acknowledged.
+
+\begin{itemize}
+  \item \textbf{The test set is no longer untouched.} Its results were inspected while comparing four model versions. No threshold was ever set on test data, but choosing the deployed model by comparing test results is a form of selection. The set should now be treated as a regression benchmark, and a fresh independent test set is needed for final claims about generalisation.
+  \item \textbf{Very small negative counts.} The test set has only 4 negative blemish images and 8 negative redness images. One image more or less changes specificity by 12 to 25 points, so per-concern balanced accuracy for these concerns is unstable.
+  \item \textbf{The test population differs from the app's inputs.} The face gate rejects 22\% of test images (Table~\ref{tab:gate}), mostly close-ups. The metrics therefore describe a broader input range than the app accepts.
+  \item \textbf{Representation is unmeasured.} No image carries a skin-tone label, so it is unknown how the model performs on Nepalese users. Given \citet{groh2021}, \citet{daneshjou2021} and \citet{daneshjou2022}, a performance gap for darker skin should be assumed until measured.
+\end{itemize}
+
+\subsection*{Recommender quality}
+
+The recommender behaves as designed, but its inputs are thin. Only 35\% of products have an inferred target ingredient, so for most candidates the 0.40 ingredient weight contributes nothing. The ranking then falls back on rating and review count, which rewards popular products rather than suitable ones. Keyword categorisation also misplaces some products; for example, a body wash appears in the toner list.
+
+On the positive side, every recommendation can be explained line by line, and stock status and price come from real retailers. Changing the stated skin type visibly changes the ranking: ceramide moisturisers rise for dry skin and oil-free ones for oily skin (TC18/19). No dermatologist has yet judged whether the recommendations are \emph{appropriate}, so clinical suitability remains unvalidated.
+
+\subsection*{Usability}
+
+The heuristic review found two severity-3 problems: sunscreen listed in the evening routine, and close-up photos rejected with ``No face found''. Both were confirmed by other evidence (the routine logic and the face-gate test), so they are real defects rather than evaluator opinion. The remaining issues were cosmetic or minor.
+
+The participant survey (Section~\ref{sec:survey}, Table~\ref{tab:survey}) adds the user's view. [TODO: after the responses are analysed, state the mean SUS score against the benchmark of 68 \citep{vlachogianni2022}, the task with the lowest completion or ease rating, and whether participants understood the ``uncertain'' label and the disclaimer. Note whether the survey confirmed the heuristic findings.]
+
+\subsection*{Comparison with existing systems}
+
+The artefact differs from the systems reviewed in Section~\ref{sec:lit} in four ways.
+
+\begin{enumerate}
+  \item \textbf{Scope honesty.} Clinical systems such as \citet{liu2020}, and most of those reviewed by \citet{jones2022}, target diagnosis using curated clinical data. This project deliberately removed diagnosis after finding that its data could not support it. It presents outputs as observations with an \emph{uncertain} band, so the system fails visibly rather than confidently.
+  \item \textbf{Leakage-aware data engineering.} Many applied skin projects built on Kaggle data report accuracy without controlling for duplicates. This project grouped duplicates across splits, recorded provenance for every source, kept every model version, and published negative results. Its numbers are lower, but they mean what they claim \citep{kapoor2023}.
+  \item \textbf{Local market grounding.} Unlike the global recommenders reviewed by \citet{ramrakhiani2024}, every product suggested is sold by a Nepalese retailer, priced in rupees and marked with its stock status.
+  \item \textbf{Code-enforced language-model grounding.} The assistant can only mention catalogue products. This is enforced in code rather than by the prompt alone, which directly limits the hallucination risk described by \citet{ji2023}.
+\end{enumerate}
+
+Compared with the interim design, Grad-CAM heatmaps and TF-IDF similarity were not implemented. The explainability gap identified in the interim report is therefore only partly closed: the system offers transparent scores and reasons, but no visual attribution.
+
+\subsection*{Reflection on the project process}
+
+The most valuable decision was to stop tuning the first model and audit the data instead. It cost several weeks and forced a change of scope, but without it the project would have reported high accuracy on leaked, mislabelled data. The iterative process made this change possible. Its cost was time: the second label review, the experiments and the user survey all happened late, leaving no time to collect a new, independent test set. With hindsight, the data audit should have been the first task of the project rather than a response to poor results, and label review should have targeted negative examples from the start.
+
+\subsection{Impact}
+
+\textbf{For Nepalese consumers,} the prototype shows that a free, phone-based first step is feasible. It gives cosmetic guidance tied to purchasable products and a clear signpost to a dermatologist. Its current accuracy does \emph{not} justify public release. Its greatest potential impact is as a validated pipeline into which better data can be fed.
+
+\textbf{For Nepalese e-commerce,} the unified catalogue and recommender could help retailers such as Jeevee or ForEveryNG guide customers to in-stock products by need rather than by brand. The catalogue audit also shows that most listings omit ingredient information. Retailers could fix this cheaply, and doing so would improve both search and recommendation.
+
+\textbf{For academic practice,} the project provides a documented, reproducible example of how aggregated public skin data can mislead. More than half of the images were near-duplicates, and 2,400+ duplicate groups spanned sources. It also shows that targeted human review of negatives improved the model more than changing the loss or adding positives. This supports calls for transparent documentation of datasets and their limitations \citep{gebru2021}.
+
+\textbf{Ethically,} the pivot away from disease labels reduces the risk of false reassurance. With the earlier design, a user with a serious lesion might have trusted a ``no carcinoma'' result. The residual risk is that users over-trust cosmetic outputs. This is mitigated, but not eliminated, by uncertainty display and disclaimers.

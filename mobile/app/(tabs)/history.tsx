@@ -1,20 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
-import { Eyebrow, DisplayLg, BodySm } from "../../components/ui/Typography";
+import { Eyebrow, DisplayLg, BodySm, Body } from "../../components/ui/Typography";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { Button } from "../../components/ui/Button";
+import { ProductCard } from "../../components/ProductCard";
 import { useHistory } from "../../hooks/useHistory";
+import { useFavorites } from "../../hooks/useFavorites";
+import { api } from "../../services/api";
 import { formatDate } from "../../utils/format";
-import { ScanHistoryItem } from "../../types";
+import { Product, ScanHistoryItem } from "../../types";
 
 export default function HistoryScreen() {
   const { history, removeScan, clearAll } = useHistory();
   const router = useRouter();
+  const [tab, setTab] = useState<"results" | "products">("results");
+  const { favorites, toggle } = useFavorites();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // Favorites store only ids; fetch details when the Products tab is open.
+  useEffect(() => {
+    if (tab !== "products") return;
+    let cancelled = false;
+    Promise.all(favorites.map((id) => api.getProduct(id).catch(() => null))).then((rows) => {
+      if (!cancelled) setProducts(rows.filter(Boolean) as Product[]);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [tab, favorites]);
 
   const confirmClear = () => {
     Alert.alert("Clear saved results?", "This removes all saved results from this device.", [
@@ -55,15 +73,59 @@ export default function HistoryScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <View style={styles.headerText}>
-          <Eyebrow>Saved · {history.length} results</Eyebrow>
-          <DisplayLg>Your past checks.</DisplayLg>
+          <Eyebrow>
+            Saved · {tab === "results" ? `${history.length} results` : `${favorites.length} products`}
+          </Eyebrow>
+          <DisplayLg>{tab === "results" ? "Your past checks." : "Your shelf."}</DisplayLg>
         </View>
-        {history.length > 0 ? (
+        {tab === "results" && history.length > 0 ? (
           <Button title="Clear" variant="ghost" size="sm" onPress={confirmClear} />
         ) : null}
       </View>
 
-      {history.length === 0 ? (
+      <View style={styles.segment}>
+        {(["results", "products"] as const).map((key) => (
+          <TouchableOpacity
+            key={key}
+            style={[styles.segmentItem, tab === key && styles.segmentActive]}
+            onPress={() => setTab(key)}
+            accessibilityRole="button"
+            accessibilityState={{ selected: tab === key }}
+          >
+            <Body style={[styles.segmentText, tab === key && styles.segmentTextActive]}>
+              {key === "results" ? "Results" : "Products"}
+            </Body>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {tab === "products" ? (
+        favorites.length === 0 ? (
+          <EmptyState
+            eyebrow="Nothing saved yet"
+            title="Saved products will land here."
+            message="Tap the bookmark on any product in Shop."
+            icon="bookmark-outline"
+            actionLabel="Go to Shop"
+            onAction={() => router.push("/(tabs)/catalog")}
+          />
+        ) : (
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item.product_id}
+            renderItem={({ item }) => (
+              <ProductCard
+                product={item}
+                onPress={() => router.push(`/product/${item.product_id}`)}
+                onFavorite={() => toggle(item.product_id)}
+                isFavorite
+              />
+            )}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        )
+      ) : history.length === 0 ? (
         <EmptyState
           eyebrow="Nothing saved yet"
           title="Your results will land here."
@@ -97,6 +159,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.md,
     paddingTop: theme.spacing.sm,
     gap: theme.spacing.md,
+  },
+  segment: {
+    flexDirection: "row",
+    gap: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+  },
+  segmentItem: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: colors.paper,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.line,
+  },
+  segmentActive: {
+    backgroundColor: colors.pine,
+    borderColor: colors.pine,
+  },
+  segmentText: {
+    fontFamily: theme.fontFamily.bodySemi,
+    fontSize: theme.fontSize.sm,
+    color: colors.textSecondary,
+  },
+  segmentTextActive: {
+    color: colors.white,
   },
   headerText: {
     flex: 1,

@@ -7,13 +7,10 @@ import { Ticket, Perforation } from "../../components/ui/Card";
 import { Eyebrow, DisplayHeading, DisplayLg, Body, BodySm, Caption } from "../../components/ui/Typography";
 import { Badge } from "../../components/ui/Badge";
 import { ConfidenceBar } from "../../components/ui/ConfidenceBar";
-import { ErrorState } from "../../components/ui/ErrorState";
-import { LoadingState } from "../../components/ui/LoadingState";
+import { EmptyState } from "../../components/ui/EmptyState";
 import { RoutineStrip } from "../../components/RoutineStrip";
 import { RoutineStep } from "../../components/RoutineStep";
-import { api } from "../../services/api";
-import { toUserMessage } from "../../services/apiError";
-import { useFetcher } from "../../hooks/useFetcher";
+import { formatPrice } from "../../utils/format";
 import { AnalysisResult, ProductRecommendation } from "../../types";
 
 function ProductRecCard({ rec, onPress }: { rec: ProductRecommendation; onPress: () => void }) {
@@ -26,7 +23,7 @@ function ProductRecCard({ rec, onPress }: { rec: ProductRecommendation; onPress:
         <Caption style={styles.recScore}>{rec.score.toFixed(2)}</Caption>
       </View>
       <BodySm style={styles.recFacts} numberOfLines={1}>
-        {rec.brand} · Rs. {Math.round(rec.discounted_price || rec.price || 0).toLocaleString()} ·{" "}
+        {rec.brand} · {formatPrice(rec.discounted_price ?? rec.price)} ·{" "}
         {rec.rating ? `★ ${rec.rating.toFixed(1)}` : "No rating yet"}
       </BodySm>
       {rec.matching_ingredients.length > 0 ? (
@@ -53,8 +50,8 @@ export default function AnalysisScreen() {
   const params = useLocalSearchParams<{ id: string; result?: string }>();
   const router = useRouter();
 
-  // Fast path: result was passed in via the route (avoids a refetch).
-  const [fastResult] = React.useState<AnalysisResult | null>(() => {
+  // Results always travel with the route (chat and history both pass them).
+  const [result] = React.useState<AnalysisResult | null>(() => {
     if (!params.result) return null;
     try {
       return JSON.parse(params.result) as AnalysisResult;
@@ -62,30 +59,12 @@ export default function AnalysisScreen() {
       return null;
     }
   });
-
-  // Slow path: fetch by id when fast path is empty.
-  const { data: fetched, error, retry } = useFetcher<AnalysisResult>(
-    () => api.getAnalysis(params.id),
-    [params.id],
-    { enabled: !fastResult && Boolean(params.id) },
-  );
-
-  const result = fastResult ?? fetched;
   if (!result) {
-    if (error) {
-      const { title, message } = toUserMessage(error);
-      return (
-        <View style={styles.centered}>
-          <ErrorState
-            title={title}
-            message={message}
-            baseUrl={api.getBaseUrl()}
-            onRetry={retry}
-          />
-        </View>
-      );
-    }
-    return <LoadingState eyebrow="Result · loading" rows={2} compact />;
+    return (
+      <View style={styles.centered}>
+        <EmptyState eyebrow="Not found" title="Result unavailable." message="Open it again from Chat or History." icon="search-outline" />
+      </View>
+    );
   }
 
   const strip =
@@ -114,6 +93,7 @@ export default function AnalysisScreen() {
               key={concern.name}
               label={`${concern.name.replace(/_/g, " ")} · ${concern.status}`}
               confidence={concern.score}
+              threshold={concern.threshold}
             />
           ))}
         </View>
@@ -125,7 +105,9 @@ export default function AnalysisScreen() {
           <RoutineStrip am={strip.am} pm={strip.pm} />
         </View>
 
-        <BodySm style={styles.readout}>Model scores are cosmetic observations, not diagnoses.</BodySm>
+        <BodySm style={styles.readout}>
+          Bar = model score; tick = the threshold for that concern. Each concern has its own threshold, so compare a bar with its tick, not with other bars. Cosmetic observations, not diagnoses.
+        </BodySm>
       </Ticket>
 
       <DisplayLg>{result.title}</DisplayLg>
@@ -149,21 +131,6 @@ export default function AnalysisScreen() {
               ))}
             </View>
           ))}
-        </View>
-      ) : null}
-
-      {result.slm ? (
-        <View>
-          <Body style={styles.sectionTitle}>Personal notes</Body>
-          <View style={styles.section}>
-            {result.slm.chosen.map((item, idx) => (
-              <View key={idx} style={styles.slmItem}>
-                <Body style={styles.slmName}>{item.name}</Body>
-                <Caption style={styles.slmCategory}>{item.category}</Caption>
-                <BodySm style={styles.slmReason}>{item.reason}</BodySm>
-              </View>
-            ))}
-          </View>
         </View>
       ) : null}
 
@@ -214,22 +181,6 @@ const styles = StyleSheet.create({
   },
   stripGap: {
     marginTop: theme.spacing.sm,
-  },
-  serious: {
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "flex-start",
-    marginTop: theme.spacing.md,
-    padding: theme.spacing.sm,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.oxblood,
-    borderRadius: theme.borderRadius.md,
-  },
-  seriousText: {
-    flex: 1,
-    color: colors.oxblood,
-    lineHeight: 20,
   },
   description: {
     marginTop: -theme.spacing.sm,
@@ -284,22 +235,6 @@ const styles = StyleSheet.create({
   },
   recIngredients: {
     marginTop: 3,
-  },
-  slmItem: {
-    paddingVertical: theme.spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: colors.line,
-  },
-  slmName: {
-    fontFamily: theme.fontFamily.bodySemi,
-    fontSize: theme.fontSize.sm,
-  },
-  slmCategory: {
-    marginTop: 2,
-  },
-  slmReason: {
-    marginTop: theme.spacing.xs,
-    lineHeight: 20,
   },
   footnote: {
     flexDirection: "row",

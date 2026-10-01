@@ -74,16 +74,16 @@ skin-care-ai-v2/
 │   │   ├── deduplicator.py       # Fuzzy deduplication
 │   │   ├── enricher.py           # Ingredient/skin-type/concern enrichment
 │   │   └── run_enrichment.py     # Enrichment pipeline entry point
-│   ├── model/                    # Multi-task model pipeline
-│   │   ├── dataset_multitask.py  # Load/split/tf.data + mixed-task stream
-│   │   ├── multitask.py          # MultiTaskSkinModel + build/save/load
-│   │   ├── train_multitask.py    # Two-phase multi-task training
-│   │   ├── evaluate_multitask.py # Per-task metrics, confusion matrix, plots
+│   ├── model/                    # Concern model pipeline (EfficientNetB0 multi-label)
+│   │   ├── concern_model.py      # ConcernModel + build/load (5x sigmoid)
+│   │   ├── concern_dataset.py    # Manifest tf.data pipeline
+│   │   ├── train_concern.py      # Two-phase concern training
+│   │   ├── evaluate_concern.py   # PR/ROC-AUC, thresholds
 │   │   └── augmentations.py      # Data augmentation transforms
 │   ├── inference/
-│   │   └── predict.py            # SkinAnalyzer: image → condition + type → recs (+ SLM)
+│   │   └── predict.py            # SkinAnalyzer: image → concerns → recs (+ SLM)
 │   ├── recommendation/
-│   │   ├── condition_rules.py    # Condition + skin-type rules
+│   │   ├── condition_rules.py    # Concern + skin-type rules
 │   │   ├── scoring.py            # Product scoring (ingredient + skin-type match)
 │   │   └── engine.py             # Recommendation engine (deterministic candidates)
 │   └── slm/
@@ -91,7 +91,6 @@ skin-care-ai-v2/
 │       ├── engine.py             # HuggingFace loader + generate wrapper
 │       └── recommender.py        # Prompt building, JSON parsing, guardrails
 ├── scripts/
-│   ├── evaluate_types_kfold.py   # 5-fold CV linear probing (skin types)
 │   └── test_slm_logic.py         # SLM logic/guardrail tests (no model needed)
 ├── models/                       # Trained .weights.h5 checkpoints (gitignored)
 ├── data/
@@ -122,9 +121,7 @@ pip install -r requirements.txt
 pip install torch --index-url https://download.pytorch.org/whl/cpu
 ```
 
-**Dataset note:** Training data lives at `dataset/` (inside this repo):
-- `dataset/Conditions/<Condition>/*.jpg` — 7 condition folders.
-- `dataset/Types/<type>/*.jpg` — 3 skin-type folders (dry / normal / oily).
+**Dataset note:** Vision training manifests live at `data/vision/manifests/` (`train|validation|test.csv`). `dataset/Conditions/` images are kept as a frozen image source referenced by those manifests.
 
 ---
 
@@ -136,14 +133,14 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 streamlit run app/streamlit_app.py
 ```
 
-Upload a skin image or pick a sample condition, click **Analyze**, and view the detection (condition + skin type), product recommendations, and a suggested routine. Tick **AI explanations (local SLM)** in the sidebar to enable on-device explanation (first use downloads the model).
+Upload a skin image, click **Analyze**, and view the detected cosmetic concerns, product recommendations, and a suggested routine. Tick **AI explanations (local SLM)** in the sidebar to enable on-device explanation (first use downloads the model).
 
-### Train the multi-task model
+### Train the concern model
 
 ```bash
-python src/model/train_multitask.py --model-dir models
+python src/model/train_concern.py --model-dir models/concern_new
 # quick sanity run:
-python src/model/train_multitask.py --quick --model-dir models
+python src/model/train_concern.py --quick --model-dir models/concern_quick
 ```
 
 ### Run the pipeline (CLI)
@@ -151,9 +148,6 @@ python src/model/train_multitask.py --quick --model-dir models
 ```bash
 # Data enrichment only
 python run_pipeline.py --step data
-
-# Train + evaluate
-python run_pipeline.py --step train
 
 # Test inference on an image (add --use-slm for AI explanations)
 python run_pipeline.py --step inference --image path/to/image.jpg
@@ -178,11 +172,10 @@ These are merged, deduplicated, and enriched into `data/enriched/unified_product
 
 ## Model Details
 
-- **Architecture**: EfficientNetB0 (ImageNet weights) + GAP + dropout + shared dense features, two softmax heads (condition, skin type)
+- **Architecture**: EfficientNetB0 (ImageNet weights) + GAP + dropout + Dense(128, relu) + 5x sigmoid (blemishes, dark_spots, redness, visible_pores, fine_lines)
 - **Input**: 224×224 RGB images, EfficientNet preprocessing
-- **Training**: mixed per-task batch stream (types over-sampled), Phase A (frozen base, lr=1e-3, 20 epochs) → Phase B (unfreeze top 30 layers, lr=1e-5, 15 epochs), early stopping on condition validation accuracy, per-task masked losses + sklearn balanced class weights
-- **Data split**: 70% train / 15% val / 15% test (stratified per task)
-- **Weights**: `models/skin_classifier_multitask.weights.h5` (weights-only; architecture rebuilt in code)
+- **Training**: `src/model/train_concern.py`, Phase A frozen base (lr=1e-3) → Phase B unfreeze top 30 layers (lr=1e-5), weighted masked BCE, early stopping on `val_macro_pr_auc`
+- **Weights**: `models/concern_human_reviewed/skin_concern_pilot.weights.h5` + `skin_concern_pilot.json` + `evaluation.json`
 
 ---
 

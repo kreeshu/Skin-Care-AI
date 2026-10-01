@@ -1,6 +1,7 @@
 """Local Streamlit UI for creating gold multilabel cosmetic-concern annotations."""
 
 import csv
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -8,8 +9,8 @@ import streamlit as st
 from PIL import Image
 
 
-QUEUE = Path("data/vision/manifests/review_queue.csv")
-OUTPUT = Path("data/vision/annotations/gold_labels.csv")
+QUEUE = Path(os.environ.get("VISION_REVIEW_QUEUE", "data/vision/manifests/review_queue.csv"))
+OUTPUT = Path(os.environ.get("VISION_ANNOTATION_OUTPUT", "data/vision/annotations/gold_labels.csv"))
 CONCERNS = ("blemishes", "dark_spots", "redness", "visible_pores", "fine_lines")
 OPTIONS = {"Unknown / cannot judge": -1, "Absent": 0, "Present": 1}
 

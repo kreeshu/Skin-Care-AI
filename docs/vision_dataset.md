@@ -27,7 +27,6 @@ Audit all accepted and candidate sources:
 ```bash
 ./venv/bin/python scripts/audit_vision_dataset.py \
   --source existing_conditions=dataset/Conditions \
-  --source existing_types=dataset/Types \
   --source existing_clean_train=dataset/SKIN_PROJECT_CLEANED/train \
   --source existing_clean_val=dataset/SKIN_PROJECT_CLEANED/val \
   --source facial_skin_concerns=dataset_sources/extracted/facial_skin_concerns/dataset \

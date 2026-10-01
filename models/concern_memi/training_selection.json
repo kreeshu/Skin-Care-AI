@@ -1,0 +1,29 @@
+{
+  "monitor": "val_macro_roc_auc",
+  "selected": {
+    "checkpoint": "models/concern_memi/concern_phase_a.weights.h5",
+    "val_macro_pr_auc": 0.8638101503043657,
+    "val_macro_roc_auc": 0.7097143797471672
+  },
+  "candidates": [
+    {
+      "checkpoint": "models/concern_memi/initial.weights.h5",
+      "val_macro_pr_auc": 0.8769814532473481,
+      "val_macro_roc_auc": 0.6854925329983572
+    },
+    {
+      "checkpoint": "models/concern_memi/concern_phase_a.weights.h5",
+      "val_macro_pr_auc": 0.8638101503043657,
+      "val_macro_roc_auc": 0.7097143797471672
+    },
+    {
+      "checkpoint": "models/concern_memi/concern_phase_b.weights.h5",
+      "val_macro_pr_auc": 0.8688699747862205,
+      "val_macro_roc_auc": 0.7079534012311857
+    }
+  ],
+  "train_manifest": "data/vision/manifests_memi/train.csv",
+  "validation_manifest": "data/vision/manifests_memi/validation.csv",
+  "balance_labels": false,
+  "seed": 42
+}

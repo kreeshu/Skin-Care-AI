@@ -1,0 +1,114 @@
+\section{Review of Existing Knowledge}
+\label{sec:lit}
+
+This review covers four themes that together define the design space of the project:
+\begin{itemize}
+  \item deep learning for skin images;
+  \item dataset quality and bias;
+  \item content-based product recommendation;
+  \item explanation and language-model assistants.
+\end{itemize}
+
+\subsection*{Deep learning for skin images}
+
+\citet{liu2020} showed that a deep learning system could provide a differential diagnosis across 26 skin conditions with accuracy comparable to dermatologists. A systematic review by \citet{jones2022} found many similar skin-cancer algorithms with high reported accuracy, but noted that most were developed on curated datasets and few had been evaluated in the populations and settings where they would be used. These systems rest on \emph{transfer learning}: features learned on a large generic dataset such as ImageNet are reused for a smaller target domain \citep{zhuang2021}. This is the standard approach when labelled medical images are scarce.
+
+\citet{tan2019} showed that scaling network depth, width and resolution together yields a family of models (EfficientNet B0--B7) that achieve high accuracy with few parameters. This makes the smaller variants attractive for resource-constrained deployments such as a mobile backend.
+
+However, these landmark studies used tens or hundreds of thousands of clinically verified images. They also targeted \emph{diagnosis}, a task in which each image has one answer. Cosmetic assessment is different. A face can show several concerns at once, so the problem is \emph{multi-label}. Multi-label learning treats each label as a separate binary decision, possibly sharing a representation. It must also cope with labels that are missing rather than negative \citep{liu2022multilabel}.
+
+Public cosmetic datasets are small and narrowly focused. ACNE04 grades acne severity on 1,400+ images \citep{wu2019acne}. FFHQ-Wrinkle provides 1,000 manually annotated wrinkle masks on faces drawn from the FFHQ collection \citep{moon2024,karras2021}. No public dataset labels all five concerns this project targets.
+
+\subsection*{Dataset quality, leakage and bias}
+
+Two data problems are particularly relevant.
+
+The first is \emph{leakage}. When near-identical images appear in both the training and test sets, reported accuracy overstates true generalisation. \citet{barz2020} found that 3.3\% of the CIFAR-10 test images and 10\% of the CIFAR-100 test images had near-duplicates in the training set. \citet{kapoor2023} catalogue leakage as a pervasive cause of irreproducible results in applied machine learning. Aggregated Kaggle datasets, which often re-upload each other's content, are especially vulnerable.
+
+The second is \emph{representational bias}. \citet{groh2021} annotated the Fitzpatrick 17k dataset by skin tone and found that models performed worse on skin types under-represented in training. \citet{daneshjou2022} confirmed on a curated, diverse clinical set that state-of-the-art dermatology models lose substantial accuracy on darker skin. A scoping review by \citet{daneshjou2021} found that most dermatology AI datasets do not report skin tone or ethnicity at all, so bias cannot even be measured. Such disparities risk widening existing health inequities.
+
+The SCIN dataset attempts to address representativeness. It crowdsources consented, self-taken images from the public together with self-reported skin type \citep{ward2024}. However, its labels are clinical differentials rather than cosmetic presence or absence annotations.
+
+\subsection*{Content-based and hybrid recommendation}
+
+Recommender systems are usually divided into three families \citep{ricci2022,roy2022}:
+\begin{itemize}
+  \item collaborative filtering, which learns from many users' interaction histories;
+  \item content-based filtering, which matches item attributes to a user profile \citep{roy2022};
+  \item hybrids of the two.
+\end{itemize}
+
+A newly launched product has no interaction history, which is the classic ``cold start'' problem. In that situation content-based and rule-based methods are the only viable option. \citet{ramrakhiani2024} review AI skincare recommenders. They report that most combine a skin analysis step with ingredient-based matching, but few are evaluated rigorously and almost none are localised to a specific retail market.
+
+\subsection*{Explanation and language models}
+
+Users are more willing to act on a recommendation they understand. Visual explanation methods such as Grad-CAM \citep{selvaraju2020} highlight the image regions that drive a CNN prediction. Natural-language explanations are an alternative, and small open language models such as Qwen2.5 \citep{qwen2024} can now run on commodity hardware. Language models also \emph{hallucinate}: they state fluent claims that are unsupported by any source \citep{ji2023}. In a product context this could mean inventing a product or an ingredient. Grounding outputs in retrieved facts and validating them in code are the standard mitigations.
+
+\subsection*{Comparison of reviewed work}
+
+Table~\ref{tab:litcompare} places the most relevant studies side by side against the dimensions that matter for a Nepalese consumer tool. Two patterns stand out:
+\begin{itemize}
+  \item studies with strong accuracy use clinical, single-label data and ignore product availability;
+  \item studies that address cosmetic appearance cover only one concern, and none links its output to purchasable products.
+\end{itemize}
+Only the review by \citet{ramrakhiani2024} considers the full chain from image to product. It is a survey, however, and does not evaluate a system.
+
+\begin{table}[ht]
+\centering\small
+\caption{Comparison of reviewed work against the needs of this project}
+\label{tab:litcompare}
+\begin{tabularx}{\linewidth}{P{2.6cm}P{2.2cm}P{2.0cm}YP{1.6cm}}
+\toprule
+\textbf{Study} & \textbf{Task} & \textbf{Data} & \textbf{Main limitation for this project} & \textbf{Products}\\
+\midrule
+\citet{jones2022} & Skin-cancer AI (review) & Published studies & Medical, single-label; most not tested in target populations & No\\
+\citet{liu2020} & Differential diagnosis & 16,000+ clinical cases & Clinical photos from one US teledermatology service & No\\
+\citet{groh2021} & Condition classification & Fitzpatrick 17k & Shows accuracy gaps by skin type; not cosmetic & No\\
+\citet{wu2019acne} & Acne grading & ACNE04, 1,400+ & One concern; severity rather than presence & No\\
+\citet{moon2024} & Wrinkle segmentation & FFHQ-Wrinkle, 1k masks & One concern; mostly lighter-skinned FFHQ faces & No\\
+\citet{ward2024} & Dataset creation & SCIN, crowdsourced & Diagnoses, not cosmetic labels; many non-face images & No\\
+\citet{ramrakhiani2024} & Survey of recommenders & -- & Few systems rigorously evaluated; global catalogues & Yes (surveyed)\\
+\midrule
+\textbf{This project} & 5 cosmetic concerns, multi-label & 2,000+ audited & Small, positive-skewed labels & Yes, Nepal\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{Evaluating recommenders and interactive systems}
+
+Evaluating a recommender without users is difficult. Offline metrics such as precision@k need ground-truth relevance judgements, which in skincare would require expert or user ratings \citep{ricci2022}. Where these are unavailable, the literature relies on two weaker forms of evidence:
+\begin{itemize}
+  \item transparency, meaning the user can see why an item was suggested;
+  \item constraint satisfaction, meaning the items are in stock, in the right category and suited to the stated skin type \citep{roy2022}.
+\end{itemize}
+
+For the interface, heuristic evaluation against Nielsen's ten heuristics remains the most common expert inspection method for mobile health apps, and it finds many problems at low cost \citep{galavi2024}. Standardised questionnaires such as the System Usability Scale (SUS) then quantify perceived usability with real users; a mean SUS score of about 68 is widely used as the benchmark for average usability \citep{vlachogianni2022}. These two methods complement each other, and neither replaces the other.
+
+Transparent documentation of a model's data, metrics and limitations, as in datasheets for datasets \citep{gebru2021}, is increasingly recommended so that downstream users can judge whether a model is fit for their population.
+
+\subsection{Critical Analysis and Gap Identification}
+\label{sec:gap}
+
+The literature shows strong \emph{potential} but reveals four weaknesses that matter for this project.
+
+\begin{enumerate}
+  \item \textbf{Clinical results do not transfer to consumer cosmetic use.} Studies such as \citet{liu2020} rely on curated clinical images and single-label diagnosis. Consumer selfies differ in lighting, pose and framing, and cosmetic concerns co-occur. There is little published evidence on multi-label cosmetic assessment evaluated with leakage controls.
+  \item \textbf{Public data is small, biased and often contaminated.} The available cosmetic datasets each cover one concern. Aggregated sources are prone to duplication \citep{barz2020}, and South Asian skin is under-represented \citep{groh2021,daneshjou2021,daneshjou2022}. Many applied papers report accuracy without describing how duplicates were controlled, which makes their results hard to trust \citep{kapoor2023}.
+  \item \textbf{Recommenders are not localised.} Reviewed systems recommend from global catalogues \citep{ramrakhiani2024}. No peer-reviewed system that we found links facial concern detection to products purchasable in Nepal.
+  \item \textbf{Uncertainty and explanation are rarely surfaced to users.} Deployed tools typically show a single confident label. Few expose calibrated thresholds, an ``uncertain'' state or a reason for each recommendation. Language-model explanations introduce their own hallucination risk \citep{ji2023}.
+\end{enumerate}
+
+The gap addressed by this project is therefore a \emph{practical and methodological} one. There is no honest, leakage-aware baseline for multi-label cosmetic concern detection that is connected to a transparent recommender over a real Nepalese product catalogue.
+
+\subsection{Project Justification}
+\label{sec:justification}
+
+SkinCare AI addresses each weakness directly.
+\begin{itemize}
+  \item \emph{Clinical versus cosmetic:} it replaces disease classification with five non-medical, multi-label concerns and presents results as observations with an explicit ``uncertain'' band.
+  \item \emph{Data quality:} it audits every candidate source for exact and perceptual duplicates. It keeps duplicate groups within a single data split, has humans re-label a review queue, and treats unknown labels as missing rather than negative. Its reported metrics therefore reflect generalisation rather than memorisation.
+  \item \emph{Localisation:} recommendations are drawn exclusively from a catalogue of 1,500+ products scraped from Nepalese retailers, with prices in rupees and stock status.
+  \item \emph{Transparency:} every recommendation shows the matched ingredients and score. Any language-model output is restricted in code to products in the candidate list.
+\end{itemize}
+
+The project is relevant to Nepal's growing skincare e-commerce sector. A retailer could embed such a tool to guide customers towards suitable in-stock products, and a consumer gains a free first step before deciding whether to consult a professional. Equally important, the project documents where current public data falls short. That evidence can inform any future, locally collected dataset.

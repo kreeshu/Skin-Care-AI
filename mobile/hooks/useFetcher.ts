@@ -6,8 +6,6 @@ interface FetcherState<T> {
   error: unknown;
   /** Bump to force a refetch without changing deps. */
   retry: () => void;
-  /** Manually re-invoke the fetcher. */
-  refetch: () => Promise<void>;
 }
 
 interface UseFetcherOptions {
@@ -46,20 +44,6 @@ export function useFetcher<T>(
   // callers pass inline objects / arrays.
   const depsKey = JSON.stringify(deps);
 
-  const refetch = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await fnRef.current();
-      setData(result);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   useEffect(() => {
     if (!enabledRef.current) return;
     let cancelled = false;
@@ -83,5 +67,5 @@ export function useFetcher<T>(
 
   const retry = useCallback(() => setRetryKey((k) => k + 1), []);
 
-  return { data, loading, error, retry, refetch };
+  return { data, loading, error, retry };
 }

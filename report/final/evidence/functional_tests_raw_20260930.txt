@@ -1,0 +1,23 @@
+TC01 | health | HTTP 200 0.001935 | {"status":"ok","service":"SkinCare AI API"}
+TC02 | analyze valid face (ACNE04), skin_type=oily | HTTP 200 2.408442 | {"schema_version":2,"model_version":"skin_concern_pilot.weights","analysis_quality":{"status":"rejected","reasons":["No face found. Retake a clear, front-facing photo in daylight."]},"concerns":[],"skin_type":"oily","skin_type_title":null,"title":"No face foun
+TC03 | analyze valid face (FFHQ), no skin_type | HTTP 200 1.398233 | {"title":"Your Cosmetic Skin Overview","description":"Recommendations are based on visible cosmetic concerns.","skin_type":null,"skin_type_title":null,"recommendations":{"cleanser":[{"product_id":"fng_7665","name":"Derma Co 1% Salicylic Acid Gel Face Wash with
+TC04 | analyze non-face (VOC boat) | HTTP 200 0.007206 | {"schema_version":2,"model_version":"skin_concern_pilot.weights","analysis_quality":{"status":"rejected","reasons":["No face found. Retake a clear, front-facing photo in daylight."]},"concerns":[],"skin_type":null,"skin_type_title":null,"title":"No face found"
+TC05 | text file as upload (text/plain) | HTTP 400 0.000893 | {"detail":"File must be an image"}
+TC06 | corrupt bytes declared image/jpeg | HTTP 422 0.042760 | {"detail":"cannot identify image file <_io.BytesIO object at 0x167f4c630>"}
+TC07 | oversize >10MB | HTTP 400 0.012330 | {"detail":"Image too large (max 10MB)"}
+TC08 | missing image field | HTTP 422 0.008833 | {"detail":[{"type":"missing","loc":["body","image"],"msg":"Field required","input":null}]}
+TC09 | list products page 1 | HTTP 200 0.009973 | {"products":[{"product_id":"jv_66630","name":"DOT & KEY CICA NIACINAMIDE SUNSCREEN- 50 GM","brand":"DOT & KEY","price":712.0,"discounted_price":640.8000000000001,"rating":5.0,"review_count":1,"availability":"in_stock","image_url":"https://stod.jeevee.com/whets
+TC10 | filter category+skin_type | HTTP 200 0.001949 | {"products":[{"product_id":"jv_109441","name":"HYDRAMIDE 50+ SPF SUNSCREEN GEL WITH HA 1% -75GM","brand":"HYDRAMIDE","price":1200.0,"discounted_price":1055.988,"rating":5.0,"review_count":0,"availability":"in_stock","image_url":"https://stod.jeevee.com/whetsto
+TC11 | search term | HTTP 200 0.002663 | {"products":[{"product_id":"fng_16249","name":"Beauty Of Joseon Glow Serum Propolis+ Niacinamide - 30ml","brand":"Beauty Of Joseon Glow Serum Propolis+ Niacinamide","price":2800.0,"discounted_price":2520.0,"rating":5.0,"review_count":5,"availability":"in_stock
+TC12 | unknown product id | HTTP 404 0.001351 | {"detail":"Product not found"}
+TC13 | categories | HTTP 200 0.000972 | {"categories":["cleanser","exfoliant","eye_cream","face_oil","lip_care","mask","moisturizer","serum","spot_treatment","sunscreen","toner"]}
+TC14 | skin types | HTTP 200 0.000982 | {"skin_types":[{"name":"dry","title":"Dry Skin","description":"Your skin lacks moisture and may feel tight, rough or flaky.","recommended_ingredients":["hyaluronic_acid","ceramides","squalane","aloe_vera","panthenol","allantoin","vitamin_e"],"texture_preferenc
+TC15 | chat question | HTTP 200 54.948638 | {"reply":"To help with dark spots, consider using a combination of products that target different aspects of the issue. Here’s a recommendation:
+
+**Dark Spot Treatment Routine:**
+
+1. **Salicylic Acid:** Start with a gentle exfoliant like Derma Co's 1% Sa
+TC16 | chat empty message (validation) | HTTP 422 0.002359 | {"detail":[{"type":"string_too_short","loc":["body","message"],"msg":"String should have at least 1 character","input":"","ctx":{"min_length":1}}]}
+TC17 | invalid skin_type=purple | HTTP 422 | {"detail":"Unknown skin type: purple"}
+TC18 | analyze skin_type=dry changes ranking | dry ['Dot & Key Ceramides Moisturizer wit', 'The Derma Co 4% Ceramide Barrier Re']
+TC19 | same image skin_type=oily | oily ['Derma Co.1% Salicylic Acid Oil-Free', 'Derma Co.5% Vitamin C Oil Free Mois']

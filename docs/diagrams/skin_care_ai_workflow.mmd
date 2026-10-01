@@ -48,19 +48,19 @@ flowchart TD
         direction TB
         Analyzer["SkinAnalyzer<br/>predict.py"]
         Preprocess["Preprocess<br/>224×224 · normalize"]
-        Predict["Multi-task predict<br/>condition 7 · type 3"]
-        Guard{"Carcinoma?"}
-        Output["condition + type + confidence"]
-        Analyzer --> Preprocess --> Predict --> Guard
-        Guard -->|"no"| Output
-        Guard -->|"yes"| Warn["Dermatologist warning<br/>no products returned"]
+        Predict["Concern predict<br/>5x sigmoid + thresholds"]
+        FaceGate{"Face found?"}
+        Output["concerns + uncertainty"]
+        Analyzer --> Preprocess --> Predict --> FaceGate
+        FaceGate -->|"yes"| Output
+        FaceGate -->|"no"| Warn["Retake photo<br/>no products returned"]
     end
 
     Output --> Rules
 
     subgraph Reco["Recommendation Engine"]
         direction TB
-        Rules["condition_rules.py<br/>condition + type → ingredients"]
+        Rules["condition_rules.py<br/>concerns + skin-type → ingredients"]
         Scoring["scoring.py<br/>ingredient + skin-type match"]
         Engine2["engine.py<br/>deterministic shortlist"]
         SLMTitle["SLM Layer  optional"]
@@ -103,11 +103,11 @@ flowchart TD
 
     subgraph ML["ML Training"]
         direction TB
-        Imgs[/"dataset/<br/>Conditions · Types"/]
-        Dataset["dataset_multitask.py<br/>70 / 15 / 15 split"]
-        Model["multitask.py<br/>EfficientNetB0 + 2 heads"]
-        Train["train_multitask.py<br/>Phase A frozen → Phase B fine-tune"]
-        Eval["evaluate_multitask.py<br/>per-task metrics"]
+        Imgs[/"vision manifests<br/>train · validation · test"/]
+        Dataset["concern_dataset.py<br/>manifest tf.data"]
+        Model["concern_model.py<br/>EfficientNetB0 + 5x sigmoid"]
+        Train["train_concern.py<br/>Phase A frozen → Phase B fine-tune"]
+        Eval["evaluate_concern.py<br/>PR/ROC-AUC + thresholds"]
         Weights["weights.h5"]
         Imgs --> Dataset --> Model --> Train --> Eval --> Weights
     end
@@ -116,19 +116,16 @@ flowchart TD
 
     subgraph CLI["Pipeline CLI"]
         direction TB
-        Run["run_pipeline.py<br/>--step data / train / inference / all"]
+        Run["run_pipeline.py<br/>--step data / inference / all"]
         StepData["--step data"]
-        StepTrain["--step train"]
         StepInf["--step inference"]
         Tests["scripts/<br/>test_predict_integration · test_slm_logic"]
         Run --> StepData
-        Run --> StepTrain
         Run --> StepInf
         Run --> Tests
     end
 
     StepData -.-> Merge
-    StepTrain -.-> Train
     StepInf -.-> Analyzer
     Tests -.-> Analyzer
 
@@ -141,6 +138,6 @@ flowchart TD
 
     class User entry
     class Warn warn
-    class Guard decision
+    class FaceGate decision
     class Catalog,Imgs,Unified,Weights data
     class Web,Mobile,ApiLayer,Engine,Reco,Data,ML,CLI section

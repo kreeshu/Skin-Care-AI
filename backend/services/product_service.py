@@ -109,44 +109,6 @@ def get_categories() -> List[str]:
     return sorted(cats)
 
 
-def get_conditions() -> List[Dict]:
-    conditions = []
-    for name in ConditionRules.all_conditions():
-        rule = ConditionRules.get_rule(name)
-        conditions.append({
-            "name": name,
-            "title": rule["title"],
-            "description": rule["description"],
-            "is_medical": rule["is_medical"],
-            "recommended_ingredients": rule["recommended_ingredients"],
-            "recommended_categories": rule["recommended_categories"],
-            "routine_steps": rule["routine_steps"],
-        })
-    return conditions
-
-
-def get_condition(name: str) -> Optional[Dict]:
-    if name not in ConditionRules.all_conditions():
-        return None
-    rule = ConditionRules.get_rule(name)
-    from backend.config import CONDITION_INFO, CONDITION_COLORS
-
-    extra = CONDITION_INFO.get(name, {})
-    return {
-        "name": name,
-        "title": rule["title"],
-        "description": rule["description"],
-        "is_medical": rule["is_medical"],
-        "color": CONDITION_COLORS.get(name, "#666666"),
-        "recommended_ingredients": rule["recommended_ingredients"],
-        "recommended_categories": rule["recommended_categories"],
-        "avoid_ingredients": rule.get("avoid_ingredients", []),
-        "routine_steps": rule["routine_steps"],
-        "causes": extra.get("causes", []),
-        "tips": extra.get("tips", []),
-    }
-
-
 def get_skin_types() -> List[Dict]:
     from backend.config import SKIN_TYPE_INFO
 

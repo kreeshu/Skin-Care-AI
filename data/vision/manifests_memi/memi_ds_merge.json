@@ -1,0 +1,24 @@
+{
+  "source": "https://figshare.com/articles/figure/MEMI-DS_A_Benchmark_Melasma_Image_Dataset_for_Image_Segmentation/29209229",
+  "doi": "10.6084/m9.figshare.29209229.v1",
+  "license": "CC BY 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "Zhai, Zhenwei (2025). MEMI-DS: A Benchmark Melasma Image Dataset for Image Segmentation. figshare. Figure. https://doi.org/10.6084/m9.figshare.29209229.v1",
+  "base_dir": "data/vision/manifests_human_reviewed",
+  "photos": 131,
+  "outcomes": {
+    "added": 125,
+    "duplicate_of_existing_image": 4,
+    "no_face": 2
+  },
+  "added_training_images": 125,
+  "added_subjects": 62,
+  "mask_coverage": {
+    "min": 0.00683030005072588,
+    "median": 0.07664542073902607,
+    "max": 0.31326881412179924
+  },
+  "labels": "dark_spots=1 from a non-empty melasma mask; other concerns -1 (not annotated)",
+  "heldout_files_copied_unchanged": true,
+  "note": "Melasma is only one kind of dark spot. Exact/dHash checks do not prove subject independence."
+}

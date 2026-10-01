@@ -1,0 +1,225 @@
+{
+  "threshold_source": "data/vision/manifests_memi/validation.csv",
+  "test_source": "data/vision/manifests_memi/test.csv",
+  "weights": "models/concern_memi/skin_concern_pilot.weights.h5",
+  "weights_sha256": "738ca880a9aed2d14fb74adb015cd15628c4f7dd258203d8b9d327ab60565ec9",
+  "preprocessing": "RGB, TensorFlow bilinear resize, EfficientNet preprocessing",
+  "threshold_objective": "Youden J (balanced accuracy), validation only",
+  "metrics": {
+    "blemishes": {
+      "samples": 101,
+      "positives": 97,
+      "negatives": 4,
+      "threshold": 0.5,
+      "precision": 0.9775280898876404,
+      "recall": 0.8969072164948454,
+      "f1": 0.9354838709677419,
+      "pr_auc": 0.994391316993396,
+      "roc_auc": 0.8788659793814433,
+      "accuracy": 0.8811881188118812,
+      "confusion_matrix": {
+        "tn": 2,
+        "fp": 2,
+        "fn": 10,
+        "tp": 87
+      },
+      "specificity": 0.5,
+      "balanced_accuracy": 0.6984536082474226,
+      "note": "Preliminary only: fewer than five positive or negative gold samples."
+    },
+    "dark_spots": {
+      "samples": 87,
+      "positives": 65,
+      "negatives": 22,
+      "threshold": 0.6060925126075745,
+      "precision": 0.75,
+      "recall": 0.27692307692307694,
+      "f1": 0.4044943820224719,
+      "pr_auc": 0.7931546191682066,
+      "roc_auc": 0.5685314685314685,
+      "accuracy": 0.39080459770114945,
+      "confusion_matrix": {
+        "tn": 16,
+        "fp": 6,
+        "fn": 47,
+        "tp": 18
+      },
+      "specificity": 0.7272727272727273,
+      "balanced_accuracy": 0.5020979020979022
+    },
+    "redness": {
+      "samples": 105,
+      "positives": 97,
+      "negatives": 8,
+      "threshold": 0.8363158106803894,
+      "precision": 0.9666666666666667,
+      "recall": 0.5979381443298969,
+      "f1": 0.7388535031847133,
+      "pr_auc": 0.9664293453642381,
+      "roc_auc": 0.7487113402061856,
+      "accuracy": 0.6095238095238096,
+      "confusion_matrix": {
+        "tn": 6,
+        "fp": 2,
+        "fn": 39,
+        "tp": 58
+      },
+      "specificity": 0.75,
+      "balanced_accuracy": 0.6739690721649485
+    },
+    "visible_pores": {
+      "samples": 55,
+      "positives": 46,
+      "negatives": 9,
+      "threshold": 0.855987548828125,
+      "precision": 0.9130434782608695,
+      "recall": 0.45652173913043476,
+      "f1": 0.6086956521739131,
+      "pr_auc": 0.8523773613516865,
+      "roc_auc": 0.6256038647342996,
+      "accuracy": 0.509090909090909,
+      "confusion_matrix": {
+        "tn": 7,
+        "fp": 2,
+        "fn": 25,
+        "tp": 21
+      },
+      "specificity": 0.7777777777777778,
+      "balanced_accuracy": 0.6171497584541062
+    },
+    "fine_lines": {
+      "samples": 234,
+      "positives": 116,
+      "negatives": 118,
+      "threshold": 0.6097362637519836,
+      "precision": 0.811965811965812,
+      "recall": 0.8189655172413793,
+      "f1": 0.8154506437768241,
+      "pr_auc": 0.9349086286559034,
+      "roc_auc": 0.9270894213909995,
+      "accuracy": 0.8162393162393162,
+      "confusion_matrix": {
+        "tn": 96,
+        "fp": 22,
+        "fn": 21,
+        "tp": 95
+      },
+      "specificity": 0.8135593220338984,
+      "balanced_accuracy": 0.8162624196376389
+    }
+  },
+  "summary": {
+    "macro_accuracy": 0.641369350273413,
+    "macro_balanced_accuracy": 0.6615865521204036,
+    "macro_precision": 0.8838408093561977,
+    "macro_recall": 0.6094511388239267,
+    "macro_f1": 0.7005956104251329,
+    "macro_pr_auc": 0.9082522543066862,
+    "macro_roc_auc": 0.7497604148488792,
+    "known_label_decisions": 582,
+    "pooled_label_accuracy": 0.697594501718213
+  },
+  "validation_metrics": {
+    "blemishes": {
+      "samples": 72,
+      "positives": 68,
+      "negatives": 4,
+      "threshold": 0.5,
+      "precision": 0.9696969696969697,
+      "recall": 0.9411764705882353,
+      "f1": 0.9552238805970149,
+      "pr_auc": 0.9751032305429386,
+      "roc_auc": 0.7279411764705883,
+      "accuracy": 0.9166666666666666,
+      "confusion_matrix": {
+        "tn": 2,
+        "fp": 2,
+        "fn": 4,
+        "tp": 64
+      },
+      "specificity": 0.5,
+      "balanced_accuracy": 0.7205882352941176,
+      "note": "Preliminary only: fewer than five positive or negative gold samples."
+    },
+    "dark_spots": {
+      "samples": 58,
+      "positives": 36,
+      "negatives": 22,
+      "threshold": 0.6060925126075745,
+      "precision": 0.7,
+      "recall": 0.3888888888888889,
+      "f1": 0.5,
+      "pr_auc": 0.6378363090247426,
+      "roc_auc": 0.5075757575757576,
+      "accuracy": 0.5172413793103449,
+      "confusion_matrix": {
+        "tn": 16,
+        "fp": 6,
+        "fn": 22,
+        "tp": 14
+      },
+      "specificity": 0.7272727272727273,
+      "balanced_accuracy": 0.5580808080808081
+    },
+    "redness": {
+      "samples": 70,
+      "positives": 64,
+      "negatives": 6,
+      "threshold": 0.8363158106803894,
+      "precision": 0.9767441860465116,
+      "recall": 0.65625,
+      "f1": 0.7850467289719626,
+      "pr_auc": 0.9686473393003114,
+      "roc_auc": 0.7604166666666667,
+      "accuracy": 0.6714285714285714,
+      "confusion_matrix": {
+        "tn": 5,
+        "fp": 1,
+        "fn": 22,
+        "tp": 42
+      },
+      "specificity": 0.8333333333333334,
+      "balanced_accuracy": 0.7447916666666667
+    },
+    "visible_pores": {
+      "samples": 44,
+      "positives": 33,
+      "negatives": 11,
+      "threshold": 0.855987548828125,
+      "precision": 0.8571428571428571,
+      "recall": 0.5454545454545454,
+      "f1": 0.6666666666666666,
+      "pr_auc": 0.7898633565642416,
+      "roc_auc": 0.6170798898071626,
+      "accuracy": 0.5909090909090909,
+      "confusion_matrix": {
+        "tn": 8,
+        "fp": 3,
+        "fn": 15,
+        "tp": 18
+      },
+      "specificity": 0.7272727272727273,
+      "balanced_accuracy": 0.6363636363636364
+    },
+    "fine_lines": {
+      "samples": 218,
+      "positives": 123,
+      "negatives": 95,
+      "threshold": 0.6097362637519836,
+      "precision": 0.8790322580645161,
+      "recall": 0.8861788617886179,
+      "f1": 0.8825910931174089,
+      "pr_auc": 0.9476005160895946,
+      "roc_auc": 0.9355584082156612,
+      "accuracy": 0.8669724770642202,
+      "confusion_matrix": {
+        "tn": 80,
+        "fp": 15,
+        "fn": 14,
+        "tp": 109
+      },
+      "specificity": 0.8421052631578947,
+      "balanced_accuracy": 0.8641420624732563
+    }
+  }
+}

@@ -7,7 +7,7 @@ from src.recommendation.scoring import rank_products, _parse_list_field
 
 
 class RecommendationEngine:
-    """Core recommendation logic: condition → ingredients → product scoring → ranked list."""
+    """Deterministic concern → ingredients → product scoring → ranked list."""
 
     def __init__(self, products_df: pd.DataFrame, mappings_dir: str = None):
         self.products = products_df.copy()
@@ -22,51 +22,6 @@ class RecommendationEngine:
             self.products[col] = self.products[col].apply(
                 lambda x: _parse_list_field(x) if pd.notna(x) and str(x) != "None" else []
             )
-
-    def recommend(self, condition: str, skin_type: str = None, top_n: int = 5) -> Dict:
-        rule = ConditionRules.get_rule(condition)
-        relevant_ingredients = rule["recommended_ingredients"]
-        recommended_categories = rule["recommended_categories"]
-        texture_preferences = None
-        skin_type_rule = None
-        if skin_type:
-            skin_type_rule = ConditionRules.get_skin_type_rule(skin_type)
-            texture_preferences = skin_type_rule.get("texture_preferences")
-
-        if rule["is_medical"] and condition == "Carcinoma":
-            return self._build_medical_response(condition, rule, skin_type, skin_type_rule)
-
-        results = {}
-        for category in recommended_categories:
-            category_products = self.products[
-                self.products["category"].apply(lambda x: category in x if isinstance(x, list) else False)
-            ]
-            ranked = rank_products(
-                category_products,
-                relevant_ingredients,
-                top_n=top_n,
-                skin_type=skin_type,
-                texture_preferences=texture_preferences,
-            )
-            if not ranked.empty:
-                results[category] = self._format_recommendations(ranked, relevant_ingredients)
-
-        response = {
-            "detected_condition": condition,
-            "is_medical": rule["is_medical"],
-            "title": rule["title"],
-            "description": rule["description"],
-            "skin_type": skin_type,
-            "skin_type_title": skin_type_rule.get("title") if skin_type_rule else None,
-            "recommendations": results,
-            "routine_suggestion": rule["routine_steps"],
-            "total_products_found": sum(len(v) for v in results.values()),
-            "disclaimer": (
-                "These are cosmetic recommendations only and do not constitute medical advice. "
-                "Please consult a dermatologist for medical concerns."
-            ),
-        }
-        return response
 
     def recommend_concerns(self, concerns: List[Dict], skin_type: str = None, top_n: int = 5) -> Dict:
         present = [item for item in concerns if item.get("status") == "present"]
@@ -109,24 +64,6 @@ class RecommendationEngine:
             )) if present else ["gentle cleanser", "moisturizer", "broad-spectrum sunscreen"],
             "total_products_found": sum(len(items) for items in results.values()),
             "disclaimer": "Cosmetic observations only; this is not a medical diagnosis or medical advice.",
-        }
-
-    def _build_medical_response(self, condition: str, rule: Dict, skin_type: str = None, skin_type_rule: Dict = None) -> Dict:
-        return {
-            "detected_condition": condition,
-            "is_medical": True,
-            "title": rule["title"],
-            "description": rule["description"],
-            "skin_type": skin_type,
-            "skin_type_title": skin_type_rule.get("title") if skin_type_rule else None,
-            "recommendations": {},
-            "routine_suggestion": rule["routine_steps"],
-            "total_products_found": 0,
-            "disclaimer": (
-                "This appears to be a medical condition. "
-                "Please consult a dermatologist immediately. "
-                "Cosmetic products are not a substitute for medical treatment."
-            ),
         }
 
     def _format_recommendations(self, ranked: pd.DataFrame, relevant_ingredients: List[str]) -> List[Dict]:
@@ -172,13 +109,5 @@ if __name__ == "__main__":
     for k, v in stats.items():
         print(f"  {k}: {v}")
 
-    for condition in ConditionRules.all_conditions():
-        print(f"\n{'=' * 50}")
-        print(f"Testing: {condition}")
-        result = engine.recommend(condition)
-        print(f"  Medical: {result['is_medical']}")
-        print(f"  Products found: {result['total_products_found']}")
-        for cat, recs in result["recommendations"].items():
-            print(f"  {cat}: {len(recs)} products")
-            if recs:
-                print(f"    Top: {recs[0]['name']} (score={recs[0]['score']:.3f})")
+    demo = engine.recommend_concerns([{"name": "blemishes", "status": "present"}], skin_type="oily")
+    print(f"  Demo concern query products found: {demo['total_products_found']}")

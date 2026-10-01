@@ -1,0 +1,29 @@
+{
+  "monitor": "val_macro_roc_auc",
+  "selected": {
+    "checkpoint": "models/concern_balanced_20260930/concern_phase_a.weights.h5",
+    "val_macro_pr_auc": 0.8685873215023288,
+    "val_macro_roc_auc": 0.6975481996154109
+  },
+  "candidates": [
+    {
+      "checkpoint": "models/concern_balanced_20260930/initial.weights.h5",
+      "val_macro_pr_auc": 0.8769814532473481,
+      "val_macro_roc_auc": 0.6854925329983572
+    },
+    {
+      "checkpoint": "models/concern_balanced_20260930/concern_phase_a.weights.h5",
+      "val_macro_pr_auc": 0.8685873215023288,
+      "val_macro_roc_auc": 0.6975481996154109
+    },
+    {
+      "checkpoint": "models/concern_balanced_20260930/concern_phase_b.weights.h5",
+      "val_macro_pr_auc": 0.8717735951747084,
+      "val_macro_roc_auc": 0.697436171925158
+    }
+  ],
+  "train_manifest": "data/vision/manifests_v2/train.csv",
+  "validation_manifest": "data/vision/manifests_v2/validation.csv",
+  "balance_labels": true,
+  "seed": 42
+}

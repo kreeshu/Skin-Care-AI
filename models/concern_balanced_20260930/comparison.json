@@ -1,0 +1,30 @@
+{
+  "deployed_weights_changed": false,
+  "candidate_deployed": false,
+  "decision": "Keep the original weights: candidate regresses dark spots, blemish recall, macro F1 and balanced accuracy; redness specificity is zero.",
+  "baseline": {
+    "macro_accuracy": 0.6990322662429183,
+    "macro_balanced_accuracy": 0.6348685716274296,
+    "macro_precision": 0.8695320255822832,
+    "macro_recall": 0.7276553079526851,
+    "macro_f1": 0.7794606203286275,
+    "macro_pr_auc": 0.9030178213858753,
+    "macro_roc_auc": 0.7174312702833315,
+    "known_label_decisions": 582,
+    "pooled_label_accuracy": 0.7319587628865979
+  },
+  "candidate": {
+    "macro_accuracy": 0.701738844593061,
+    "macro_balanced_accuracy": 0.6168443121640274,
+    "macro_precision": 0.8577892751681183,
+    "macro_recall": 0.6845104014210183,
+    "macro_f1": 0.7358971361912015,
+    "macro_pr_auc": 0.8976784456660996,
+    "macro_roc_auc": 0.7078068015594124,
+    "known_label_decisions": 582,
+    "pooled_label_accuracy": 0.7457044673539519
+  },
+  "preprocessing_parity_verified_images": 479,
+  "new_human_labels_added": 0,
+  "human_review_queue": "data/vision/manifests_v2/additional_training_review.csv"
+}

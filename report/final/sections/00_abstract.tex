@@ -1,0 +1,20 @@
+\FrontHeading{Abstract}
+
+People in Nepal who want skincare advice face three barriers. Dermatologists are concentrated in a few cities. Most AI skincare tools are trained on lighter-skinned populations. Many of the products those tools suggest cannot be bought locally. This project set out to build and evaluate \emph{SkinCare AI}, a mobile prototype that looks at a face photograph, reports visible cosmetic skin concerns and recommends products sold by Nepalese online retailers.
+
+The artefact changed substantially during the project. The interim plan proposed a disease-and-skin-type classifier. An audit of more than 26,000 candidate images found widespread duplication, stock imagery, pre-generated augmentations and unusable skin-type labels. As a result, the scope was narrowed to five non-medical concerns: blemishes, dark spots, redness, visible pores and fine lines. Skin type is now reported by the user rather than guessed from a photo.
+
+The final system has five parts:
+\begin{itemize}
+  \item an EfficientNetB0 multi-label model trained with masked loss on 1,200+ human-reviewed and FFHQ-Wrinkle images;
+  \item a YuNet face-quality gate;
+  \item a catalogue of 1,500+ products scraped from Jeevee, ForEveryNG and Oriflame;
+  \item a transparent weighted recommender;
+  \item a FastAPI backend with a React Native (Expo) client and an optional Qwen2.5 chat assistant.
+\end{itemize}
+
+Four model versions were compared on the same duplicate-group-aware held-out set of 470+ images. The deployed model, retrained after a second round of human label review, reached a pooled label accuracy of 76.3\%, a macro F1 of 0.789, a macro balanced accuracy of 0.670 and a macro ROC-AUC of 0.734, improving on the previous version on all four. Fine lines were detected reliably (ROC-AUC 0.920, balanced accuracy 0.833). Dark spots (ROC-AUC 0.580) and visible pores (0.597) remained close to chance. Class reweighting and extra melasma images were tested and rejected because they did not help.
+
+The finished system was also tested directly. Eighteen of the 19 functional API tests passed; the chat assistant timed out under load. The face gate rejected all 300 out-of-distribution images. However, the gate also rejected 22\% of held-out skin close-ups, which showed that the gate and the model do not accept the same kinds of image. Usability was assessed through a heuristic evaluation and a participant survey run through Google Forms, which combined task questions with the System Usability Scale.
+
+The project contributes an honest, leakage-aware baseline and a working, Nepal-specific pipeline from photo to purchasable product. Its main lesson is that data quality, not model choice, limits cosmetic skin analysis at this scale.

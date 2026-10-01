@@ -1,0 +1,37 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+This project set out to give Nepalese users trustworthy skincare guidance from a single photograph, linked to products they can actually buy. It delivered a complete mobile prototype. A YuNet face gate, a multi-label EfficientNetB0 concern model, a catalogue of 1,500+ Nepalese products, a transparent weighted recommender and a grounded Qwen2.5 assistant are integrated behind a FastAPI backend and an Expo client.
+
+The most important moment in the project was not a modelling choice but a data audit. The audit revealed that the original data was dominated by duplicates, stock imagery and unverifiable labels. On that evidence the scope was narrowed: from diseases and photo-based skin type to five human-labelled cosmetic concerns. This made the system safer and its results meaningful.
+
+Those results are modest but improving. Four model versions were compared on one fixed held-out set. The deployed model, retrained after a second review that added many negative labels, reached a pooled accuracy of 76.3\%, a macro F1 of 0.789 and a macro ROC-AUC of 0.734, the best of the four. Fine lines are detected reliably (ROC-AUC 0.920), blemishes and redness moderately, and dark spots and visible pores barely better than chance. Reweighting the loss and adding melasma photos both failed, while adding reviewed negatives helped, which confirms that the limiting factor is the data. Eighteen of 19 functional tests passed; the chat assistant timed out when requests queued. Testing also exposed a mismatch between the face gate and the model, and several interface defects that are now documented.
+
+The project therefore succeeds as an engineering artefact and as an honest baseline. It does not yet succeed as a consumer product. Its value lies in a working pipeline from photo to purchasable product, a reproducible leakage-aware protocol, and a clear, evidence-based account of what must improve next.
+
+\subsection{Limitations}
+
+\begin{description}[leftmargin=0pt,style=nextline]
+  \item[Too few test negatives and no skin-tone labels.] The test set has only 4, 8 and 9 negative images for blemishes, redness and pores. A single image changes their specificity by 11 to 25 points. Nothing is known about performance by skin tone. \emph{Impact:} claims beyond fine lines are weak, and fairness is unmeasured. \emph{Addressed by:} reporting balanced accuracy and ROC-AUC next to F1, and stating the gap explicitly.
+  \item[Test set reused for model choice.] The same test set was inspected while comparing four model versions, and the deployed model was chosen partly on those results. \emph{Impact:} the reported metrics are a regression benchmark, slightly optimistic, and not an independent estimate. \emph{Addressed by:} never setting thresholds on test data, and flagging the issue.
+  \item[Training not fully reproducible.] On the Apple GPU, the same recipe and seed gave 72.2\% and 78.9\% macro accuracy. \emph{Impact:} differences of a few points between single runs are within noise, so the gain over \texttt{concern\_v2} is modest. \emph{Addressed by:} storing each deployed model's weight hash and reporting averaged runs.
+  \item[Dark-spot regression.] The deployed model is worse than \texttt{concern\_v2} on dark spots (accuracy 50.6\% versus 64.4\%), and no version separates dark spots well. \emph{Impact:} dark-spot output is unreliable and should not drive recommendations on its own.
+  \item[Labels from one reviewer, and not new data.] All human labels come from a single reviewer, and inter-rater agreement was not measured. The second review re-labelled existing training images rather than adding new people. \emph{Impact:} label noise is unknown, and the data's variety did not grow.
+  \item[Gate--model mismatch.] 22\% of test images, mostly close-ups, would be rejected by the app. \emph{Impact:} users who photograph close-ups are turned away, and the metrics cover inputs the app does not accept.
+  \item[Sparse catalogue metadata.] 65\% of products have no inferable target ingredient, and 18\% have no category. \emph{Impact:} the ranking leans on popularity, and some products appear in the wrong category.
+  \item[Small, self-selected survey.] Survey participants were a convenience sample recruited by the author, used the app briefly and unsupervised, and rated perceived usability only. \emph{Impact:} the results show first impressions, not long-term use, and cannot judge whether the observations or recommendations are correct.
+  \item[Chat latency and prototype hosting.] CPU-based language-model responses take about a minute, requests are processed one at a time with no timeout, and the system runs only on a local network.
+\end{description}
+
+\subsection{Future Work}
+
+\begin{enumerate}
+  \item \textbf{Collect targeted negatives and a fresh test set.} This is the highest priority. With ethics approval and consent, collect full-face photos from Nepalese volunteers across Fitzpatrick types, deliberately including people \emph{without} each concern. Hold out a new test set that is never inspected during development, and report metrics by skin tone \citep{groh2021}.
+  \item \textbf{Measure label reliability.} Have a second annotator, ideally with cosmetology or dermatology training, label a subset, and report Cohen's $\kappa$ for each concern. Revise the definition for dark spots, where every model version stayed near chance.
+  \item \textbf{Make training reproducible.} Train final models with deterministic settings (or on CPU) and report the mean and spread over several seeds rather than a single run.
+  \item \textbf{Align the gate and the model.} Either train and evaluate only on full-face images, or accept close-ups with a separate quality check. Report metrics on exactly the images the app accepts.
+  \item \textbf{Fix the defects found in testing.} Assign routine steps to morning or evening by step type, render Markdown in chat, fix the chip layout and nested buttons, sanitise the corrupt-image message, and add a progress indicator and a timeout to chat, so an abandoned request cannot block later ones.
+  \item \textbf{Enrich the catalogue.} Scrape full INCI ingredient lists where available, validate categories with a small classifier, and test whether embedding similarity then beats the weighted rules using expert-rated relevance (for example, precision@5).
+  \item \textbf{Extend the user study.} Repeat the survey with a larger and more varied sample, including older users and people outside Kathmandu, add observed (moderated) sessions, and iterate on the findings.
+  \item \textbf{Add visual explanation and deployment.} Add Grad-CAM overlays \citep{selvaraju2020} for concerns marked \emph{present}. Export the model to TensorFlow Lite for on-device inference, which also improves privacy, and add Nepali-language support.
+\end{enumerate}

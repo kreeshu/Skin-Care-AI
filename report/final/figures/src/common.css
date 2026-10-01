@@ -1,0 +1,89 @@
+/* Shared styles for report figures. Canvas width 1240px == \linewidth (16 cm), so 1px ~ 0.365pt. */
+:root {
+  --ink: #0f172a;
+  --ink-2: #334155;
+  --ink-3: #64748b;
+  --line: #cbd5e1;
+  --bg: #ffffff;
+  --present: #16a34a;
+  --uncertain: #d97706;
+  --absent: #64748b;
+  --path: #e11d48;
+}
+@page { size: var(--w) var(--h); margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); }
+body {
+  width: 1240px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 19px;
+  line-height: 1.32;
+  color: var(--ink);
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.canvas { position: relative; padding: 14px; }
+svg.wires { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4; }
+
+/* Card = one section, tinted with its brand colour --c */
+.card {
+  position: relative;
+  border: 2px solid color-mix(in srgb, var(--c) 55%, white);
+  background: color-mix(in srgb, var(--c) 6%, white);
+  border-radius: 14px;
+  padding: 0 14px 12px;
+  overflow: hidden;
+}
+.card > .hd {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 -14px 10px; padding: 8px 14px;
+  background: color-mix(in srgb, var(--c) 16%, white);
+  border-bottom: 2px solid color-mix(in srgb, var(--c) 55%, white);
+}
+.num {
+  flex: none; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--c); color: #fff; font-weight: 800; font-size: 19px;
+  display: grid; place-items: center;
+}
+.num.dark { color: var(--ink); }
+.title { font-weight: 800; font-size: 21px; letter-spacing: .02em; text-transform: uppercase; }
+.sub { color: var(--ink-3); font-size: 17px; font-weight: 500; }
+.logos { margin-left: auto; display: flex; gap: 6px; }
+.logo {
+  display: flex; align-items: center; gap: 6px;
+  background: #fff; border: 1.5px solid var(--line); border-radius: 999px;
+  padding: 3px 10px 3px 6px; font-size: 16px; font-weight: 600; color: var(--ink-2);
+}
+.logo svg { width: 22px; height: 22px; }
+
+.row { display: flex; gap: 8px; align-items: stretch; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.grow { flex: 1; min-width: 0; }
+.box {
+  background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 7px 10px;
+}
+.box b { font-weight: 700; }
+.k { font-size: 16px; color: var(--ink-3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.big { font-size: 30px; font-weight: 800; line-height: 1.05; color: var(--c); }
+.small { font-size: 17px; color: var(--ink-2); }
+.mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 16.5px; }
+.chip {
+  display: inline-block; border-radius: 6px; padding: 1px 7px; font-size: 16px; font-weight: 600;
+  background: color-mix(in srgb, var(--cc, var(--c)) 14%, white);
+  color: color-mix(in srgb, var(--cc, var(--c)) 80%, black);
+  border: 1px solid color-mix(in srgb, var(--cc, var(--c)) 40%, white);
+  white-space: nowrap;
+}
+.arrow-txt { color: var(--ink-3); font-weight: 700; padding: 0 2px; }
+.step {
+  position: absolute; top: -11px; right: -11px; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--path); color: #fff; font-size: 15px; font-weight: 800;
+  display: grid; place-items: center; border: 2px solid #fff; z-index: 3;
+}
+.rel { position: relative; }
+.wire-label {
+  position: absolute; transform: translate(-50%, -50%);
+  background: #fff; border: 1.5px solid var(--line); border-radius: 999px;
+  padding: 2px 10px; font-size: 15.5px; font-weight: 600; color: var(--ink-2); white-space: nowrap; z-index: 5;
+}

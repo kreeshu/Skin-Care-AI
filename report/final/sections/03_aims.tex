@@ -1,0 +1,70 @@
+\section{Project Aims, Objectives, and Scope}
+\label{sec:aims}
+
+This section turns the problem into a plan. The aim and objectives below are \emph{revised} from the interim report. Table~\ref{tab:objchange} records what changed and why. Keeping the original objectives would have meant reporting against goals the evidence showed to be unsafe or unattainable.
+
+\subsection{Project Aim}
+
+The aim of this project is to design, build and evaluate a mobile prototype that detects visible cosmetic skin concerns from a face photograph. The prototype combines those concerns with a user-reported skin type and recommends explainable skincare products that can be purchased in Nepal.
+
+\subsection{Project Objectives}
+
+\begin{enumerate}[label=\textbf{O\arabic*:},leftmargin=30bp]
+  \item \textbf{Dataset.} Audit every candidate image source for exact and perceptual duplicates and record its licence and provenance. Human-review at least 1,000 images against written label definitions, marking each concern as present, absent or unknown. Produce train, validation and test manifests in which no duplicate group crosses a split.
+  \item \textbf{Model.} Train a multi-label EfficientNetB0 classifier for five cosmetic concerns. Select decision thresholds on validation data only. Report per-concern accuracy, F1, balanced accuracy and ROC-AUC on the held-out test set, and compare every retrained candidate against the deployed model before replacing it.
+  \item \textbf{Catalogue.} Build a unified catalogue of at least 1,000 deduplicated skincare products from at least three Nepalese retailers. Each product has a price, rating, stock status, category and inferred ingredient tags.
+  \item \textbf{Recommender.} Implement a transparent recommender that maps detected concerns to beneficial ingredients and categories. It ranks products by a documented weighted score, adjusts the ranking for the user's stated skin type, and returns the top five per category with the reasons for each.
+  \item \textbf{Application.} Deliver a FastAPI backend and a React Native (Expo) mobile client that meet the requirements in Table~\ref{tab:spec}, including:
+  \begin{itemize}
+    \item a face-quality gate;
+    \item uncertainty display;
+    \item a history of past checks;
+    \item a searchable catalogue;
+    \item an optional, grounded language-model chat assistant;
+    \item a persistent non-medical disclaimer.
+  \end{itemize}
+  \item \textbf{Evaluation.} Evaluate the artefact through held-out model metrics, documented functional test cases, an expert heuristic review, and a participant usability survey (task questions and the System Usability Scale) delivered through Google Forms. Compare the results with the interim plan and report limitations honestly.
+\end{enumerate}
+
+\begin{table}[ht]
+\centering\small
+\caption{Changes from interim objectives to final objectives}
+\label{tab:objchange}
+\begin{tabularx}{\linewidth}{P{3.4cm}P{3.4cm}Y}
+\toprule
+\textbf{Interim plan} & \textbf{Final objective} & \textbf{Reason for change}\\
+\midrule
+6 skin-type classes plus diseases from photo & 5 cosmetic concerns (O1--O2); skin type from user & The skin-type folder held only 100+ images, with invalid and stock images. Disease labels (including carcinoma) implied a medical claim the data could not support.\\
+$\geq$3,000 images & 2,000+ audited, leakage-free images & Deduplication removed thousands of repeated or augmented images. Quality was prioritised over count.\\
+Weighted F1 $\geq$80\% & Honest per-concern reporting & The only available test set has very few negative examples, so a single target figure would be misleading (Section~\ref{sec:validation}).\\
+$\geq$400 SKUs from Daraz, PrettyClick, Jeevee, Bonjour Nepal & 1,500+ SKUs from Jeevee, ForEveryNG, Oriflame & Scraping was feasible and permitted for these three retailers, and the product target was exceeded.\\
+TF-IDF cosine similarity & Rule mapping plus weighted score & Ingredient lists are keyword-inferred and sparse. An explicit weighted score is easier to explain and audit.\\
+EfficientNet-B2, PyTorch & EfficientNetB0, TensorFlow/Keras & Smaller model for CPU inference. The Keras applications API was already in use.\\
+Web demo & Expo mobile app plus Streamlit tools & A mobile app fits the selfie use case. Streamlit was kept for internal annotation.\\
+Usability evaluation not specified & Heuristic review plus Google Forms survey (SUS) & A short online survey lets participants test the real app and report usability in a standard, comparable form.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Project Scope}
+
+\textbf{In scope:}
+\begin{itemize}
+  \item still photographs of a single face;
+  \item five cosmetic concerns;
+  \item five self-reported skin types (dry, normal, oily, combination, sensitive);
+  \item products from three Nepalese online retailers;
+  \item an English-language interface;
+  \item a research prototype running on a local network.
+\end{itemize}
+
+\textbf{Out of scope:}
+\begin{itemize}
+  \item medical diagnosis of any kind, including acne severity grading, rosacea and skin cancer;
+  \item inferring skin type or skin tone from photographs;
+  \item video or real-time analysis;
+  \item collaborative filtering, because no user interaction history exists;
+  \item Nepali-language support;
+  \item production deployment, payment or checkout;
+  \item collection of new images from human participants (survey participants use the app but no photos are stored).
+\end{itemize}

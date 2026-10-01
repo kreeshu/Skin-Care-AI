@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""End-to-end pipeline: data enrichment → multitask training → evaluation → inference."""
+"""End-to-end pipeline: data enrichment → concern inference."""
 
 import sys
 import os
@@ -16,35 +16,6 @@ def run_data_pipeline():
     print("DATA ENRICHMENT PIPELINE")
     print("=" * 60)
     return run_enrichment_pipeline()
-
-
-def run_training_pipeline(conditions_dir: str, types_dir: str, model_dir: str):
-    from src.model.dataset_multitask import prepare_multitask_datasets
-    from src.model.evaluate_multitask import evaluate_multitask
-    from src.model.multitask import load_multitask_model
-    from src.model.train_multitask import train_multitask
-
-    print("\n" + "=" * 60)
-    print("MULTITASK MODEL TRAINING (condition + skin type)")
-    print("=" * 60)
-
-    datasets = prepare_multitask_datasets(conditions_dir, types_dir)
-    model = train_multitask(conditions_dir, types_dir, model_dir, quick=False)
-
-    print("\n" + "=" * 60)
-    print("MODEL EVALUATION")
-    print("=" * 60)
-
-    model = load_multitask_model(
-        os.path.join(model_dir, "skin_classifier_multitask.weights.h5"),
-        num_conditions=datasets["num_conditions"],
-        num_skin_types=datasets["num_skin_types"],
-    )
-    metrics = evaluate_multitask(
-        model, datasets["test"], datasets["class_names"],
-        os.path.join(model_dir, "..", "outputs"),
-    )
-    return model, metrics
 
 
 def run_test_inference(
@@ -105,9 +76,7 @@ def _print_analysis(result: dict):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Skin Care AI Pipeline")
-    parser.add_argument("--step", choices=["data", "train", "inference", "all"], default="data")
-    parser.add_argument("--conditions-dir", default=os.path.join(os.path.dirname(__file__), "dataset", "Conditions"))
-    parser.add_argument("--types-dir", default=os.path.join(os.path.dirname(__file__), "dataset", "Types"))
+    parser.add_argument("--step", choices=["data", "inference", "all"], default="data")
     parser.add_argument("--model-dir", default=os.path.join(os.path.dirname(__file__), "models"))
     parser.add_argument("--image", default=None, help="Path to skin image for inference test")
     parser.add_argument("--use-slm", action="store_true", help="Enable local SLM explanation layer")
@@ -119,9 +88,6 @@ if __name__ == "__main__":
 
     if args.step in ("data", "all"):
         run_data_pipeline()
-
-    if args.step in ("train", "all"):
-        run_training_pipeline(args.conditions_dir, args.types_dir, args.model_dir)
 
     if args.step in ("inference", "all"):
         model_path = os.path.join(args.model_dir, "concern_pilot", "skin_concern_pilot.weights.h5")

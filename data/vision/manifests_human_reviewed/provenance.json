@@ -1,0 +1,61 @@
+{
+  "annotation_source": "data/vision/annotations/additional_training_labels.csv",
+  "annotation_sha256": "17aee6a117830b2f0132e4d5088a9e771c3c87dac273f554a53c2d01e9cb7b72",
+  "queue_sha256": "6010fc310050294e51d47d4a53a44582b7fc92b152e3dbb8b968007af7b63de0",
+  "train_sha256": "aa313746e08bbd766a47884f54459202b2dce484c7ad1c11ed48766c4ff4660f",
+  "validation_sha256": "004cfab05a06d6b3a0b28a382fea6e0925fe791ad2cfb9542ac36bc514cdf1a5",
+  "test_sha256": "16f08df26cdbcdd20add71dd5c09a166b9a4c873dbfe6f6b77de8f58bfd46e66",
+  "initial_weights_sha256": "8b3653ee446eea9026e57c7a8e62f79876755e763f654c5ad291d56244e43d8c",
+  "known_label_conflicts_preserved": [
+    {
+      "image_id": "057cf8791093e460",
+      "concern": "fine_lines",
+      "preserved_original": "0",
+      "reviewed": "1"
+    },
+    {
+      "image_id": "41c058c8be97df6d",
+      "concern": "fine_lines",
+      "preserved_original": "1",
+      "reviewed": "0"
+    },
+    {
+      "image_id": "46329d97926c88a0",
+      "concern": "fine_lines",
+      "preserved_original": "1",
+      "reviewed": "0"
+    },
+    {
+      "image_id": "48fb1da6732c55e7",
+      "concern": "fine_lines",
+      "preserved_original": "1",
+      "reviewed": "0"
+    },
+    {
+      "image_id": "4b9d75921b2e100b",
+      "concern": "fine_lines",
+      "preserved_original": "0",
+      "reviewed": "1"
+    },
+    {
+      "image_id": "57ea9485b8195437",
+      "concern": "fine_lines",
+      "preserved_original": "0",
+      "reviewed": "1"
+    },
+    {
+      "image_id": "63614f0c3bb9ef11",
+      "concern": "fine_lines",
+      "preserved_original": "0",
+      "reviewed": "1"
+    }
+  ],
+  "checkpoint_selection": "validation macro ROC-AUC only; include initial weights and best from each phase",
+  "threshold_selection": "validation Youden J only; no tuning on test labels",
+  "class_balancing": false,
+  "annotation_note": "User-reviewed labels; not a dermatologist consensus assessment. Existing FFHQ wrinkle coverage proxy labels remain unchanged.",
+  "test_note": "Existing inspected regression test set, not a new independent benchmark",
+  "status": "training_and_verification_complete",
+  "candidate_weights_sha256": "08784e2c5c0330c9845e718c0c1a27298c447ae61818c3e657f892ddff36147c",
+  "comparison": "models/concern_human_reviewed/comparison.json"
+}

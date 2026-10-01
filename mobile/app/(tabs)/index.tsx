@@ -13,8 +13,6 @@ import { useSettings } from "../../hooks/useSettings";
 import { pickSkinImage, PickedSkinImage } from "../../utils/pickImage";
 import { ChatTurn, AnalysisResult } from "../../types";
 
-const QUICK_REPLIES = ["Explain my result", "Compare my top 2 cleansers", "Build my AM/PM routine"];
-
 function contextFromResult(result?: AnalysisResult) {
   if (!result) return undefined;
   const product_ids: string[] = [];
@@ -30,15 +28,15 @@ function contextFromResult(result?: AnalysisResult) {
   };
 }
 
-function topPicks(result: AnalysisResult): string[] {
-  const names: string[] = [];
+function topPicks(result: AnalysisResult) {
+  const picks = new Map<string, string>();
   for (const recs of Object.values(result.recommendations ?? {})) {
     for (const r of (recs ?? []).slice(0, 2)) {
-      names.push(r.name);
-      if (names.length >= 3) return names;
+      picks.set(r.product_id, r.name);
+      if (picks.size >= 3) return [...picks];
     }
   }
-  return names;
+  return [...picks];
 }
 
 function ResultCard({ result, onPress }: { result: AnalysisResult; onPress: () => void }) {
@@ -55,8 +53,8 @@ function ResultCard({ result, onPress }: { result: AnalysisResult; onPress: () =
           Your skin type · {result.skin_type}
         </BodySm>
       ) : null}
-      {topPicks(result).map((name) => (
-        <BodySm key={name} numberOfLines={1} style={styles.pick}>• {name}</BodySm>
+      {topPicks(result).map(([id, name]) => (
+        <BodySm key={id} numberOfLines={1} style={styles.pick}>• {name}</BodySm>
       ))}
       <BodySm style={styles.muted}>Cosmetic observation only, not a diagnosis.</BodySm>
     </TouchableOpacity>
@@ -118,7 +116,13 @@ export default function ChatScreen() {
     setPhotoBusy(true);
     setError(null);
     try {
-      const result = (await api.analyzeImage(uri, settings.useSlm, photo, settings.skinTypePreference)) as AnalysisResult;
+      const result = (await api.analyzeImage(uri, photo, settings.skinTypePreference)) as AnalysisResult;
+      if (result.analysis_quality?.status === "rejected") {
+        markPhoto(uri, "done");
+        const reason = result.analysis_quality.reasons[0] ?? "This photo could not be analysed. Try another one.";
+        setMessages((prev) => [...prev, { role: "assistant", content: reason }]);
+        return;
+      }
       await addScan(result);
       setActiveResult(result);
       markPhoto(uri, "done");
@@ -143,7 +147,7 @@ export default function ChatScreen() {
 
   const onPlus = () => {
     if (photoBusy) return;
-    Alert.alert("Add a skin photo", "One clear photo in daylight.", [
+    Alert.alert("Add a skin photo", "One clear, front-facing photo of your whole face in daylight.", [
       { text: "Take photo", onPress: () => pickThenAnalyze("camera") },
       { text: "Upload", onPress: () => pickThenAnalyze("gallery") },
       { text: "Cancel", style: "cancel" },
@@ -215,11 +219,6 @@ export default function ChatScreen() {
             <BodySm style={styles.emptyText}>
               Tap + to check a skin photo, or just ask about products, routines and ingredients.
             </BodySm>
-            {QUICK_REPLIES.map((q) => (
-              <TouchableOpacity key={q} style={styles.chip} onPress={() => send(q)} activeOpacity={0.75}>
-                <BodySm style={styles.chipText}>{q}</BodySm>
-              </TouchableOpacity>
-            ))}
           </View>
         }
         renderItem={renderItem}
@@ -251,7 +250,8 @@ export default function ChatScreen() {
           onChangeText={setInput}
           placeholder="Ask or tap + to check a photo…"
           placeholderTextColor={colors.textTertiary}
-          multiline
+          returnKeyType="send"
+          submitBehavior="submit"
           editable={!sending}
           onSubmitEditing={() => send(input)}
         />
@@ -281,14 +281,6 @@ const styles = StyleSheet.create({
   list: { padding: theme.spacing.md, gap: theme.spacing.sm, paddingBottom: 8 },
   empty: { gap: theme.spacing.sm },
   emptyText: { color: colors.textSecondary },
-  chip: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.sm,
-  },
-  chipText: { color: colors.dispensary },
   bubble: {
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.sm,
@@ -315,7 +307,6 @@ const styles = StyleSheet.create({
   pick: { color: colors.textPrimary },
   error: { marginHorizontal: theme.spacing.md, marginBottom: 4 },
   errorText: { color: colors.oxblood },
-  warn: { marginHorizontal: theme.spacing.md, marginBottom: 4, color: colors.oxblood },
   inputRow: {
     flexDirection: "row",
     alignItems: "flex-end",
@@ -330,7 +321,6 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.sm,
-    maxHeight: 110,
     color: colors.textPrimary,
   },
   plus: {

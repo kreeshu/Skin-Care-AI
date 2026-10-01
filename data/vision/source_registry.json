@@ -81,5 +81,12 @@
     "url": "https://github.com/labhai/ffhq-wrinkle-dataset",
     "use": "fine_lines only: 1,000 manual wrinkle masks, tertiles of wrinkle-pixel coverage mapped to absent/unknown/present",
     "reason": "Positives and negatives from one source break the wrinkles-folder shortcut; coverage is also reduced by occlusion (glasses, hats), so labels are noisy"
+  },
+  "memi_ds": {
+    "status": "accepted_academic",
+    "license": "CC BY 4.0 (attribution: Zhai, Zhenwei (2025). MEMI-DS. figshare. https://doi.org/10.6084/m9.figshare.29209229.v1)",
+    "url": "https://figshare.com/articles/figure/MEMI-DS_A_Benchmark_Melasma_Image_Dataset_for_Image_Segmentation/29209229",
+    "use": "dark_spots positives only, training only: a non-empty melasma mask maps to dark_spots=1; other concerns stay unknown",
+    "reason": "Melasma is one kind of facial hyperpigmentation; every photo is a positive taken with the same clinical rig (eye bar, chin rest), so the source cannot supply negatives and risks a setup shortcut"
   }
 }

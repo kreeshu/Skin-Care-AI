@@ -1,0 +1,23 @@
+\section{Introduction and Context}
+\label{sec:intro}
+
+Skincare is no longer a niche interest. Consumers increasingly treat it as part of everyday health, and the global beauty market has responded with personalisation platforms. These platforms promise routines matched to a person's skin, often using a selfie and an AI model \citep{ramrakhiani2024}.
+
+The technology behind them draws on two branches of applied machine learning:
+\begin{itemize}
+  \item computer vision, where convolutional neural networks (CNNs) now rival specialists on some dermatological image tasks \citep{liu2020,jones2022};
+  \item recommender systems, which match items to user needs from item attributes and user signals \citep{ricci2022}.
+\end{itemize}
+
+Nepal is a useful setting in which to test whether these technologies transfer beyond the markets they were built for. Its geography packs very different climates into a small area. The Terai lowlands are humid and hot. Kathmandu has marked seasonal swings and poor air quality. The high Himalayan districts combine dry cold with intense ultraviolet exposure. Each of these puts different stress on the skin \citep{goldust2024}.
+
+Access to expert advice is uneven. Qualified dermatologists are concentrated in urban centres, and people in hill and rural districts face cost, travel and time barriers to consultation \citep{paudel2020}. Smartphone ownership and mobile data use, by contrast, are widespread. A self-service tool that needs only a phone camera is therefore a plausible way to make basic cosmetic skincare guidance more accessible. It would only be appropriate if it is honest about what it can and cannot see.
+
+Global tools also create an economic problem. International skincare apps recommend brands that are often unavailable or unaffordable in Nepal. A recommendation that cannot be bought locally has little practical value. At the same time, domestic e-commerce platforms such as Jeevee and ForEveryNG now list more than 1,000 skincare products with prices, ratings and stock status. This creates an opportunity to ground recommendations in what a Nepalese user can actually purchase.
+
+This report describes the design, construction and evaluation of \emph{SkinCare AI}, a mobile prototype that joins these two strands. It also documents a significant change of direction. The interim report (May 2026) proposed classifying skin diseases and skin types from photographs. An audit of the available data showed that this could not be done credibly or safely (Section~\ref{sec:construction}). The final artefact therefore detects five visible cosmetic concerns, asks the user for their skin type, and recommends locally available products. It presents its outputs as cosmetic observations, never as diagnoses.
+
+\subsection{Problem Statement}
+\label{sec:problem}
+
+Nepalese consumers lack an accessible, trustworthy tool that turns a photograph of their face into skincare guidance they can act on. Existing AI tools are trained on data that under-represents South Asian skin \citep{groh2021,daneshjou2022}. They recommend products that are largely unavailable in Nepal, and they rarely explain their outputs or state their uncertainty \citep{ramrakhiani2024}. As a result, users either receive generic advice or rely on systems whose errors they cannot detect.

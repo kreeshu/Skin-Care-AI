@@ -58,17 +58,6 @@ export default function RootLayout() {
             presentation: "card",
           }}
         />
-        <Stack.Screen
-          name="condition/[name]"
-          options={{
-            headerShown: true,
-            headerTitle: "Guide",
-            headerTintColor: colors.textPrimary,
-            headerStyle: { backgroundColor: colors.background },
-            headerShadowVisible: false,
-            presentation: "card",
-          }}
-        />
       </Stack>
     </SafeAreaProvider>
   );

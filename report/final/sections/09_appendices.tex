@@ -1,0 +1,236 @@
+\renewcommand{\thesection}{\Alph{section}}
+\titleformat{\section}{\fontsize{16bp}{20bp}\selectfont\bfseries}{Appendix \thesection:}{0.5em}{}
+\renewcommand{\cftsecaftersnum}{}
+\addtocontents{toc}{\protect\renewcommand{\protect\cftsecaftersnum}{}\protect\setlength{\protect\cftsecnumwidth}{1.6em}}
+\setlength{\cftsecnumwidth}{1.6em}
+\addcontentsline{toc}{section}{Appendices}
+
+\section{Project Timeline}
+\label{app:timeline}
+
+Figure~\ref{fig:gantt} shows the actual schedule. Dates from August 2026 onwards are taken from the Git history. Earlier dates follow the interim report's plan.
+% TODO(Krishu): confirm the January-July dates against your own records.
+
+\begin{figure}[ht]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{ganttchart}[
+  hgrid, vgrid, x unit=0.95cm, y unit chart=0.52cm,
+  title height=1, bar height=0.55,
+  bar/.append style={fill=TemplateBlue!65,draw=none},
+  group/.append style={fill=Accent!80,draw=none},
+  milestone/.append style={fill=Accent,draw=none},
+  bar label font=\small, group label font=\small\bfseries, milestone label font=\small\itshape,
+  title label font=\small\bfseries]{1}{10}
+\gantttitle{2026}{10}\\
+\gantttitle{Jan}{1}\gantttitle{Feb}{1}\gantttitle{Mar}{1}\gantttitle{Apr}{1}\gantttitle{May}{1}\gantttitle{Jun}{1}\gantttitle{Jul}{1}\gantttitle{Aug}{1}\gantttitle{Sep}{1}\gantttitle{Oct}{1}\\
+\ganttgroup{Research \& planning}{1}{5}\\
+\ganttbar{Literature review, proposal}{1}{3}\\
+\ganttbar{Interim design and report}{3}{5}\\
+\ganttmilestone{Interim report (5 May)}{5}\\
+\ganttgroup{Data \& catalogue}{3}{9}\\
+\ganttbar{Product scraping and enrichment}{3}{6}\\
+\ganttbar{Kaggle image collection}{4}{7}\\
+\ganttbar{Vision data audit and review}{9}{9}\\
+\ganttgroup{Development}{6}{9}\\
+\ganttbar{Multi-task prototype, SLM}{7}{8}\\
+\ganttbar{Mobile app and API}{8}{9}\\
+\ganttmilestone{Progress review (8 Sep)}{9}\\
+\ganttbar{Concern model v1, v2 (FFHQ)}{9}{9}\\
+\ganttgroup{Evaluation \& writing}{9}{10}\\
+\ganttbar{Testing, experiments}{9}{10}\\
+\ganttbar{Final report}{9}{10}\\
+\ganttmilestone{Final submission (date TBD)}{9}
+\end{ganttchart}}
+\caption{Project Gantt chart}
+\label{fig:gantt}
+\end{figure}
+
+\section{Feasibility, Risks, and Ethical Aspects}
+
+\subsection*{B.1 Revised Feasibility}
+
+The project proved feasible within its revised scope.
+\begin{itemize}
+  \item All software is free and open source.
+  \item Training fits on a laptop, because EfficientNetB0 with 1,200+ images trains in minutes per phase on an Apple M-series CPU.
+  \item Analysis runs in under 0.25\,s once the model is loaded.
+\end{itemize}
+
+The binding constraints were the following:
+\begin{itemize}
+  \item \emph{Labelled data}: human review is slow, and public cosmetic datasets are small.
+  \item \emph{Time}: the September pivot left little time for the participant study and no time to collect a new test set.
+  \item \emph{Compute for the language model}: CPU chat responses take about a minute.
+\end{itemize}
+The core flow does not depend on the language model, so this last constraint did not threaten delivery.
+
+\subsection*{B.2 Updated Risk Analysis and Mitigation}
+
+\begin{table}[ht]
+\centering\small
+\caption{Risk assessment and mitigation (updated with outcomes)}
+\label{tab:risks}
+\begin{tabularx}{\linewidth}{P{3.2cm}ccY}
+\toprule
+\textbf{Potential risk} & \textbf{Likelihood} & \textbf{Impact} & \textbf{Mitigation strategy and outcome}\\
+\midrule
+Small or contaminated dataset causing misleading accuracy & High & High & Audited duplicates, split by duplicate group, human review. \emph{Occurred}; mitigated by the scope change and honest metrics.\\
+Poor performance on Nepalese skin tones & High & High & Report as unmeasured; plan skin-tone-stratified collection. \emph{Open.}\\
+Language model hallucinating products or ingredients & Medium & High & Candidate-only prompt, code-level ID validation, rule fallback. \emph{Mitigated} (guardrail test passes).\\
+Users treating output as diagnosis & Medium & High & No disease labels, ``uncertain'' band, persistent disclaimer. \emph{Reduced.}\\
+Scraper blocked or site layout changes & Medium & Medium & Snapshot CSVs kept; three independent sources. \emph{Did not occur.}\\
+Language-model latency too high & High & Low & Made optional; rule fallback. \emph{Occurred} (about 55\,s); core flow unaffected.\\
+Insufficient time for user study & High & Medium & Short online survey (Google Forms) alongside a heuristic review. \emph{Mitigated}; sample is small.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{B.3 Revised Ethical Considerations}
+
+\textbf{Human participants.} The usability survey followed the protocol in Appendix~\ref{app:usability}. Participants were adults who gave informed consent on the first page of the form. The form collected no names, emails or photos, and participants could use a sample photo instead of their own. Any photo used in the app is processed in memory and never stored. [TODO: state the ethics approval or supervisor sign-off obtained before the survey was sent.]
+
+\textbf{Third-party data.} Every image source was recorded with its licence. Sources with unclear provenance were rejected or limited to partial use. FFHQ-Wrinkle (CC BY-NC-SA) and ACNE04 (academic use) are used non-commercially with attribution. SCIN images were downloaded under the SCIN Data Use Licence, which prohibits re-identification. Their privacy masks were left untouched, and the images were quarantined unused. Raw images are not committed to the repository.
+
+\textbf{Scraping.} Only publicly listed product information was collected, at a low request rate, for non-commercial academic use. No customer data was collected.
+
+\textbf{Privacy in the app.} Uploaded photos are processed in memory and are not stored on the server. Scan history and favourites stay on the user's device.
+
+\textbf{Harm and fairness.} Removing disease labels avoids false medical reassurance. Every result states that it is a cosmetic observation and not a diagnosis. The known risk of lower accuracy on under-represented skin tones is stated openly rather than hidden \citep{daneshjou2021,groh2021}. A public release should wait until performance has been measured on the intended population.
+
+\textbf{Academic integrity.} All reported numbers come from stored evaluation files or recorded test outputs. Heuristic findings are labelled as author-conducted, and survey results are taken only from the exported Google Forms responses, analysed with the script in \texttt{evidence/user\_study/}.
+
+\section{Functional Test Cases}
+\label{app:tests}
+
+These cases were first executed on 30 September 2026 and re-run on 1 October 2026 after the human-reviewed model was deployed. The table shows the re-run (raw output in \texttt{evidence/}; the first run is kept alongside it with the suffix \texttt{\_20260930}).
+
+{\small
+\begin{longtable}{P{0.9cm}P{3.8cm}P{3.3cm}P{3.4cm}P{1.2cm}}
+\toprule
+\textbf{ID} & \textbf{Input} & \textbf{Expected} & \textbf{Actual} & \textbf{Result}\\
+\midrule\endhead
+TC01 & GET /api/health & 200, status ok & 200, status ok & Pass\\
+TC02 & ACNE04 face image, skin type oily & 200, concerns and recommendations & 200; 3 present, 2 absent; 6 categories $\times$ 5 & Pass$^\dagger$\\
+TC03 & FFHQ face, no skin type & 200, 5 concerns, recommendations & 200; fine lines present, 4 absent; 4 categories $\times$ 5 & Pass\\
+TC04 & PASCAL VOC boat photo & 200, rejected, retake message & 200, rejected, retake message & Pass\\
+TC05 & Text file (text/plain) & 400 ``File must be an image'' & 400 as expected & Pass\\
+TC06 & Corrupt bytes labelled image/jpeg & 422 & 422, message exposes Python object name & Pass*\\
+TC07 & 11\,MB file & 400 ``Image too large'' & 400 as expected & Pass\\
+TC08 & Missing image field & 422 & 422 field required & Pass\\
+TC09 & List products, page size 5 & 200, 5 products & 200, 5 products & Pass\\
+TC10 & Filter sunscreen + oily & 200, matching products & 200, SPF gel products & Pass\\
+TC11 & Search ``niacinamide'' & 200, relevant products & 200, niacinamide products & Pass\\
+TC12 & Unknown product ID & 404 & 404 ``Product not found'' & Pass\\
+TC13 & GET categories & 200, category list & 200, 11 categories & Pass\\
+TC14 & GET skin types & 200, 5 skin types & 200, with ingredients & Pass\\
+TC15 & Chat ``What helps with dark spots?'' & 200, grounded reply & No response within 240\,s (first run: grounded reply in 54.9\,s) & \textbf{Fail}\\
+TC16 & Chat with empty message & 422 & 422 string too short & Pass\\
+TC17 & Invalid skin type ``purple'' & 422 & 422 ``Unknown skin type'' & Pass\\
+TC18 & FFHQ face, skin type dry & Ranking favours dry-skin products & Ceramide moisturisers ranked top & Pass\\
+TC19 & Same face, skin type oily & Ranking favours oily-skin products & Oil-free moisturisers ranked top & Pass\\
+\bottomrule
+\end{longtable}
+}
+{\footnotesize *Passed with an observation recorded in Table~\ref{tab:funcsummary}. $^\dagger$In the first run a different ACNE04 image was wrongly rejected by the face gate; the gate is unchanged, so such false rejections still occur (Table~\ref{tab:gate}).}
+
+\section{Annotation Guide and Usability Study Protocol}
+\label{app:annotation}
+\label{app:usability}
+
+\subsection*{D.1 Annotation guide (summary)}
+
+Reviewers mark only what is visibly supported by the image. \emph{Unknown} is used whenever framing, lighting, resolution, makeup or occlusion prevents a judgement. Uncertainty is never converted to \emph{absent}. An image is marked unusable if any of the following applies:
+\begin{itemize}
+  \item it is not facial skin;
+  \item it is a collage or heavily edited;
+  \item it has a dominant watermark;
+  \item it is badly exposed.
+\end{itemize}
+
+\begin{tabularx}{\linewidth}{lYY}
+\toprule
+\textbf{Label} & \textbf{Present when} & \textbf{Not sufficient alone}\\
+\midrule
+Blemishes & Visible pimples, inflamed spots, blackheads or whiteheads & Scars or pigmentation without active blemishes\\
+Dark spots & Localised darker marks or visibly uneven pigmentation & Shadows, freckles alone, lighting gradients\\
+Redness & Redness distinguishable from normal tone & Warm lighting, blush, colour cast\\
+Visible pores & Clearly visible pores at usable resolution & Compression noise, extreme zoom texture\\
+Fine lines & Clearly visible fine lines or wrinkles & Folds caused by a single exaggerated expression\\
+\bottomrule
+\end{tabularx}
+
+\subsection*{D.2 Usability survey protocol}
+
+\textbf{Participants:} adults living in Nepal, recruited by convenience sampling from the author's contacts, with varied skin types. Participation was voluntary and anonymous.
+
+\textbf{Procedure} (about 20 minutes per participant):
+\begin{enumerate}
+  \item Participant opens the Google Form and gives consent on its first page.
+  \item Participant opens SkinCare AI (Expo build on the same network as the backend) and optionally sets a skin type.
+  \item Task 1: check one face photo. A sample photo is offered, so using their own image is optional.
+  \item Task 2: open the result and read what each concern means.
+  \item Task 3: find a recommended product and save it to the shelf.
+  \item Task 4: ask the assistant one question about the result.
+  \item Participant completes the rest of the form: task completion and ease, the ten SUS items, understanding and trust questions, and open comments.
+\end{enumerate}
+
+\textbf{Form sections} (created by \texttt{evidence/user\_study/create\_form.gs}):
+\begin{enumerate}[label=\arabic*.,itemsep=0pt]
+  \item Information and consent (required).
+  \item About you: age group, self-reported skin type, prior use of skincare apps, own or sample photo.
+  \item Tasks 1--4: completed (yes without help / yes with help / no) and ease (1--5).
+  \item System Usability Scale, ten items \citep{vlachogianni2022}.
+  \item Understanding and trust: meaning of ``uncertain'' (multiple choice), disclaimer noticed, results match what is visible, trust in recommendations, usefulness of ingredient reasons, intention to buy (1--5 each).
+  \item Open comments: what was liked, what was confusing.
+\end{enumerate}
+
+\textbf{Analysis:} the responses CSV is processed by \texttt{analyse\_sus.py}, which computes each participant's SUS score (odd items $r-1$, even items $5-r$, sum $\times 2.5$), the mean and standard deviation, task completion rates, mean ease ratings and answer counts.
+
+\textbf{Consent statement:} ``Taking part is voluntary and you may stop at any time without giving a reason. Any photo you use in the app is analysed in memory and is not stored. Your answers are anonymous and will be used only in the project report. The app gives cosmetic observations, not medical advice.''
+
+\textbf{SUS items} (rated 1 = strongly disagree to 5 = strongly agree; the form uses ``app'' in place of ``system''):
+\begin{enumerate}[label=\arabic*.,itemsep=0pt]
+  \item I think that I would like to use this system frequently.
+  \item I found the system unnecessarily complex.
+  \item I thought the system was easy to use.
+  \item I think that I would need the support of a technical person to be able to use this system.
+  \item I found the various functions in this system were well integrated.
+  \item I thought there was too much inconsistency in this system.
+  \item I would imagine that most people would learn to use this system very quickly.
+  \item I found the system very cumbersome to use.
+  \item I felt very confident using the system.
+  \item I needed to learn a lot of things before I could get going with this system.
+\end{enumerate}
+
+\clearpage
+\section{Key Code Excerpts}
+\label{app:code}
+
+\Needspace{9\baselineskip}\textbf{Weighted masked multi-label loss} (\texttt{src/model/concern\_model.py}). Unknown labels (-1) are excluded from the loss:
+\begin{lstlisting}[language=Python]
+def weighted_masked_bce(labels, predictions, weights):
+    """Weighted BCE averaged over known labels; -1 labels are ignored."""
+    labels = tf.cast(labels, tf.float32)
+    weights = tf.cast(weights, tf.float32) * tf.cast(labels >= 0, tf.float32)
+    safe_labels = tf.maximum(labels, 0.0)
+    loss = tf.keras.backend.binary_crossentropy(safe_labels, predictions)
+    return tf.math.divide_no_nan(tf.reduce_sum(loss * weights), tf.reduce_sum(weights))
+\end{lstlisting}
+
+\Needspace{9\baselineskip}\textbf{Uncertainty band} (\texttt{src/inference/predict.py}):
+\begin{lstlisting}[language=Python]
+if abs(score - threshold) <= self.uncertainty_margin:   # 0.05
+    status = "uncertain"
+else:
+    status = "present" if score > threshold else "absent"
+\end{lstlisting}
+
+\Needspace{9\baselineskip}\textbf{Language-model guardrail} (\texttt{src/slm/recommender.py}). Only candidate products survive:
+\begin{lstlisting}[language=Python]
+allowed = {str(c["product_id"]): c for c in candidates}
+for item in data.get("chosen", [])[:max_total]:
+    candidate = allowed.get(str(item.get("product_id")))
+    if candidate is None or candidate["product_id"] in seen:
+        continue
+\end{lstlisting}

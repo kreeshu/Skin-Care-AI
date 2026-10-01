@@ -6,6 +6,8 @@ import { theme } from "../../constants/theme";
 interface ConfidenceBarProps {
   label: string;
   confidence: number;
+  /** Draws a tick where the score becomes "present". */
+  threshold?: number;
   color?: string;
 }
 
@@ -13,6 +15,7 @@ interface ConfidenceBarProps {
 export function ConfidenceBar({
   label,
   confidence,
+  threshold,
   color = colors.dispensary,
 }: ConfidenceBarProps) {
   const safeConfidence = Number.isFinite(confidence) ? Math.min(1, Math.max(0, confidence)) : 0;
@@ -26,6 +29,9 @@ export function ConfidenceBar({
       </View>
       <View style={styles.track}>
         <View style={[styles.fill, { width: `${percentage}%`, backgroundColor: color }]} />
+        {threshold !== undefined && Number.isFinite(threshold) ? (
+          <View style={[styles.tick, { left: `${Math.round(Math.min(1, Math.max(0, threshold)) * 100)}%` }]} />
+        ) : null}
       </View>
     </View>
   );
@@ -62,5 +68,13 @@ const styles = StyleSheet.create({
   fill: {
     height: "100%",
     borderRadius: 999,
+  },
+  tick: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    width: 2,
+    marginLeft: -1,
+    backgroundColor: colors.textPrimary,
   },
 });

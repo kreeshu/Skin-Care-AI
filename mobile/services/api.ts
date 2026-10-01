@@ -82,7 +82,7 @@ class ApiClient {
     return response.json();
   }
 
-  async analyzeImage(imageUri: string, useSlm: boolean = false, fileInfo?: { fileSize?: number; mimeType?: string }, skinType?: string | null) {
+  async analyzeImage(imageUri: string, fileInfo?: { fileSize?: number; mimeType?: string }, skinType?: string | null) {
     const url = this.toUrl("/api/analyze");
     if (fileInfo?.fileSize && fileInfo.fileSize > 10 * 1024 * 1024) {
       throw new ApiError({
@@ -133,11 +133,10 @@ class ApiClient {
       const formData = new FormData();
       const blobRes = await fetch(imageUri);
       formData.append("image", await blobRes.blob(), filename);
-      formData.append("use_slm", String(useSlm));
       if (skinType) formData.append("skin_type", skinType);
 
       const controller = new AbortController();
-      // Image analysis (esp. with SLM) can take a while — own 120s timeout.
+      // Image analysis can take a while — own 120s timeout.
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
       let response: Response;
@@ -184,7 +183,7 @@ class ApiClient {
     // Native: RN's fetch can't stream Expo cache files (rejects with a
     // network error while the backend stays silent). Upload natively.
     const controller = new AbortController();
-    // Image analysis (esp. with SLM) can take a while — own 120s timeout.
+    // Image analysis can take a while — own 120s timeout.
     const timeoutId = setTimeout(() => controller.abort(), 120000);
     let result: UploadResult;
     try {
@@ -192,7 +191,7 @@ class ApiClient {
         uploadType: UploadType.MULTIPART,
         fieldName: "image",
         mimeType: type,
-        parameters: { use_slm: String(useSlm), ...(skinType ? { skin_type: skinType } : {}) },
+        parameters: skinType ? { skin_type: skinType } : {},
         signal: controller.signal,
       });
     } catch (error: any) {
@@ -268,24 +267,8 @@ class ApiClient {
     return this.request(`/api/products/${encodeURIComponent(productId)}`);
   }
 
-  async getAnalysis(analysisId: string): Promise<any> {
-    return this.request(`/api/analysis/${encodeURIComponent(analysisId)}`);
-  }
-
   async getCategories(): Promise<{ categories: string[] }> {
     return this.request("/api/products/categories");
-  }
-
-  async getConditions(): Promise<{ conditions: any[] }> {
-    return this.request("/api/conditions");
-  }
-
-  async getCondition(name: string): Promise<any> {
-    return this.request(`/api/conditions/${encodeURIComponent(name)}`);
-  }
-
-  async getSkinTypes(): Promise<{ skin_types: any[] }> {
-    return this.request("/api/conditions/skin-types");
   }
 
   async sendChatMessage(message: string, history: { role: string; content: string }[] = [], context?: {

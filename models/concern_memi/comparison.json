@@ -1,0 +1,70 @@
+{
+  "baseline_weights": "models/concern_human_reviewed/skin_concern_pilot.weights.h5",
+  "candidate_weights": "models/concern_memi/skin_concern_pilot.weights.h5",
+  "candidate_summary": {
+    "macro_accuracy": 0.641369350273413,
+    "macro_balanced_accuracy": 0.6615865521204036,
+    "macro_precision": 0.8838408093561977,
+    "macro_recall": 0.6094511388239267,
+    "macro_f1": 0.7005956104251329,
+    "macro_pr_auc": 0.9082522543066862,
+    "macro_roc_auc": 0.7497604148488792,
+    "known_label_decisions": 582,
+    "pooled_label_accuracy": 0.697594501718213
+  },
+  "candidate_per_label_accuracy": {
+    "blemishes": 0.8811881188118812,
+    "dark_spots": 0.39080459770114945,
+    "redness": 0.6095238095238096,
+    "visible_pores": 0.509090909090909,
+    "fine_lines": 0.8162393162393162
+  },
+  "data_change": "manifests_human_reviewed + 125 MEMI-DS melasma photos (62 people) as dark_spots-only positives, training split only",
+  "seed_runs": {
+    "human_reviewed_recipe": {
+      "seed42_original": {
+        "macro_accuracy": 0.7223,
+        "macro_balanced_accuracy": 0.67,
+        "macro_roc_auc": 0.7338
+      },
+      "seed42_rerun": {
+        "macro_accuracy": 0.789,
+        "macro_balanced_accuracy": 0.6965,
+        "macro_roc_auc": 0.7614
+      },
+      "seed7": {
+        "macro_accuracy": 0.7203,
+        "macro_balanced_accuracy": 0.6983,
+        "macro_roc_auc": 0.7439
+      }
+    },
+    "memi_recipe": {
+      "seed42": {
+        "macro_accuracy": 0.6414,
+        "macro_balanced_accuracy": 0.6616,
+        "macro_roc_auc": 0.7498
+      },
+      "seed7": {
+        "macro_accuracy": 0.7179,
+        "macro_balanced_accuracy": 0.7244,
+        "macro_roc_auc": 0.7597
+      }
+    }
+  },
+  "seed_means": {
+    "human_reviewed_recipe": {
+      "macro_accuracy": 0.7439,
+      "macro_balanced_accuracy": 0.6883,
+      "macro_roc_auc": 0.7464
+    },
+    "memi_recipe": {
+      "macro_accuracy": 0.6796,
+      "macro_balanced_accuracy": 0.693,
+      "macro_roc_auc": 0.7548
+    }
+  },
+  "noise_note": "tensorflow-metal training is not reproducible: the same recipe and seed scored 72.2% and 78.9% macro accuracy. Compare means, not single runs.",
+  "conclusion": "Inconclusive and not an improvement: mean macro accuracy fell (74.4% -> 68.0%) while balanced accuracy and ROC-AUC were within noise. Dark-spot ROC-AUC stayed near chance (0.58 -> 0.57).",
+  "heldout_manifests_unchanged": true,
+  "candidate_deployed": false
+}

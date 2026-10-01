@@ -1,0 +1,11 @@
+{
+  "annotation_source": "data/vision/annotations/additional_training_labels.csv",
+  "review_queue": "data/vision/manifests_v2/additional_training_review.csv",
+  "filled_unknown_training_labels": 868,
+  "added_training_images": 0,
+  "removed_human_rejected_training_images": 5,
+  "skipped_unusable_unknown_or_duplicate": 6,
+  "retained_original_known_labels_despite_review_disagreement": 7,
+  "unreviewed_images": 0,
+  "heldout_files_copied_unchanged": true
+}

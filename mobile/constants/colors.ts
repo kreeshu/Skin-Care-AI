@@ -35,28 +35,3 @@ export const colors = {
   textSecondary: "#7A4A5E",
   textTertiary: "#B08A99",
 };
-
-/**
- * Per-condition accents. Keyed by canonical display name; use
- * `conditionColor(name)` for case-insensitive lookup so backend
- * payload casing cannot silently break the badge color.
- */
-export const conditionColors: Record<string, string> = {
-  Acne: "#C2185B",
-  Carcinoma: "#8E2A2A",
-  "Dark Spot": "#8A5A3B",
-  Eczema: "#C2703D",
-  Keratosis: "#7A5A8A",
-  Milia: "#6B8CA8",
-  Rosacea: "#E0447C",
-};
-
-const CONDITION_COLOR_INDEX: Record<string, string> = Object.fromEntries(
-  Object.entries(conditionColors).map(([k, v]) => [k.toLowerCase(), v]),
-);
-
-/** Case-insensitive lookup. Falls back to `textSecondary` if unknown. */
-export function conditionColor(name: string | null | undefined): string {
-  if (!name) return colors.textSecondary;
-  return CONDITION_COLOR_INDEX[name.toLowerCase().trim()] ?? colors.textSecondary;
-}

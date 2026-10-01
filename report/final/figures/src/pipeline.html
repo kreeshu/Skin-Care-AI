@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Data and Model Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<style>{{css}}
+.lane { display: flex; gap: 56px; align-items: stretch; }
+.lane + .lane { margin-top: 42px; }
+.logo svg.wide, .ic svg.wide { width: 46px; }
+.src { display: grid; grid-template-columns: auto 1fr auto; gap: 5px 9px; align-items: center; font-size: 17px; }
+.src .nm { font-weight: 700; color: var(--ink); }
+.src .ic { width: 22px; height: 22px; display: grid; place-items: center; }
+.src .ic svg { width: 20px; height: 20px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cc); margin: 0 4px; }
+.stat { flex: 1; }
+.bar { display: flex; height: 30px; border-radius: 7px; overflow: hidden; font-size: 16px; font-weight: 700; color: #fff; }
+.bar > div { display: grid; place-items: center; }
+.blk { background: #fff; border: 2px solid var(--bc); border-radius: 9px; padding: 6px 9px; text-align: center; font-size: 16.5px; font-weight: 600; line-height: 1.2; }
+.blk b { display: block; font-size: 17.5px; color: color-mix(in srgb, var(--bc) 85%, black); }
+.flow { display: flex; align-items: center; gap: 6px; }
+.roc { display: grid; grid-template-columns: 118px 1fr 52px; gap: 2px 8px; align-items: center; font-size: 16.5px; }
+.roc .t { height: 18px; background: #f1f5f9; border-radius: 4px; position: relative; }
+.roc .t > i { position: absolute; inset: 0 auto 0 0; background: var(--c); border-radius: 4px; }
+.roc .t > s { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink-3); left: 50%; }
+.status { display: inline-flex; align-items: center; gap: 5px; font-size: 16.5px; font-weight: 700; }
+.status::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--sc); }
+</style>
+</head>
+<body>
+<div class="canvas">
+<svg class="wires"></svg>
+
+<!-- Lane 1: sources -> audit -->
+<div class="lane">
+  <div class="card" id="s1" style="--c:#20BEFF; flex:1.18">
+    <div class="hd"><div class="num">1</div><div><div class="title">Data sources</div><div class="sub">26,000+ candidate images · 11 folders</div></div>
+      <div class="logos"><span class="logo" style="padding-left:10px"><span class="dot" style="--cc:#20BEFF;margin:0"></span>Kaggle</span><span class="logo">{{google}}SCIN</span></div></div>
+    <div class="src">
+      <span class="ic"><span class="dot" style="--cc:#20BEFF"></span></span><span><span class="nm">facial_skin_concerns</span> <span class="small">5 concerns, weak</span></span><span class="chip" style="--cc:#d97706">Apache-2.0 claimed</span>
+      <span class="ic"><span class="dot" style="--cc:#20BEFF"></span></span><span><span class="nm">existing_conditions</span> <span class="small">3 concerns, weak</span></span><span class="chip" style="--cc:#d97706">licence unknown</span>
+      <span class="ic"><span class="dot" style="--cc:#20BEFF"></span></span><span><span class="nm">skin_issues_v2</span> <span class="small">review / external eval</span></span><span class="chip" style="--cc:#64748b">pending licence</span>
+      <span class="ic"><span class="dot" style="--cc:#7c3aed"></span></span><span><span class="nm">ACNE04</span> <span class="small">blemish ±</span></span><span class="chip" style="--cc:#16a34a">academic</span>
+      <span class="ic"><span class="dot" style="--cc:#7c3aed"></span></span><span><span class="nm">FFHQ-Wrinkle</span> <span class="small">1,000 masks · fine lines</span></span><span class="chip" style="--cc:#16a34a">CC BY-NC-SA 4.0</span>
+      <span class="ic"><span class="dot" style="--cc:#7c3aed"></span></span><span><span class="nm">MEMI-DS</span> <span class="small">+120 dark-spot positives (rejected)</span></span><span class="chip" style="--cc:#16a34a">CC BY 4.0</span>
+      <span class="ic"><span class="dot" style="--cc:#64748b"></span></span><span><span class="nm">PASCAL VOC 2007</span> <span class="small">300 non-face OOD</span></span><span class="chip" style="--cc:#2563eb">evaluation only</span>
+      <span class="ic">{{google}}</span><span><span class="nm">SCIN</span> <span class="small">review pool · 0 labels created</span></span><span class="chip" style="--cc:#64748b">quarantined</span>
+      <span class="ic"><span class="dot" style="--cc:#dc2626"></span></span><span><span class="nm">4 folders</span> <span class="small">types, clean, rajesh</span></span><span class="chip" style="--cc:#dc2626">rejected</span>
+    </div>
+  </div>
+
+  <div class="card col" id="s2" style="--c:#5C3EE8; flex:1">
+    <div class="hd"><div class="num">2</div><div><div class="title">Audit &amp; curation</div><div class="sub">scripts/audit_vision_dataset.py</div></div>
+      <div class="logos"><span class="logo">{{python}}Python</span><span class="logo">{{opencv}}OpenCV</span></div></div>
+    <div class="row">
+      <div class="box stat"><div class="k">SHA-256 exact</div><div class="big">7,200+</div><div class="small">images in duplicate groups</div></div>
+      <div class="box stat"><div class="k">dHash · Hamming ≤ 3</div><div class="big">14,900+</div><div class="small">near-duplicate group members</div></div>
+    </div>
+    <div class="row">
+      <div class="box stat"><div class="k">Pre-augmented</div><div class="big">2,600+</div><div class="small">flagged copies</div></div>
+      <div class="box stat"><div class="k">YuNet face gate ≥ 0.9</div><div class="big">3,900+</div><div class="small">pass strict full-face check</div></div>
+    </div>
+    <div class="box"><div class="k" style="margin-bottom:4px">Source registry decision</div>
+      <span class="chip" style="--cc:#16a34a">accepted_academic</span> <span class="chip" style="--cc:#d97706">partial_review</span> <span class="chip" style="--cc:#64748b">pending_license</span> <span class="chip" style="--cc:#2563eb">evaluation_only</span> <span class="chip" style="--cc:#dc2626">rejected</span>
+    </div>
+  </div>
+</div>
+
+<!-- Lane 2: splits <- annotation -->
+<div class="lane">
+  <div class="card col" id="s4" style="--c:#150458; flex:1">
+    <div class="hd"><div class="num">4</div><div><div class="title">Splits &amp; manifests</div><div class="sub">finalize + validate_vision_manifests.py</div></div>
+      <div class="logos"><span class="logo">{{pandas}}pandas</span></div></div>
+    <div class="box small">Group-aware split ≈ <b>55 / 20 / 25</b> — duplicate groups never cross splits. Gold: <b>600+ / 200+ / 250+</b>.</div>
+    <div class="box small"><b>+ FFHQ-Wrinkle</b> (fine lines only): wrinkle-pixel share in thirds → <span class="chip" style="--cc:#64748b">absent</span> <span class="chip" style="--cc:#d97706">unknown</span> <span class="chip" style="--cc:#16a34a">present</span></div>
+    <div class="box">
+      <div class="row" style="justify-content:space-between;margin-bottom:5px"><span class="k">manifests_human_reviewed · 2,000+ images</span><span class="mono" style="color:var(--ink-3)">validation_report.json ✓</span></div>
+      <div class="bar"><div style="flex:1217;background:#150458">train 1,200+</div><div style="flex:404;background:#5b4bb5">val 400+</div><div style="flex:479;background:#9b8fe0">test 470+</div></div>
+    </div>
+    <div class="box small">Val &amp; test files kept <b>byte-identical</b> across every retrain, so candidate models are compared fairly.</div>
+  </div>
+
+  <div class="card col" id="s3" style="--c:#FF4B4B; flex:1.12">
+    <div class="hd"><div class="num">3</div><div><div class="title">Human annotation</div><div class="sub">app/annotate_vision_dataset.py</div></div>
+      <div class="logos"><span class="logo">{{streamlit}}Streamlit</span></div></div>
+    <div class="row">
+      <div class="box stat"><div class="k">Balanced review queue</div><div class="big">1,400+ <span style="font-size:22px;color:var(--ink-3)">→</span> 1,100+</div><div class="small">images accepted as <b>gold</b></div></div>
+      <div class="box stat"><div class="k">Round 2 · 200 train images</div><div class="big">868</div><div class="small">unknowns filled · 5 rejected</div></div>
+    </div>
+    <div class="box">
+      <div class="k" style="margin-bottom:5px">Per-image label schema</div>
+      <div class="row" style="flex-wrap:wrap;gap:5px"><span class="chip">blemishes</span><span class="chip">dark_spots</span><span class="chip">redness</span><span class="chip">visible_pores</span><span class="chip">fine_lines</span></div>
+      <div class="small" style="margin-top:6px">each: <b>present 1</b> · <b>absent 0</b> · <b>unknown −1</b> &nbsp;</div><div class="small" style="margin-top:3px">Source label <b>hidden</b> during review to avoid anchoring</div>
+    </div>
+    <div class="box small">Outputs <span class="mono">gold_labels.csv</span> + <span class="mono">provenance.json</span> (SHA-256 of every input file)</div>
+      </div>
+</div>
+
+<!-- Lane 3: train -->
+<div class="lane">
+  <div class="card col" id="s5" style="--c:#FF6F00; flex:1">
+    <div class="hd"><div class="num">5</div><div><div class="title">Preprocess &amp; train</div><div class="sub">src/model/train_concern.py · batch 32 · seed 42</div></div>
+      <div class="logos"><span class="logo">{{tensorflow}}TensorFlow</span><span class="logo">{{keras}}Keras</span></div></div>
+    <div class="flow">
+      <div class="blk" style="--bc:#64748b"><b>RGB load</b>PIL</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#64748b"><b>Resize</b>224 × 224</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#64748b"><b>preprocess_input</b>EfficientNet</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#64748b"><b>Augment</b>flip · rot 0.03 · contrast 0.1</div>
+      <span class="arrow-txt" style="font-size:24px">⇒</span>
+      <div class="blk" style="--bc:#FF6F00;flex:1.4"><b>EfficientNetB0</b>ImageNet · no top</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#D00000"><b>GAP</b>pool</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#D00000"><b>Dropout</b>0.3</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#D00000"><b>Dense 128</b>ReLU</div><span class="arrow-txt">→</span>
+      <div class="blk" style="--bc:#D00000"><b>Dense 5</b>sigmoid</div>
+    </div>
+    <div class="row">
+      <div class="box grow"><div class="k">Phase A</div><b>Backbone frozen</b><div class="small">Adam 1e-3 · ≤ 12 epochs</div></div>
+      <div class="box grow"><div class="k">Phase B</div><b>Top 30 unfrozen</b><div class="small">Adam 1e-5 · ≤ 7 epochs</div></div>
+      <div class="box grow"><div class="k">Loss</div><b>Masked BCE</b><div class="small">unknown −1 → weight 0</div></div>
+      <div class="box grow"><div class="k">Checkpoint</div><b>Val macro ROC-AUC</b><div class="small">early stop · LR on plateau</div></div>
+      <div class="box grow"><div class="k">Learning curve</div><b>25 → 100 % gold</b><div class="small">150 → 600+ imgs · 2 seeds</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Lane 4: evaluate -> deploy -->
+<div class="lane">
+  <div class="card col" id="s6" style="--c:#F7931E; flex:1">
+    <div class="hd"><div class="num">6</div><div><div class="title">Evaluate</div><div class="sub">src/model/evaluate_concern.py</div></div>
+      <div class="logos"><span class="logo">{{scikitlearn}}scikit-learn</span></div></div>
+    <div class="box small">Per-concern threshold chosen on <b>validation</b> (Youden J); test set used <b>only for reporting</b>.</div>
+    <div class="box">
+      <div class="row" style="justify-content:space-between;margin-bottom:5px"><span class="k">Test ROC-AUC per concern</span><span class="small">| chance = 0.5</span></div>
+      <div class="roc">
+        <span>Blemishes</span><div class="t"><i style="width:86.3%"></i><s></s></div><b>0.86</b>
+        <span>Dark spots</span><div class="t"><i style="width:58.0%"></i><s></s></div><b>0.58</b>
+        <span>Redness</span><div class="t"><i style="width:70.9%"></i><s></s></div><b>0.71</b>
+        <span>Visible pores</span><div class="t"><i style="width:59.7%"></i><s></s></div><b>0.60</b>
+        <span>Fine lines</span><div class="t"><i style="width:92.0%"></i><s></s></div><b>0.92</b>
+      </div>
+    </div>
+    <div class="box"><div class="k" style="margin-bottom:3px">Test macro · 582 label decisions</div><div class="row" style="justify-content:space-between">
+      <div><div class="big">0.79</div><div class="small">F1</div></div>
+      <div><div class="big">0.73</div><div class="small">ROC-AUC</div></div>
+      <div><div class="big">0.90</div><div class="small">PR-AUC</div></div>
+      <div><div class="big">76.3%</div><div class="small">pooled acc.</div></div>
+    </div></div>
+  </div>
+
+  <div class="card col" id="s7" style="--c:#009688; flex:1">
+    <div class="hd"><div class="num">7</div><div><div class="title">Deploy</div><div class="sub">models/concern_human_reviewed</div></div>
+      <div class="logos"><span class="logo">{{fastapi}}FastAPI</span><span class="logo">{{onnx}}ONNX</span></div></div>
+    <div class="box">
+      <div class="k" style="margin-bottom:4px">Shipped artefacts</div>
+      <div class="mono">skin_concern_pilot.weights.h5</div>
+      <div class="mono">skin_concern_pilot.json <span class="small">labels · 224 px</span></div>
+      <div class="mono">evaluation.json <span class="small">per-concern thresholds</span></div>
+      <div class="mono">face_detection_yunet_2023mar.onnx</div>
+    </div>
+    <div class="box">
+      <div class="k" style="margin-bottom:5px">SkinAnalyzer at runtime</div>
+      <div class="small">face gate → shared preprocessing → 5 scores vs threshold</div>
+      <div class="row" style="gap:16px;margin-top:6px">
+        <span class="status" style="--sc:var(--present)">present</span>
+        <span class="status" style="--sc:var(--uncertain)">uncertain ±0.05</span>
+        <span class="status" style="--sc:var(--absent)">absent</span>
+      </div>
+    </div>
+    <div class="box small">Response <span class="mono">schema_version 2</span> + cosmetic-only disclaimer → recommendation engine</div>
+  </div>
+</div>
+</div>
+
+<script>{{js}}
+wire('s1','s2',{from:'right',to:'left',at:0.3,at2:0.3, color:'#334155', label:'audit'});
+wire('s2','s3',{from:'bottom',to:'top',at:0.5,at2:0.53, color:'#334155', label:'review queue'});
+wire('s3','s4',{from:'left',to:'right', color:'#334155', label:'gold labels'});
+wire('s4','s5',{from:'bottom',to:'top',at:0.5,at2:0.25, color:'#334155', label:'train / val'});
+wire('s5','s6',{from:'bottom',to:'top',at:0.25,at2:0.5, color:'#334155', label:'checkpoint'});
+wire('s6','s7',{from:'right',to:'left',at:0.3,at2:0.3, color:'#334155', label:'thresholds'});
+wire('s6','s5',{from:'top',to:'bottom',at:0.95,at2:0.75, color:'#e11d48', dash:'7 6', label:'↺ retrains compared: human-reviewed deployed · balanced, MEMI rejected', labelColor:'#e11d48', lx:850});
+</script>
+</body>
+</html>

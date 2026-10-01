@@ -1,0 +1,15 @@
+{
+  "source": "https://github.com/google-research-datasets/scin",
+  "license": "https://raw.githubusercontent.com/google-research-datasets/scin/main/LICENSE",
+  "eligible_cases": 72,
+  "attempted_cases": 72,
+  "outcomes": {
+    "not_one_detected_face": 70,
+    "duplicate_or_near_duplicate": 2
+  },
+  "new_download_bytes": 82132103,
+  "failures": [],
+  "cosmetic_labels_created": 0,
+  "training_manifests_modified": false,
+  "note": "Diagnoses are case-level differentials, not independent cosmetic labels. All concern labels remain unknown. Exact/dHash filtering is not proof of subject independence."
+}

@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import { getFavorites, toggleFavorite } from "../utils/storage";
 
 export function useFavorites() {
@@ -12,9 +13,12 @@ export function useFavorites() {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    loadFavorites();
-  }, [loadFavorites]);
+  // Tabs stay mounted; reload on focus so other screens' writes show up.
+  useFocusEffect(
+    useCallback(() => {
+      loadFavorites();
+    }, [loadFavorites])
+  );
 
   const toggle = useCallback(
     async (productId: string) => {

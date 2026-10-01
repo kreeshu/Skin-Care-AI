@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>System Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<style>{{css}}
+.layer + .layer { margin-top: 46px; }
+.layer > .hd .title::before { content: attr(data-l); color: color-mix(in srgb, var(--c) 70%, black); margin-right: 8px; }
+.tile { background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 7px 10px; }
+.tile .t { font-weight: 800; font-size: 19px; }
+.tile .p { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 15px; color: var(--ink-3); }
+.ep { display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid var(--line); border-radius: 9px; padding: 6px 9px; }
+.ep .m { font-size: 14.5px; font-weight: 800; border-radius: 5px; padding: 1px 6px; color: #fff; }
+.ep .m.post { background: #49cc90; } .ep .m.get { background: #61affe; }
+.ep .u { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 16px; font-weight: 500; }
+.ep .d { font-size: 15.5px; color: var(--ink-3); margin-left: auto; text-align: right; }
+.sub-card { --c: #999; flex: 1; min-width: 0; }
+.steps { display: flex; flex-direction: column; gap: 6px; }
+.st { display: flex; gap: 8px; align-items: flex-start; background: #fff; border: 1.5px solid var(--line); border-radius: 9px; padding: 6px 9px; font-size: 17px; }
+.st .i { flex: none; width: 22px; height: 22px; border-radius: 6px; background: var(--c); color: #fff; font-size: 14px; font-weight: 800; display: grid; place-items: center; margin-top: 1px; }
+.st .i.dark { color: var(--ink); }
+.w { display: grid; grid-template-columns: 1fr 120px; gap: 3px 8px; font-size: 16px; align-items: center; }
+.w .b { height: 15px; border-radius: 4px; background: var(--c); }
+.asset { flex: 1; min-width: 0; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 7px 10px; display: flex; gap: 9px; align-items: flex-start; }
+.asset .g { flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, var(--gc) 14%, white); }
+.asset .g svg { width: 22px; height: 22px; }
+.asset .t { font-weight: 800; font-size: 17.5px; }
+.legend { display: flex; gap: 22px; align-items: center; justify-content: center; margin-top: 14px; font-size: 16.5px; color: var(--ink-2); }
+.legend .sw { display: inline-block; width: 34px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 6px; }
+.legend .stepdot { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--path); color: #fff; font-size: 13px; font-weight: 800; margin-right: 6px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="canvas">
+<svg class="wires"></svg>
+
+<!-- LAYER 1: client -->
+<div class="card layer" id="L1" style="--c:#61DAFB">
+  <div class="hd"><div class="num dark">1</div><div><div class="title" data-l="Layer 1">Mobile client</div><div class="sub">Expo SDK 57 · React Native 0.86 · React 19 · TypeScript · iOS / Android / web</div></div>
+    <div class="logos"><span class="logo">{{expo}}Expo</span><span class="logo">{{react}}React Native</span><span class="logo">{{typescript}}TypeScript</span></div></div>
+  <div class="row">
+    <div class="tile grow rel" id="scr-chat"><div class="step">1</div><div class="t">Chat</div><div class="p">(tabs)/index.tsx</div><div class="small">camera / gallery photo + free-text questions</div></div>
+    <div class="tile grow rel" id="scr-res"><div class="step">6</div><div class="t">Your result</div><div class="p">analysis/[id].tsx</div><div class="small">5 concern scores, products, AM/PM routine</div></div>
+    <div class="tile grow"><div class="t">Shop</div><div class="p">catalog.tsx · product/[id]</div><div class="small">search, filter, sort, detail</div></div>
+    <div class="tile grow"><div class="t">Saved</div><div class="p">history.tsx</div><div class="small">past scans + favourites</div></div>
+    <div class="tile grow"><div class="t">Settings</div><div class="p">settings.tsx</div><div class="small">skin type, server health</div></div>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <div class="box" style="flex:1.1"><div class="k" style="margin-bottom:4px">Navigation &amp; device APIs</div>
+      <span class="chip">expo-router</span> <span class="chip">expo-image-picker</span> <span class="chip">expo-file-system</span> <span class="chip">reanimated</span>
+      <div class="small" style="margin-top:4px">hooks: useHistory · useFavorites · useSettings · useFetcher</div></div>
+    <div class="box" id="apits" style="flex:1"><div class="k" style="margin-bottom:4px">services/api.ts</div>
+      <div class="small">typed fetch client · <b>10 MB</b> upload cap · timeouts <b>15 s</b> / <b>120 s</b> (analyze, chat) · URL from <span class="mono">EXPO_PUBLIC_API_URL</span></div></div>
+    <div class="box" style="flex:1;--c:#475569"><div class="k" style="margin-bottom:4px">AsyncStorage · on device only</div>
+      <div class="mono">@skincare_history <span class="small">≤ 50 scans</span></div>
+      <div class="mono">@skincare_favorites · @skincare_settings</div></div>
+  </div>
+</div>
+
+<!-- LAYER 2: API -->
+<div class="card layer" id="L2" style="--c:#009688">
+  <div class="hd"><div class="num">2</div><div><div class="title" data-l="Layer 2">REST API</div><div class="sub">backend/main.py · FastAPI 0.128 on Uvicorn 0.0.0.0:8000 · Pydantic 2 models · CORS</div></div>
+    <div class="logos"><span class="logo">{{fastapi}}FastAPI</span><span class="logo">{{pydantic}}Pydantic</span></div></div>
+  <div class="row">
+    <div class="col" style="flex:1.35">
+      <div class="row">
+        <div class="ep grow rel" id="ep-an"><div class="step">2</div><span class="m post">POST</span><span class="u">/api/analyze</span><span class="d">image + skin_type</span></div>
+        <div class="ep grow" id="ep-ch"><span class="m post">POST</span><span class="u">/api/chat</span><span class="d">message + scan context</span></div>
+      </div>
+      <div class="row">
+        <div class="ep grow" id="ep-pr"><span class="m get">GET</span><span class="u">/api/products[/{id}]</span><span class="d">search · paginate</span></div>
+        <div class="ep grow"><span class="m get">GET</span><span class="u">/api/products/categories</span></div>
+      </div>
+      <div class="row">
+        <div class="ep grow"><span class="m get">GET</span><span class="u">/api/conditions/skin-types</span></div>
+        <div class="ep grow"><span class="m get">GET</span><span class="u">/api/health</span></div>
+      </div>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="box"><div class="k" style="margin-bottom:3px">Services (in-process cache)</div>
+        <div class="small"><b>get_analyzer</b> — cached SkinAnalyzer</div>
+        <div class="small"><b>product_service</b> — pandas DataFrame of catalogue</div>
+        <div class="small"><b>get_derma_chat</b> — lazy load, asyncio.Lock + to_thread</div></div>
+      <div class="box small">Structured errors <span class="chip" style="--cc:#dc2626">400</span> <span class="chip" style="--cc:#dc2626">404</span> <span class="chip" style="--cc:#dc2626">422</span> <span class="chip" style="--cc:#dc2626">500</span> · no server DB · photos never stored</div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYER 3: core -->
+<div class="card layer" id="L3" style="--c:#3776AB">
+  <div class="hd"><div class="num">3</div><div><div class="title" data-l="Layer 3">Inference &amp; recommendation core</div><div class="sub">src/ · Python 3 · loaded once per server process</div></div>
+    <div class="logos"><span class="logo">{{python}}Python</span><span class="logo">{{numpy}}NumPy</span><span class="logo">{{pandas}}pandas</span></div></div>
+  <div class="row" style="gap:40px">
+    <div class="card sub-card col" id="vis" style="--c:#FF6F00;flex:1.05">
+      <div class="hd"><div><div class="title" style="font-size:18.5px">Vision analysis</div><div class="sub">inference/predict.py</div></div>
+        <div class="logos"><span class="logo" style="padding:3px 6px">{{opencv}}</span><span class="logo" style="padding:3px 6px">{{tensorflow}}</span><span class="logo" style="padding:3px 6px">{{keras}}</span></div></div>
+      <div class="steps">
+        <div class="st rel" id="v-gate"><div class="step">3</div><span class="i" style="background:#5C3EE8">1</span><span><b>YuNet face gate</b> (OpenCV) · ≤ 320 px, score ≥ 0.9 → else <i>rejected</i></span></div>
+        <div class="st"><span class="i">2</span><span><b>Preprocess</b> · 224 × 224, EfficientNet input</span></div>
+        <div class="st rel" id="v-model"><div class="step">4</div><span class="i">3</span><span><b>EfficientNetB0</b> multi-label head → 5 sigmoid scores</span></div>
+        <div class="st"><span class="i">4</span><span><b>Per-concern threshold</b> → <span style="color:var(--present);font-weight:700">present</span> / <span style="color:var(--uncertain);font-weight:700">uncertain</span> / <span style="color:var(--absent);font-weight:700">absent</span></span></div>
+      </div>
+      <div class="box small">Under 64 px or no face → <b>rejected</b> with retake advice. Output <span class="mono">schema_version 2</span> + cosmetic-only disclaimer.</div>
+    </div>
+    <div class="card sub-card col rel" id="rec" style="--c:#2563eb;flex:1;overflow:visible">
+      <div class="step" style="top:-11px;right:-11px">5</div>
+      <div class="hd" style="border-radius:12px 12px 0 0"><div><div class="title" style="font-size:18.5px">Recommendation engine</div><div class="sub">recommendation/ · rule-based</div></div></div>
+      <div class="st"><span>Input: <b>present</b> concerns + optional skin type. <b>ConditionRules</b> → ingredients, categories, routine</span></div>
+      <div class="box"><div class="k" style="margin-bottom:4px">Product score weights</div>
+        <div class="w">
+          <div class="b" style="width:100%"></div><span>ingredient .40</span>
+          <div class="b" style="width:62.5%;opacity:.8"></div><span>rating .25</span>
+          <div class="b" style="width:50%;opacity:.65"></div><span>reviews .20</span>
+          <div class="b" style="width:25%;opacity:.5"></div><span>in stock .10</span>
+          <div class="b" style="width:12.5%;opacity:.4"></div><span>discount .05</span>
+        </div>
+        <div class="small" style="margin-top:4px">+ skin-type match <b>.25</b> when the user sets a skin type</div></div>
+      <div class="small"><b>Top 5 per category</b> + routine + disclaimer</div>
+    </div>
+    <div class="card sub-card col" id="chat" style="--c:#FFD21E;flex:1">
+      <div class="hd"><div><div class="title" style="font-size:18.5px">Derma chat assistant</div><div class="sub">slm/chat.py · engine.py</div></div>
+        <div class="logos"><span class="logo" style="padding:3px 6px">{{huggingface}}</span><span class="logo" style="padding:3px 6px">{{pytorch}}</span></div></div>
+      <div class="box"><div class="k">Local small language model</div><b>Qwen2.5-1.5B-Instruct</b><div class="small">fallback 0.5B · CPU bfloat16 · Transformers + PyTorch</div></div>
+      <div class="st"><span class="i dark">✓</span><span>Grounded on scan result + catalogue facts</span></div>
+      <div class="st"><span class="i dark">!</span><span>Medical red-flag check → refer to a professional</span></div>
+      <div class="st"><span class="i dark">↺</span><span>Rule-based reply if the model is unavailable</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYER 4: data -->
+<div class="card layer" id="L4" style="--c:#475569">
+  <div class="hd"><div class="num">4</div><div><div class="title" data-l="Layer 4">Data assets</div><div class="sub">read-only at runtime · files in repo / HF Hub cache</div></div></div>
+  <div class="row">
+    <div class="asset" id="a-model" style="--gc:#FF6F00"><div class="g">{{tensorflow}}</div><div><div class="t">concern_human_reviewed model</div><div class="small"><span class="mono">.weights.h5</span> + metadata <span class="mono">.json</span> + <span class="mono">evaluation.json</span> thresholds</div></div></div>
+    <div class="asset" id="a-yunet" style="--gc:#005CED"><div class="g">{{onnx}}</div><div><div class="t">YuNet detector</div><div class="small">ONNX model, 2023mar · face check</div></div></div>
+    <div class="asset" id="a-csv" style="--gc:#150458"><div class="g">{{pandas}}</div><div><div class="t">Product catalogue</div><div class="small"><span class="mono" style="word-break:break-all">unified_products.csv</span> · 1,500+ products</div></div></div>
+    <div class="asset" id="a-map" style="--gc:#2563eb"><div class="g" style="font-weight:800;color:#2563eb">{ }</div><div><div class="t">Mappings</div><div class="small">4 JSON keyword / ingredient maps</div></div></div>
+    <div class="asset" id="a-qwen" style="--gc:#FFD21E"><div class="g">{{huggingface}}</div><div><div class="t">Qwen weights</div><div class="small">Hugging Face Hub cache</div></div></div>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <div class="box small grow" style="border-style:dashed"><b>Built offline:</b> raw catalogues (Jeevee 1,000+ · Oriflame 90+ · ForEveryNG 700+) → merge, de-duplicate, rapidfuzz keyword enrichment → <span class="mono">unified_products.csv</span></div>
+    <div class="box small grow" style="border-style:dashed"><b>Built offline:</b> vision data &amp; training pipeline (previous figure) → <span class="mono">models/concern_human_reviewed</span></div>
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="stepdot">1</span>–<span class="stepdot" style="margin-left:6px">6</span>photo analysis request path</span>
+  <span><span class="sw" style="border-color:#e11d48"></span>analyze flow</span>
+  <span><span class="sw" style="border-color:#0f766e"></span>chat / catalogue calls</span>
+  <span><span class="sw" style="border-color:#94a3b8;border-top-style:dashed"></span>loaded at start-up</span>
+</div>
+</div>
+
+<script>{{js}}
+const R = '#e11d48', T = '#0f766e', G = '#94a3b8';
+wire('L1','L2',{from:'bottom',to:'top',x:0.12,color:R,label:'photo'});
+wire('L2','L1',{from:'top',to:'bottom',x:0.25,color:R,label:'JSON result'});
+wire('L1','L2',{from:'bottom',to:'top',x:0.5,color:T,both:true,label:'HTTP · JSON / multipart · LAN Wi-Fi · port 8000'});
+wire('L2','L3',{from:'bottom',to:'top',x:0.12,color:R,label:'image bytes'});
+wire('L3','L2',{from:'top',to:'bottom',x:0.25,color:R,label:'scores + products'});
+wire('L2','L3',{from:'bottom',to:'top',x:0.84,color:T,label:'chat turn'});
+wire('vis','rec',{from:'right',to:'left',at:0.5,at2:0.5,color:R,both:true});
+wire('L4','L3',{from:'top',to:'bottom',x:0.12,color:G,dash:'7 6',width:2.5});
+wire('L4','L3',{from:'top',to:'bottom',x:0.27,color:G,dash:'7 6',width:2.5});
+wire('L4','L3',{from:'top',to:'bottom',x:0.48,color:G,dash:'7 6',width:2.5});
+wire('L4','L3',{from:'top',to:'bottom',x:0.62,color:G,dash:'7 6',width:2.5});
+wire('L4','L3',{from:'top',to:'bottom',x:0.86,color:G,dash:'7 6',width:2.5});
+</script>
+</body>
+</html>

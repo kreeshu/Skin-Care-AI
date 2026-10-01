@@ -1,0 +1,202 @@
+{
+  "baseline_weights": "models/concern_v2/skin_concern_pilot.weights.h5",
+  "candidate_weights": "models/concern_human_reviewed/skin_concern_pilot.weights.h5",
+  "baseline_summary": {
+    "macro_accuracy": 0.6990322662429183,
+    "macro_balanced_accuracy": 0.6348685716274296,
+    "macro_precision": 0.8695320255822832,
+    "macro_recall": 0.7276553079526851,
+    "macro_f1": 0.7794606203286275,
+    "macro_pr_auc": 0.9030178213858753,
+    "macro_roc_auc": 0.7174312702833315,
+    "known_label_decisions": 582,
+    "pooled_label_accuracy": 0.7319587628865979
+  },
+  "candidate_summary": {
+    "macro_accuracy": 0.7222998260417175,
+    "macro_balanced_accuracy": 0.6699657046935513,
+    "macro_precision": 0.8854337347474603,
+    "macro_recall": 0.7240094782109342,
+    "macro_f1": 0.7894044218842587,
+    "macro_pr_auc": 0.9044251496684452,
+    "macro_roc_auc": 0.7337827163721639,
+    "known_label_decisions": 582,
+    "pooled_label_accuracy": 0.7628865979381443
+  },
+  "summary_changes": {
+    "pooled_label_accuracy": 0.030927835051546393,
+    "macro_f1": 0.009943801555631238,
+    "macro_balanced_accuracy": 0.03509713306612172,
+    "macro_roc_auc": 0.016351446088832322
+  },
+  "per_label": {
+    "blemishes": {
+      "accuracy": {
+        "baseline": 0.9405940594059405,
+        "candidate": 0.900990099009901
+      },
+      "balanced_accuracy": {
+        "baseline": 0.6095360824742269,
+        "candidate": 0.7087628865979381
+      },
+      "precision": {
+        "baseline": 0.9690721649484536,
+        "candidate": 0.978021978021978
+      },
+      "recall": {
+        "baseline": 0.9690721649484536,
+        "candidate": 0.9175257731958762
+      },
+      "f1": {
+        "baseline": 0.9690721649484536,
+        "candidate": 0.9468085106382979
+      },
+      "roc_auc": {
+        "baseline": 0.8530927835051547,
+        "candidate": 0.86340206185567
+      }
+    },
+    "dark_spots": {
+      "accuracy": {
+        "baseline": 0.6436781609195402,
+        "candidate": 0.5057471264367817
+      },
+      "balanced_accuracy": {
+        "baseline": 0.5660839160839161,
+        "candidate": 0.5339160839160839
+      },
+      "precision": {
+        "baseline": 0.7833333333333333,
+        "candidate": 0.775
+      },
+      "recall": {
+        "baseline": 0.7230769230769231,
+        "candidate": 0.47692307692307695
+      },
+      "f1": {
+        "baseline": 0.752,
+        "candidate": 0.5904761904761905
+      },
+      "roc_auc": {
+        "baseline": 0.5825174825174826,
+        "candidate": 0.5804195804195805
+      }
+    },
+    "redness": {
+      "accuracy": {
+        "baseline": 0.5523809523809524,
+        "candidate": 0.7714285714285715
+      },
+      "balanced_accuracy": {
+        "baseline": 0.643041237113402,
+        "candidate": 0.6469072164948453
+      },
+      "precision": {
+        "baseline": 0.9629629629629629,
+        "candidate": 0.9506172839506173
+      },
+      "recall": {
+        "baseline": 0.5360824742268041,
+        "candidate": 0.7938144329896907
+      },
+      "f1": {
+        "baseline": 0.6887417218543046,
+        "candidate": 0.8651685393258427
+      },
+      "roc_auc": {
+        "baseline": 0.7087628865979382,
+        "candidate": 0.7087628865979382
+      }
+    },
+    "visible_pores": {
+      "accuracy": {
+        "baseline": 0.5636363636363636,
+        "candidate": 0.6
+      },
+      "balanced_accuracy": {
+        "baseline": 0.5603864734299517,
+        "candidate": 0.6268115942028986
+      },
+      "precision": {
+        "baseline": 0.8666666666666667,
+        "candidate": 0.9
+      },
+      "recall": {
+        "baseline": 0.5652173913043478,
+        "candidate": 0.5869565217391305
+      },
+      "f1": {
+        "baseline": 0.6842105263157895,
+        "candidate": 0.7105263157894737
+      },
+      "roc_auc": {
+        "baseline": 0.5314009661835749,
+        "candidate": 0.5966183574879227
+      }
+    },
+    "fine_lines": {
+      "accuracy": {
+        "baseline": 0.7948717948717948,
+        "candidate": 0.8333333333333334
+      },
+      "balanced_accuracy": {
+        "baseline": 0.7952951490356517,
+        "candidate": 0.8334307422559907
+      },
+      "precision": {
+        "baseline": 0.765625,
+        "candidate": 0.8235294117647058
+      },
+      "recall": {
+        "baseline": 0.8448275862068966,
+        "candidate": 0.8448275862068966
+      },
+      "f1": {
+        "baseline": 0.8032786885245902,
+        "candidate": 0.8340425531914893
+      },
+      "roc_auc": {
+        "baseline": 0.9113822326125074,
+        "candidate": 0.9197106954997077
+      }
+    }
+  },
+  "checkpoint_selection": {
+    "monitor": "val_macro_roc_auc",
+    "selected": {
+      "checkpoint": "models/concern_human_reviewed/concern_phase_b.weights.h5",
+      "val_macro_pr_auc": 0.8789194393954611,
+      "val_macro_roc_auc": 0.7056868702730281
+    },
+    "candidates": [
+      {
+        "checkpoint": "models/concern_human_reviewed/initial.weights.h5",
+        "val_macro_pr_auc": 0.8769814532473481,
+        "val_macro_roc_auc": 0.6854925329983572
+      },
+      {
+        "checkpoint": "models/concern_human_reviewed/concern_phase_a.weights.h5",
+        "val_macro_pr_auc": 0.8746145177950966,
+        "val_macro_roc_auc": 0.7029840281283797
+      },
+      {
+        "checkpoint": "models/concern_human_reviewed/concern_phase_b.weights.h5",
+        "val_macro_pr_auc": 0.8789194393954611,
+        "val_macro_roc_auc": 0.7056868702730281
+      }
+    ],
+    "train_manifest": "data/vision/manifests_human_reviewed/train.csv",
+    "validation_manifest": "data/vision/manifests_human_reviewed/validation.csv",
+    "balance_labels": false,
+    "seed": 42
+  },
+  "test_images": 479,
+  "serving_preprocessing_parity_verified": true,
+  "heldout_manifests_unchanged": true,
+  "original_weights_unchanged": true,
+  "candidate_deployed": false,
+  "target_pooled_accuracy": 0.85,
+  "target_met": false,
+  "deployment_note": "Original model remains active. Candidate improves overall metrics but regresses blemishes and dark spots; review tradeoffs before deployment.",
+  "evaluation_note": "Binary predictions on 582 known labels in the previously inspected regression test set; excludes uncertainty handling and face gate. Not a fresh independent benchmark."
+}

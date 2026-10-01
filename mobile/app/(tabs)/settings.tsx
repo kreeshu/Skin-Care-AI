@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../constants/colors";
 import { theme } from "../../constants/theme";
 import { Eyebrow, DisplayLg, Body, BodySm } from "../../components/ui/Typography";
 import { useSettings } from "../../hooks/useSettings";
-import { useHistory } from "../../hooks/useHistory";
 import { api } from "../../services/api";
 
 const SKIN_TYPE_CHOICES: { value: string | null; label: string }[] = [
@@ -28,7 +27,6 @@ const ABOUT_ROWS: [string, string][] = [
 
 export default function SettingsScreen() {
   const { settings, update } = useSettings();
-  const { clearAll } = useHistory();
   const [connStatus, setConnStatus] = useState<string | null>(null);
   const [connBusy, setConnBusy] = useState(false);
 
@@ -45,13 +43,6 @@ export default function SettingsScreen() {
     }
   };
 
-  const handleClearHistory = () => {
-    Alert.alert("Clear saved results?", "This removes all saved results from this device.", [
-      { text: "Keep", style: "cancel" },
-      { text: "Clear", style: "destructive", onPress: clearAll },
-    ]);
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScrollView
@@ -64,25 +55,9 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Body style={styles.sectionTitle}>Results</Body>
-          <View style={styles.settingRow}>
-            <View style={styles.settingInfo}>
-              <Body>Personal notes</Body>
-              <BodySm>Short explanations with each routine</BodySm>
-            </View>
-            <Switch
-              value={settings.useSlm}
-              onValueChange={(val) => update({ useSlm: val })}
-              trackColor={{ false: colors.line, true: colors.dispensary }}
-              thumbColor={settings.useSlm ? colors.white : colors.textTertiary}
-            />
-          </View>
-
-          <View style={styles.divider} />
-
-          <Body>Skin type</Body>
+          <Body style={styles.sectionTitle}>Skin type</Body>
           <BodySm>
-            {settings.skinTypePreference ? `Saved as ${settings.skinTypePreference}` : "Read from each photo"}
+            {settings.skinTypePreference ? `Saved as ${settings.skinTypePreference}` : "Not provided · never guessed from photos"}
           </BodySm>
 
           <View style={styles.skinTypeOptions}>
@@ -123,21 +98,6 @@ export default function SettingsScreen() {
             ) : (
               <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
             )}
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.section}>
-          <Body style={styles.sectionTitle}>Saved results</Body>
-          <TouchableOpacity
-            style={styles.settingRow}
-            onPress={handleClearHistory}
-            accessibilityRole="button"
-          >
-            <View style={styles.settingInfo}>
-              <Body style={{ color: colors.oxblood }}>Clear saved results</Body>
-              <BodySm>Removes saved results on this device</BodySm>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
           </TouchableOpacity>
         </View>
 
@@ -202,10 +162,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: theme.spacing.sm,
     gap: 2,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.line,
   },
   skinTypeOptions: {
     flexDirection: "row",

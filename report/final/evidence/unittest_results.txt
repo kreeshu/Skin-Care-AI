@@ -1,0 +1,45 @@
+== api_contract
+----------------------------------------------------------------------
+Ran 2 tests in 0.016s
+
+OK
+== audit_vision_dataset
+----------------------------------------------------------------------
+Ran 4 tests in 0.007s
+
+OK
+== chat_logic
+Ran 0 tests in 0.000s
+
+OK
+chat logic ok
+== concern_pipeline
+----------------------------------------------------------------------
+Ran 3 tests in 0.240s
+
+OK
+== concern_training
+----------------------------------------------------------------------
+Ran 5 tests in 0.244s
+
+OK
+== predict_integration
+concerns: ('blemishes', 'dark_spots', 'redness', 'visible_pores', 'fine_lines')
+concerns: [('blemishes', 'present', 0.849), ('dark_spots', 'present', 0.579), ('redness', 'absent', 0.677), ('visible_pores', 'absent', 0.493), ('fine_lines', 'uncertain', 0.326)]
+recommendation categories: {'cleanser': 5, 'serum': 5, 'moisturizer': 5, 'spot_treatment': 5, 'toner': 5, 'sunscreen': 5}
+slm: None
+== scin_review
+----------------------------------------------------------------------
+Ran 6 tests in 0.526s
+
+OK
+== slm_inference
+
+OK
+loaded: Qwen/Qwen2.5-0.5B-Instruct
+generation: 'Yes.'
+== slm_logic
+fallback chosen: 9
+first: Acnes Vitamin Cleanser Face Wash for Gentle Cleansing And Nourishment
+prompt ok: True
+guardrail dropped fake product_id: True

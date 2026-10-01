@@ -63,12 +63,10 @@ export async function isFavorite(productId: string): Promise<boolean> {
 }
 
 export interface AppSettings {
-  useSlm: boolean;
   skinTypePreference: string | null;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
-  useSlm: false,
   skinTypePreference: null,
 };
 

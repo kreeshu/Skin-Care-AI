@@ -29,7 +29,7 @@ export function Typography({ variant = "body", color, align, style, children, ..
   );
 }
 
-/** Fraunces 30/34 tight — hero / scan / analysis headline. */
+/** Excon 30/34 tight — hero / scan / analysis headline. */
 export function DisplayHeading({ children, style, ...rest }: TextProps) {
   return (
     <Text style={[styles.display, style]} {...rest}>
@@ -38,7 +38,7 @@ export function DisplayHeading({ children, style, ...rest }: TextProps) {
   );
 }
 
-/** Fraunces 24/30 — section title in catalog / settings / history. */
+/** Excon 24/30 — section title in catalog / settings / history. */
 export function DisplayLg({ children, style, ...rest }: TextProps) {
   return (
     <Text style={[styles.displayLg, style]} {...rest}>

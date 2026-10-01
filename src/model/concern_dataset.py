@@ -6,6 +6,7 @@ import tensorflow as tf
 from PIL import Image
 
 from src.model.concern_model import CONCERNS
+from src.model.concern_preprocessing import preprocess_concern_image
 
 
 def read_manifest(path):
@@ -27,8 +28,25 @@ def read_manifest(path):
     return paths, labels, weights
 
 
-def build_concern_dataset(manifest, img_size=224, batch_size=32, augment=False, shuffle=False):
+def balanced_label_weights(labels, weights):
+    """Balance observed classes per concern; never turn unknowns into negatives."""
+    result = weights.copy()
+    for index in range(len(CONCERNS)):
+        counts = [np.count_nonzero((labels[:, index] == value) & (weights[:, index] > 0))
+                  for value in (0, 1)]
+        if min(counts) == 0:
+            continue
+        for value, count in enumerate(counts):
+            result[labels[:, index] == value, index] *= sum(counts) / (2.0 * count)
+    result[labels < 0] = 0.0
+    return result
+
+
+def build_concern_dataset(manifest, img_size=224, batch_size=32, augment=False, shuffle=False,
+                          balance_labels=False):
     paths, labels, weights = read_manifest(manifest)
+    if balance_labels:
+        weights = balanced_label_weights(labels, weights)
     augmentation = tf.keras.Sequential(
         [tf.keras.layers.RandomFlip("horizontal"), tf.keras.layers.RandomRotation(0.03),
          tf.keras.layers.RandomContrast(0.1)],
@@ -39,10 +57,9 @@ def build_concern_dataset(manifest, img_size=224, batch_size=32, augment=False, 
         # PIL, not tf.io.decode_image: some source files are WebP saved with a .png extension.
         image = tf.numpy_function(lambda p: np.asarray(Image.open(p.decode()).convert("RGB")), [path], tf.uint8)
         image.set_shape((None, None, 3))  # numpy_function loses static shape
-        image = tf.image.resize(image, (img_size, img_size))
+        image = preprocess_concern_image(image, img_size)
         if augment:
             image = augmentation(image, training=True)
-        image = tf.keras.applications.efficientnet.preprocess_input(image)
         return image, {"labels": label, "weights": weight}
 
     dataset = tf.data.Dataset.from_tensor_slices((paths, labels, weights))

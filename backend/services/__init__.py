@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import pandas as pd
 from src.inference.predict import SkinAnalyzer
 from backend.config import (
+    FACE_DETECTOR_PATH,
     MAPPINGS_DIR,
     MODEL_EVALUATION_PATH,
     MODEL_METADATA_PATH,
@@ -31,6 +32,7 @@ def get_analyzer(use_slm: bool = False) -> SkinAnalyzer:
             metadata_path=MODEL_METADATA_PATH,
             evaluation_path=MODEL_EVALUATION_PATH,
             use_slm=use_slm,
+            face_detector_path=FACE_DETECTOR_PATH,
         )
         logger.info("SkinAnalyzer loaded (slm=%s)", use_slm)
     return _analyzers[use_slm]

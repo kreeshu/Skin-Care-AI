@@ -173,7 +173,9 @@ if __name__ == "__main__":
     base_dir = os.path.join(os.path.dirname(__file__), "..", "..")
     df = pd.read_csv(os.path.join(base_dir, "data", "enriched", "unified_products.csv"))
     rec_engine = RecommendationEngine(df, os.path.join(base_dir, "data", "mappings"))
-    result = rec_engine.recommend("Acne", skin_type="oily")
+    result = rec_engine.recommend_concerns(
+        [{"name": "blemishes", "status": "present", "score": 0.9}], skin_type="oily"
+    )
     recommender = SlmRecommender()
     response = recommender.recommend(result)
     print(json.dumps(response, indent=2))
